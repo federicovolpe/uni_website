@@ -28,18 +28,17 @@
             align-items: center;">
             <h1 class="text-center" style="color: blue">Benvenuto nella pagina di login</h1>
 
-            <div class="login-form">
+            <form action="loginquery.php" method="POST">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="matricola">Matricola</span>
                     <input type="text" class="form-control" placeholder="Inserisci qui la tua matricola" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
 
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="codice_accesso">Password</span>
+                    <!--<span class="input-group-text" id="codice_accesso">Password</span>-->
                     <input type="password" class="form-control" id="password" placeholder="Inserisci qui la tua password" aria-label="Password" aria-describedby="basic-addon1">
-                    <div class = "estensioni">
-                        <input type="checkbox" id="show-password">Mostra<label for="show-password"></label>
-                        
+                    <div>
+                        <input type="checkbox" id="show-password">Mostra<label for="show-password"></label>                     
                         <script>
                         var passwordInput = document.getElementById("password");
                         var showPasswordCheckbox = document.getElementById("show-password");
@@ -57,23 +56,19 @@
                         </script>
                     </div>
                     
-                </div><select class="form-select" aria-label="Default select example">
-                        <option selected>seleziona tipo di utente</option>
+                </div>
+                    <select class="form-select" aria-label="Default select example">
                         <option value="studente">Studente</option>
                         <option value="docente">Docente</option>
                         <option value="segreteria">Segreteria</option>
                     </select>
-
-
-                <row>
+                <div>
                     <!--sezione accedi ricorda-->
                     <input type="checkbox" id="Ricordami">
                     <label for="Ricordami">Ricordami</label>
-                    <form action="login.php">
-                        <input type="submit" id="accedi" label="Accedi" style="float: right" value="Accedi">
-                    </form>
-                </row>
-            </div>
+                    <input type="submit" id="accedi" label="Accedi" style="float: right" value="Accedi">        
+                </div>
+            </form>
         </div>
     </div>
 

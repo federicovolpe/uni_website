@@ -1,5 +1,5 @@
 <?php
-
+print("ciao sto facendo la tua query");
 // Connessione al database
 $conn = pg_connect("host = localhost dbname = studentidb user=nomeutente password = password");
 
