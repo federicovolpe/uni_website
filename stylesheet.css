@@ -1,0 +1,24 @@
+.body {
+    background-color: black;
+}
+
+.table td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+.table-container {
+    border: 1px solid black;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    padding: 10px;
+    display: div;
+    align-items: center;
+    justify-content: center border;
+    border: 2px solid blue;
+}
