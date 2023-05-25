@@ -28,7 +28,7 @@
             align-items: center;">
             <h1 class="text-center" style="color: blue">Benvenuto nella pagina di login</h1>
 
-            <form action="loginquery.php" method="POST">
+            <form action="loginquery.php" method="GET">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="matricola">Matricola</span>
                     <input type="text" class="form-control" placeholder="Inserisci qui la tua matricola" aria-label="Username" aria-describedby="basic-addon1">
