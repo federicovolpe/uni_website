@@ -2,4 +2,4 @@
 
 ###scelte progettuali per il database
 per la creazione del database si è scelto di seguire il seguente schema ER
-![alt text](immagini/Untitled%20Workspace.png)
+![alt text](immagini/Drawing1.png)
