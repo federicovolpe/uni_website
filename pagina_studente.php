@@ -7,10 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
 </head>
 <body>
     <div>
-        <h1>Benvenuto %studente_nome %studente_cognome</h1>
+        <?php
+            if(isset($_GET) && !empty($_GET)){
+                $nome = $_GET['nome'];
+                $cognome = $_GET['cognome'];
+                print("<h1>Benvenuto $nome $cognome</h1>");
+            }
+        ?>
     </div>
     <div>
         questa è la homepage dello studente<br>
