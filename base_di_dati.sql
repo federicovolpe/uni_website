@@ -5,6 +5,8 @@ CREATE TABLE studente(
     matricola CHAR(6) PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    passwrd VARCHAR(20) NOT NULL,
     corso_frequentato CHAR(100) REFERENCES corso(nome_corso)
 );
 
@@ -28,6 +30,8 @@ insert into studente (matricola, nome, cognome, corso_frequentato) values (59614
 
 CREATE TABLE docente(
     id CHAR(6) PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    passwrd VARCHAR(20) NOT NULL,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL
 );
@@ -124,5 +128,19 @@ CREATE TABLE iscrizioni(
         esito NUMERIC NOT NULL
     );
 
+--              FUNZIONI
+CREATE OR REPLACE FUNCTION verifica (email text, passwrd text, tipologia text)
+RETURNS integer
+AS $$
+    DECLARE
+        verificato integer;
+    BEGIN
+        SELECT 1 INTO verificato
+        FROM tipologia
+        WHERE email = email AND passwrd = passwrd;
+        RETURN verificato;
+    END;
+$$ 
+LANGUAGE 'plpgsql';
 
 

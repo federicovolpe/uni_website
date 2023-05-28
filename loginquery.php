@@ -8,7 +8,7 @@ print("eseguito l'accesso con le credenziali: <br>");
 print("nome: $username -</br>");
 print("password: $password -");
 //Connessione al database
-$conn = pg_connect("host = localhost dbname = unimio");
+$conn = pg_connect("host = localhost port = 5432 dbname = unimio");
 if($conn){
   // Esecuzione della query per verificare le credenziali
   $query = "SELECT * FROM tabella_utenti WHERE username = '$username' AND password = '$password'";
@@ -36,3 +36,4 @@ if($conn){
 
 
 ?>
+
