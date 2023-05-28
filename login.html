@@ -30,7 +30,7 @@
             <form action="loginquery.php" method="GET">
                 <div class="input-group mb-3">
                     <span class="input-group-text"" id="matricola">Matricola</span>
-                    <input type="text" class="form-control"  name="username" placeholder="Inserisci qui la tua matricola" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control"  name="email" placeholder="Inserisci qui la tua matricola" aria-label="email" aria-describedby="basic-addon1">
                 </div>
 
                 <div class="input-group mb-3">
@@ -38,7 +38,7 @@
                     <input type="password" class="form-control" name="password" id="password" placeholder="Inserisci qui la tua password" aria-label="Password" aria-describedby="basic-addon1">
 
                 </div>
-                <select class="form-select" aria-label="Default select example">
+                <select class="form-select" name="tipologia" id="tipologia" aria-label="Default select example">
                         <option value="studente">Studente</option>
                         <option value="docente">Docente</option>
                         <option value="segreteria">Segreteria</option>

@@ -149,18 +149,25 @@ CREATE TABLE iscrizioni(
     );
 
 --              FUNZIONI
-CREATE OR REPLACE FUNCTION verifica (email text, passwrd text, tipologia text)
-RETURNS integer
+
+CREATE OR REPLACE FUNCTION verifica_studente (input_email text, input_password text)
+RETURNS setof studente
 AS $$
     DECLARE
-        verificato integer;
+        stud studente%ROWTYPE;
     BEGIN
-        SELECT 1 INTO verificato
-        FROM tipologia
-        WHERE email = email AND passwrd = passwrd;
-        RETURN verificato;
+        EXECUTE (SELECT *
+        FROM studente
+        WHERE studente.email = $1 AND studente.passwrd = $2) 
+        INTO STUD
+        USING input_email, input_password;
+        IF FOUND THEN
+            RETURN NEXT stud;
+        END IF; 
     END;
+    
 $$ 
-LANGUAGE 'plpgsql';
+LANGUAGE plpgsql;
+
 
 
