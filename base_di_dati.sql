@@ -1,6 +1,22 @@
 CREATE NEW DATABASE unimio;
 CREATE SCHEMA unimi.it;
 
+CREATE TABLE segreteria(
+    email VARCHAR(100) PRIMARY KEY,
+    passwrd VARCHAR(20) NOT NULL,
+    nome VARCHAR(20) NOT NULL,
+    cognome VARCHAR(20) NOT NULL,
+)
+
+INSERT INTO segreteria (email, passwrd, nome, cognome)
+VALUES
+  ('alice@example.com', 'password1', 'Alice', 'Smith'),
+  ('bob@example.com', 'password2', 'Bob', 'Johnson'),
+  ('charlie@example.com', 'password3', 'Charlie', 'Brown'),
+  ('diana@example.com', 'password4', 'Diana', 'Wilson'),
+  ('ethan@example.com', 'password5', 'Ethan', 'Davis');
+  
+
 CREATE TABLE studente(
     matricola CHAR(6) PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
@@ -11,21 +27,23 @@ CREATE TABLE studente(
 );
 
 -- popolazione della tabella studente
-insert into studente (matricola, nome, cognome, corso_frequentato) values (986899, 'Ancell', 'Janssens', 'Sicurezza Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (103246, 'Clara', 'Poyner', 'Sicurezza Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (148008, 'Karyn', 'Claybourn', 'Chimica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (511415, 'Harmony', 'MacClenan', 'Chimica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (903187, 'Raine', 'Di Carli', 'Chimica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (722630, 'Anissa', 'Guitel', 'Fisica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (358096, 'Vernen', 'Moss', 'Fisica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (208078, 'Annabal', 'Pamment', 'Fisica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (147692, 'Brigit', 'Jain', 'Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (905716, 'Dena', 'Barringer', 'Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (657874, 'Willetta', 'Abrahami', 'Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (571848, 'Gardner', 'Strand', 'Informatica');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (645198, 'Worden', 'Gilhouley', 'Informatica Musicale');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (342631, 'Bibi', 'Huskinson', 'Informatica Musicale');
-insert into studente (matricola, nome, cognome, corso_frequentato) values (596144, 'Madlin', 'Findley', 'Informatica Musicale');
+INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato)
+VALUES
+  (986899, 'Ancell', 'Janssens', 'ancell@example.com', 'password1', 'Sicurezza Informatica'),
+  (103246, 'Clara', 'Poyner', 'clara@example.com', 'password2', 'Sicurezza Informatica'),
+  (148008, 'Karyn', 'Claybourn', 'karyn@example.com', 'password3', 'Chimica'),
+  (511415, 'Harmony', 'MacClenan', 'harmony@example.com', 'password4', 'Chimica'),
+  (903187, 'Raine', 'Di Carli', 'raine@example.com', 'password5', 'Chimica'),
+  (722630, 'Anissa', 'Guitel', 'anissa@example.com', 'password6', 'Fisica'),
+  (358096, 'Vernen', 'Moss', 'vernen@example.com', 'password7', 'Fisica'),
+  (208078, 'Annabal', 'Pamment', 'annabal@example.com', 'password8', 'Fisica'),
+  (147692, 'Brigit', 'Jain', 'brigit@example.com', 'password9', 'Informatica'),
+  (905716, 'Dena', 'Barringer', 'dena@example.com', 'password10', 'Informatica'),
+  (657874, 'Willetta', 'Abrahami', 'willetta@example.com', 'password11', 'Informatica'),
+  (571848, 'Gardner', 'Strand', 'gardner@example.com', 'password12', 'Informatica'),
+  (645198, 'Worden', 'Gilhouley', 'worden@example.com', 'password13', 'Informatica Musicale'),
+  (342631, 'Bibi', 'Huskinson', 'bibi@example.com', 'password14', 'Informatica Musicale'),
+  (596144, 'Madlin', 'Findley', 'madlin@example.com', 'password15', 'Informatica Musicale');
 
 
 CREATE TABLE docente(
@@ -37,16 +55,18 @@ CREATE TABLE docente(
 );
 
 --popolazione della tabella docente
-insert into docente (id, nome, cognome) values (314434, 'Bernardine', 'Harniman');
-insert into docente (id, nome, cognome) values (619231, 'Husein', 'Dugue');
-insert into docente (id, nome, cognome) values (945514, 'Leigh', 'Bakster');
-insert into docente (id, nome, cognome) values (719958, 'Shaughn', 'Fouracres');
-insert into docente (id, nome, cognome) values (407789, 'Lina', 'Somerlie');
-insert into docente (id, nome, cognome) values (991385, 'Guthrie', 'Rove');
-insert into docente (id, nome, cognome) values (151049, 'Galven', 'Scothorne');
-insert into docente (id, nome, cognome) values (833919, 'Dalia', 'Izaac');
-insert into docente (id, nome, cognome) values (427844, 'Elwyn', 'Renneke');
-insert into docente (id, nome, cognome) values (554198, 'Buddie', 'MacCart');
+INSERT INTO docente (id, nome, cognome, email, passwrd)
+VALUES
+  (314434, 'Bernardine', 'Harniman', 'bernardine@example.com', 'password1'),
+  (619231, 'Husein', 'Dugue', 'husein@example.com', 'password2'),
+  (945514, 'Leigh', 'Bakster', 'leigh@example.com', 'password3'),
+  (719958, 'Shaughn', 'Fouracres', 'shaughn@example.com', 'password4'),
+  (407789, 'Lina', 'Somerlie', 'lina@example.com', 'password5'),
+  (991385, 'Guthrie', 'Rove', 'guthrie@example.com', 'password6'),
+  (151049, 'Galven', 'Scothorne', 'galven@example.com', 'password7'),
+  (833919, 'Dalia', 'Izaac', 'dalia@example.com', 'password8'),
+  (427844, 'Elwyn', 'Renneke', 'elwyn@example.com', 'password9'),
+  (554198, 'Buddie', 'MacCart', 'buddie@example.com', 'password10');
 
 
 CREATE TABLE corso(
