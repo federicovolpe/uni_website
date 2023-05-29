@@ -149,25 +149,3 @@ CREATE TABLE iscrizioni(
     );
 
 --              FUNZIONI
-
-CREATE OR REPLACE FUNCTION verifica_studente (input_email text, input_password text)
-RETURNS setof studente
-AS $$
-    DECLARE
-        stud studente%ROWTYPE;
-    BEGIN
-        EXECUTE (SELECT *
-        FROM studente
-        WHERE studente.email = $1 AND studente.passwrd = $2) 
-        INTO STUD
-        USING input_email, input_password;
-        IF FOUND THEN
-            RETURN NEXT stud;
-        END IF; 
-    END;
-    
-$$ 
-LANGUAGE plpgsql;
-
-
-

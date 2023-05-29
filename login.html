@@ -54,9 +54,10 @@
                           document.body.appendChild(errorMessage);
                         }
                         if (error === '1'){
-                            var errorMessage = document.createElement('p');
-                            errorMessage.textContent = 'le credenziali risultano errate';
-                            document.body.appendChild(errorMessage);
+                            var errorMessage = document.createElement('div');
+    errorMessage.className = 'alert alert-danger';
+    errorMessage.textContent = 'le credenziali risultano errate!';
+    document.body.appendChild(errorMessage);
                         }
                       </script>
                       

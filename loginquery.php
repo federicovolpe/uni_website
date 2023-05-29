@@ -4,10 +4,11 @@ print("ciao sto facendo la tua query</br>");
 // Recupero dei dati dal modulo di accesso
 if(isset($_GET['email']) && isset($_GET['password'])){
     $email = $_GET['email'];
+    $typee = gettype($email);
     $password = $_GET['password'];
     $tipologia = $_GET['tipologia'];
     print("tentato l'accesso con le credenziali: <br>");
-    print("email: $email -</br>");
+    print("email: $email $typee -</br>");
     print("password: $password -</br>");
     print("tipologia: $tipologia -");
 
@@ -15,9 +16,12 @@ if(isset($_GET['email']) && isset($_GET['password'])){
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
     if($conn){
         // Esecuzione della query per verificare le credenziali
-        $query = "SELECT * FROM verifica($email,$password,$tipologia)";
-        $prepara = pg_prepare($conn, "query di verifica", $query);
-        $result = pg_execute($conn, "query di verifica", array($email, $password, $tipologia));
+        $query = "
+            SELECT 1
+            FROM studente
+            WHERE email = $1 AND passwrd = $2 ;";
+        $prepara = pg_prepare($conn, "query_di_verifica", $query);
+        $result = pg_execute($conn, "query_di_verifica", array($email, $password));
 
         // Elaborazione dei risultati
         while ($row = pg_fetch_assoc($result)) {
@@ -25,13 +29,13 @@ if(isset($_GET['email']) && isset($_GET['password'])){
         }
 
         // Controllo se le credenziali sono valide
-        if (pg_num_rows($result) > 0) {
+        if (pg_num_rows($result) >= 1) {
             // Accesso valido, reindirizzamento alla pagina successiva
-            header("Location: pagina_successiva.html");
+            header("Location: pagina_studente.php");
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
-            $url_errore ="login.html?errore=" . urlencode(1);
-            echo '<a href="' . $url_errore . '">Reindirizzamento pagina errore</a>';
+            $url_errore ="login.html?error=" . urlencode(1);
+            header("Location: " . $url_errore);
         }
         // Chiusura della connessione al database
         pg_close($conn);
