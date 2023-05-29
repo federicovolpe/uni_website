@@ -1,45 +1,48 @@
-<!--homepage dello studente dove si possono consultare gli esiti degli esami-->
-
 <?php
-    /*//connessione al database per recuperare i dati dello studente
-    if(isset($_GET['email']) && isset($_GET['password'])){
-        $email = $_GET['email'];
-        $password = $_GET['password'];
-            //la tipologia non è necessaria poichè la query verrà eseguita solo nel db studente
-        print("tentato l'accesso con le credenziali: <br>");
-        print("email: $email $typee -</br>");
-        print("password: $password -</br>");
-        print("tipologia: $tipologia -");
-    
-        //Connessione al database
-        $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
-        if($conn){
-            // Esecuzione della query per verificare le credenziali
-            $query = "
-                SELECT 1
-                FROM studente
-                WHERE email = $1 AND passwrd = $2 ;";
-            $prepara = pg_prepare($conn, "query_di_verifica", $query);
-            $result = pg_execute($conn, "query_di_verifica", array($email, $password));
-    
-            // Controllo se le credenziali sono valide
-            if (pg_num_rows($result) >= 1) {
-                // Accesso valido, reindirizzamento alla pagina successiva
-                header("Location: pagina_studente.php");
-            } else {
-                // Accesso non valido, reindirizzamento a pagina di errore
-                $url_errore ="login.html?error=" . urlencode(1);
-                header("Location: " . $url_errore);
-            }
-            // Chiusura della connessione al database
-            pg_close($conn);
-        }else{
-            //nel caso cada la connessione al db torno alla pagina di login con il messaggio di errore
-            $url_errore ="login.html?error=" . urlencode(404);
-            header("Location: ". $url_errore);
-            exit;
-        }*/
+print("ciao sto facendo la tua query</br>");
+
+// Recupero dei dati dal modulo di accesso
+if(isset($_GET['email']) && isset($_GET['password'])){
+    $email = $_GET['email'];
+    $password = $_GET['password'];
+    $tipologia = $_GET['tipologia'];
+    print("tentato l'accesso con le credenziali: <br>");
+    print("email: $email -</br>");
+    print("password: $password -</br>");
+    print("tipologia: $tipologia -");
+
+    //Connessione al database
+    $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
+    if($conn){
+        $query = " SELECT *
+        FROM studente
+        WHERE email = $1 AND passwrd = $2 ;";
+        $prepara = pg_prepare($conn, "query_di_verifica", $query);
+        $result = pg_execute($conn, "query_di_verifica", array($email, $password));
+        }
+        
+        if($result){
+            $row = pg_fetch_assoc($result);
+            $matricola = $row['matricola'];
+            $nome = $row['nome'];
+            $cognome = $row['cognome'];
+            $corso_frequentato = $row['corso_frequentato'];
+        } else {
+            // Accesso non valido, reindirizzamento a pagina di errore
+            $url_errore ="login.html?error=" . urlencode(1);
+            header("Location: " . $url_errore);
+        }
+        // Chiusura della connessione al database
+        pg_close($conn);
+    }else{  
+        print("connessione fallita<br>");
+        print("ti riporto al sito precedente<br>");
+        $url_errore ="login.html?error=" . urlencode(404);
+        header("Location: ". $url_errore);
+        exit;
+    }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,20 +54,16 @@
 
 </head>
 <body>
-    <div>
         <?php
-            if(isset($_GET) && !empty($_GET)){
-                $nome = $_GET['nome'];
-                $cognome = $_GET['cognome'];
                 print("<h1>Benvenuto $nome $cognome</h1>");
-            }
         ?>
-    </div>
     <div>
         questa è la homepage dello studente<br>
         ecco i tuoi voti :)
+
         <div class= "table-container">
         <table class="table">
+        <caption><?php print($corso_frequentato) ?></caption>
             <thead>
                 <tr>
                     <th> Materia </th>
