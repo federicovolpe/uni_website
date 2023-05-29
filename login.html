@@ -49,15 +49,16 @@
                         var error = params.get('error');
                       
                         if (error === '404') {
-                          var errorMessage = document.createElement('p');
-                          errorMessage.textContent = 'connessione con postgresql non riuscita';
-                          document.body.appendChild(errorMessage);
+                            var errorMessage = document.createElement('div');
+                            errorMessage.className = 'alert alert-danger';
+                            errorMessage.textContent = 'connessione al database fallita!';
+                            document.body.appendChild(errorMessage);
                         }
                         if (error === '1'){
                             var errorMessage = document.createElement('div');
-    errorMessage.className = 'alert alert-danger';
-    errorMessage.textContent = 'le credenziali risultano errate!';
-    document.body.appendChild(errorMessage);
+                            errorMessage.className = 'alert alert-danger';
+                            errorMessage.textContent = 'le credenziali risultano errate!';
+                            document.body.appendChild(errorMessage);
                         }
                       </script>
                       

@@ -5,8 +5,8 @@ CREATE TABLE segreteria(
     email VARCHAR(100) PRIMARY KEY,
     passwrd VARCHAR(20) NOT NULL,
     nome VARCHAR(20) NOT NULL,
-    cognome VARCHAR(20) NOT NULL,
-)
+    cognome VARCHAR(20) NOT NULL
+);
 
 INSERT INTO segreteria (email, passwrd, nome, cognome)
 VALUES

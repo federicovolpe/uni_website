@@ -10,7 +10,7 @@
 </head>
 <body>
     <div>
-        <h1>Benvenuto %studente_nome %studente_cognome</h1>
+        <h1>Benvenuto %docente_nome %studente_cognome</h1>
     </div>
     <div>
         questa è la homepage del docente<br>
