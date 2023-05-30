@@ -4,10 +4,10 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
     $tipologia = $_POST['tipologia'];
-    print("tentato l'accesso con le credenziali: <br>");
+    /*print("tentato l'accesso con le credenziali: <br>");
     print("email: $email -</br>");
     print("password: $password -</br>");
-    print("tipologia: $tipologia -</br>");
+    print("tipologia: $tipologia -</br>");*/
 }
     //Connessione al database
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
@@ -24,17 +24,17 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 WHERE email = $1 AND passwrd = $2 ;";
             $prepara = pg_prepare($conn, "fetch_info", $query2);
             $result = pg_execute($conn, "fetch_info", array($email, $password));
-            print("ho trovato qualcosa, righe : ". pg_num_rows($result) . "</br>");
+            //print("ho trovato qualcosa, righe : ". pg_num_rows($result) . "</br>");
             if($result){ 
                 
                 //se la query riesce a raccogliere dei dati allora li memorizzo
                 $row = pg_fetch_assoc($result);
                 $matricola = $row['matricola'];
-                print("matricola: $matricola</br>");
+                //print("matricola: $matricola</br>");
                 $nome = $row['nome'];
-                print("nome: $nome</br>");
+                //print("nome: $nome</br>");
                 $cognome = $row['cognome']; 
-                print("cognome: $cognome</br>");
+                //print("cognome: $cognome</br>");
                 $corso_frequentato = $row['corso_frequentato'];
             }
         } else {
@@ -59,27 +59,26 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
 
 </head>
 <body>
-<nav class="navbar bg-body-tertiary">
+    <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
+                <img src="../immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
             </a>
         </div>
     </nav>
-        <?php
-                print("<h1>Benvenuto $nome $cognome</h1>");
-        ?>
+        <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
     <div>
         questa è la homepage dello studente<br>
-        ecco i tuoi voti :)
+        ecco i tuoi voti :
 
         <div class= "table-container">
-        <table class="table">
+        <table class="table-striped">
         <caption><?php print($corso_frequentato) ?></caption>
             <thead>
                 <tr>
