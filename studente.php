@@ -1,11 +1,9 @@
 <?php
-print("ciao sto facendo la tua query</br>");
-
 // Recupero dei dati dal modulo di accesso
-if(isset($_GET['email']) && isset($_GET['password'])){
-    $email = $_GET['email'];
-    $password = $_GET['password'];
-    $tipologia = $_GET['tipologia'];
+if(isset($_POST['email']) && isset($_POST['password'])){
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $tipologia = $_POST['tipologia'];
     print("tentato l'accesso con le credenziali: <br>");
     print("email: $email -</br>");
     print("password: $password -</br>");
@@ -37,9 +35,9 @@ if(isset($_GET['email']) && isset($_GET['password'])){
     }else{  
         print("connessione fallita<br>");
         print("ti riporto al sito precedente<br>");
-        $url_errore ="login.html?error=" . urlencode(404);
+        /*$url_errore ="login.html?error=" . urlencode(404);
         header("Location: ". $url_errore);
-        exit;
+        exit;*/
     }
 ?>
 
