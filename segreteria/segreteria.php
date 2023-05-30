@@ -8,6 +8,13 @@
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
+            </a>
+        </div>
+    </nav>
     definizione di uno sudente/docente<br>
     modifica di uno studente/docente<br>
     rimozione di uno studente/docente<br>
