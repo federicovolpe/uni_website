@@ -7,24 +7,36 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     print("tentato l'accesso con le credenziali: <br>");
     print("email: $email -</br>");
     print("password: $password -</br>");
-    print("tipologia: $tipologia -");
-
+    print("tipologia: $tipologia -</br>");
+}
     //Connessione al database
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
     if($conn){
-        $query = " SELECT *
-        FROM studente
-        WHERE email = $1 AND passwrd = $2 ;";
+        $query = "SELECT 1
+                FROM studente
+                WHERE email = $1 AND passwrd = $2 ;";
         $prepara = pg_prepare($conn, "query_di_verifica", $query);
-        $result = pg_execute($conn, "query_di_verifica", array($email, $password));
-        }
-        
-        if($result){
-            $row = pg_fetch_assoc($result);
-            $matricola = $row['matricola'];
-            $nome = $row['nome'];
-            $cognome = $row['cognome'];
-            $corso_frequentato = $row['corso_frequentato'];
+        $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
+
+        if(pg_num_rows($esito_verifica) >= 1){
+            $query2 = " SELECT *
+                FROM studente
+                WHERE email = $1 AND passwrd = $2 ;";
+            $prepara = pg_prepare($conn, "fetch_info", $query2);
+            $result = pg_execute($conn, "fetch_info", array($email, $password));
+            print("ho trovato qualcosa, righe : ". pg_num_rows($result) . "</br>");
+            if($result){ 
+                
+                //se la query riesce a raccogliere dei dati allora li memorizzo
+                $row = pg_fetch_assoc($result);
+                $matricola = $row['matricola'];
+                print("matricola: $matricola</br>");
+                $nome = $row['nome'];
+                print("nome: $nome</br>");
+                $cognome = $row['cognome']; 
+                print("cognome: $cognome</br>");
+                $corso_frequentato = $row['corso_frequentato'];
+            }
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
             $url_errore ="login.html?error=" . urlencode(1);
@@ -35,9 +47,9 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     }else{  
         print("connessione fallita<br>");
         print("ti riporto al sito precedente<br>");
-        /*$url_errore ="login.html?error=" . urlencode(404);
+        $url_errore ="login.html?error=" . urlencode(404);
         header("Location: ". $url_errore);
-        exit;*/
+        exit;
     }
 ?>
 
