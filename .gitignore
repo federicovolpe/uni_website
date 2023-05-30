@@ -1,3 +1,5 @@
 
 prova.php
 *.json
+.DS_Store
+chiedi_chatgpt.php
