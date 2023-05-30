@@ -1,3 +1,4 @@
 
 prova.php
 *.json
+.DS_Store
