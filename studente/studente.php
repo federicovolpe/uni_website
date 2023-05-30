@@ -36,6 +36,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 $cognome = $row['cognome']; 
                 print("cognome: $cognome</br>");
                 $corso_frequentato = $row['corso_frequentato'];
+                print("corso frequentato: $corso_frequentato</br>");
             }
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
@@ -67,7 +68,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
 <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
+                <img src="uni_website/immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
             </a>
         </div>
     </nav>
@@ -108,7 +109,8 @@ if(isset($_POST['email']) && isset($_POST['password'])){
         
     <div>
         <h2>vuoi iscriverti ad un esame? </h2>
-        <a href="iscrizione esame"> iscriviti ad un esame! </a>
+        <?php $url_prenota_corso = "prenota-esame.php?corso_frequentato=" . $corso_frequentato ?>
+        <a href="<?php echo($url_prenota_corso)?>"> iscriviti ad un esame! </a>
     </div>
     
 </body>
