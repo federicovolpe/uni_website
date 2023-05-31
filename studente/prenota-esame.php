@@ -1,3 +1,24 @@
+<?PHP 
+    //fetch degli esami disponibili per lo studente corrente
+    session_start();
+    $matricola = $_SESSION['matricola'];
+    if(!empty($matricola)){
+        $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+        if($db){
+            //query
+            $tutti_gli_esami = "SELECT * FROM esami";
+            $esami_prenotati = "SELECT * FROM esami_prenotati WHERE matricola = $1";
+            // devo crearmi una colonna per segnarmi quale esame è prenotato e quale no cosi
+            // ho tutto in una tabella dalla quale posso popolare la tabella della pagina
+        }else{
+            print("connessione al database fallita");
+        }
+        
+    }else{
+        print("matricola non pervenuta");
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,19 +38,17 @@
             </a>
         </div>
     </nav>
-        <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
+        <?php  print("<h2>esami a cui ti puoi prenotare</h2>");?>
     <div>
-        questa è la homepage dello studente<br>
-        ecco i tuoi voti :
-
         <div class= "table-container">
         <table class="table-striped">
-        <caption><?php print($corso_frequentato) ?></caption>
+        <caption><?php print("corso: ". $corso_frequentato . " utente: " . $nome . " " . $cognome) ?></caption>
             <thead>
                 <tr>
                     <th> Materia </th>
-                    <th> Voto </th>
+                    
                     <th> Data </th>
+                    <th> <form action=""><input type="submit"> </th>
                 </tr>
             </thead>
             <tr>

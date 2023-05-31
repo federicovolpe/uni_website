@@ -76,9 +76,66 @@ if(!empty($email) && !empty($password)){
         <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
     <div>
         questa è la homepage della segreteria<br>
-        definizione di uno sudente/docente<br>
-    modifica di uno studente/docente<br>
-    rimozione di uno studente/docente<br>
+        modifica o aggiungi un docente<br>
+        <form action="definisci_docente.php" method="POST">
+
+        <label for="id">id:</label>
+        <input type="text" name="id" id="id" required>
+
+        <label for="nome">nome:</label>
+        <input type="text" name="nome" id="nome" required>
+        
+        <label for="cognome">cognome:</label>
+        <input type="text" name="cognome" id="cognome" required>
+
+        <label for="email">email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="password">password:</label>
+        <input type="text" name="password" id="password" required>
+        
+        <button type="submit">Aggiungi</button>
+    </form>
+    modifica o aggiungi uno studente<br>
+    <form action="definisci_studente.php" method="POST">
+            
+        <label for="matricola">id:</label>
+        <input type="text" name="id" id="id" required>
+
+        <label for="nome">nome:</label>
+        <input type="text" name="nome" id="nome" required>
+        
+        <label for="cognome">cognome:</label>
+        <input type="text" name="cognome" id="cognome" required>
+
+        <label for="email">email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="password">password:</label>
+        <input type="text" name="password" id="password" required>
+        
+        <button type="submit">Aggiungi</button>
+    </form>
+    inserisci o modifica un corso<br>
+    <form action="definisci_docente.php" method="POST">
+            
+        <label for="id">id:</label>
+        <input type="text" name="id" id="id" required>
+
+        <label for="nome">nome:</label>
+        <input type="text" name="nome" id="nome" required>
+        
+        <label for="cognome">cognome:</label>
+        <input type="text" name="cognome" id="cognome" required>
+
+        <label for="email">email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="password">password:</label>
+        <input type="text" name="password" id="password" required>
+        
+        <button type="submit">Aggiungi</button>
+    </form>
     definizione di un corso di laurea triennale/magistrale<br>
 
     

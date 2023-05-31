@@ -148,4 +148,10 @@ CREATE TABLE iscrizioni(
         esito NUMERIC NOT NULL
     );
 
+--tabella che per ogni studente contiene gli esami che lui ha prenotato
+CREATE TABLE esami_prenotati(
+    studente CHAR(6) REFERENCES studente, 
+    esame CHAR(6) REFERENCES esami,
+    PRIMARY KEY (studente, esame)
+)
 --              FUNZIONI
