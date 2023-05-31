@@ -1,13 +1,13 @@
 <?php
 // Recupero dei dati dal modulo di accesso
-if(isset($_POST['email']) && isset($_POST['password'])){
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $tipologia = $_POST['tipologia'];
-    /*print("tentato l'accesso con le credenziali: <br>");
+    session_start();
+    $email = $_SESSION['email'];
+    $password = $_SESSION['password'];
+if(!empty($email) && !empty($password)){
+    
+    print("tentato l'accesso con le credenziali: <br>");
     print("email: $email -</br>");
     print("password: $password -</br>");
-    print("tipologia: $tipologia -</br>");*/
 }
     //Connessione al database
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
@@ -30,17 +30,19 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 //se la query riesce a raccogliere dei dati allora li memorizzo
                 $row = pg_fetch_assoc($result);
                 $matricola = $row['matricola'];
-                //print("matricola: $matricola</br>");
+                print("matricola: $matricola</br>");
                 $nome = $row['nome'];
-                //print("nome: $nome</br>");
+                print("nome: $nome</br>");
                 $cognome = $row['cognome']; 
-                //print("cognome: $cognome</br>");
+                print("cognome: $cognome</br>");
                 $corso_frequentato = $row['corso_frequentato'];
             }
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
+            print('credenziali non trovate');
             $url_errore ="login.html?error=" . urlencode(1);
-            header("Location: " . $url_errore);
+            //header("Location: " . $url_errore);
+            //exit;
         }
         // Chiusura della connessione al database
         pg_close($conn);

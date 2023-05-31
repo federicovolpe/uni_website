@@ -11,10 +11,15 @@ per velocizzare ulteriormente la efficienza del database si è deciso di impleme
 
 
 #### -> pagina per autenticazione
-l'autenticazione per gli user si compone di due pagine web, una [login.html](login.html) dove viene implementata una interfaccia grafica con html e una ([loginquery.php](loginquery.php)) per la verifica delle credenziali ottenute, quest'ultima si occuperà di reindirizzare l'utente alla propria pagina personale(se la verifica andasse a buon fine) o nuovamente verso la pagina di login altrimenti.
+l'autenticazione per gli user si compone di due pagine web, una [login.html](login.html) dove viene implementata una interfaccia grafica con html e una ([dispatcher.php](dispatcher.php)), quest'ultima si occuperà di reindirizzare l'utente alla propria pagina personale(studente, docente o segreteria), passando le variabili mail e password tramite l'apertura di una sessione.
 
 #### -> pagina principale utente
-le pagine di ogni tipologia di utente saranno differenti poichè implementeranno funzionalità diverse:
+le pagine di ogni tipologia di utente avranno alcuni aspetti comuni:
+- La verifica dell'utente tramite una query di verifica
+- Il recupero delle informazioni personali dell'utente contenute nel database
+- Il reindirizzamento alla pagina di login qualora uno dei due step precedenti non dovesse andare a buon fine e la segnalazione tramite un codice errore apposito
+  
+funzionalità che invece saranno differenti:
 
 **pagina studente:**
 la pagina studente permetterà di consultare i dati riguardanti l'esito degli esami e di potersi iscrivere ad un esame nuovo
