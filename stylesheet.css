@@ -22,3 +22,14 @@
     justify-content: center border;
     border: 2px solid blue;
 }
+
+.form-segreteria{
+    border: 1px solid blue;
+            padding: 5%;
+            width: 100%;
+}
+@media (max-width: 1000px) {
+    .form-segreteria {
+        width: 100%;
+    }
+}

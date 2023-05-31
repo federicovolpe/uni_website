@@ -23,7 +23,7 @@ CREATE TABLE studente(
     cognome VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     passwrd VARCHAR(20) NOT NULL,
-    corso_frequentato CHAR(100) REFERENCES corso(nome_corso)
+    corso_frequentato CHAR(100) REFERENCES corso(nome_corso) NOT NULL;
 );
 
 -- popolazione della tabella studente

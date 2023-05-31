@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST))  {
     // Retrieve the name and surname from the form submission
-    $id = $post['id'];
+    $id = $_POST['id'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $nome = $_POST['nome'];

@@ -58,7 +58,7 @@ if(!empty($email) && !empty($password)){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheet.css">
 
 </head>
 <body>
@@ -71,11 +71,23 @@ if(!empty($email) && !empty($password)){
     </nav>
         <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
     <div>
+
+        <div><!-- divisione per i messaggi di errore o di successo-->
+            <script>
+                if (approved === '1') {
+                            var successMessage = document.createElement('div');
+                            successMessage.className = 'alert alert-success';
+                            successMessage.textContent = 'operazione approvata dal database';
+                            document.body.appendChild(successMessage);
+                }
+            </script>
+        </div>
+
         <h3> questa è la homepage della segreteria</h3>
         <div class="row">
             <div class="col-sm-6">
                 <h3>modifica o aggiungi un docente</h3>
-                <form action="update_docente.php" method="POST">
+                <form class="form-segreteria" action="update_docente.php" method="POST">
                     <label for="id">id:</label>
                     <input type="text" name="id" id="id" required>
 
@@ -103,23 +115,27 @@ if(!empty($email) && !empty($password)){
 
             <div class="col-sm-6">
                 <h3>Modifica o aggiungi uno studente</h3>
-                <form action="update_studente.php" method="POST">
+                <form class="form-segreteria" action="update_studente.php" method="POST">
                         
-                    <label for="matricola">id:</label>
-                    <input type="text" name="id" id="id" required>
+                    <label for="matricola">Matricola:</label>
+                    <input type="text" name="matricola" id="matricola" required>
 
-                    <label for="nome">nome:</label>
+                    <label for="nome">Nome:</label>
                     <input type="text" name="nome" id="nome" required>
                     
-                    <label for="cognome">cognome:</label>
+                    <label for="cognome">Cognome:</label>
                     <input type="text" name="cognome" id="cognome" required>
 
-                    <label for="email">email:</label>
+                    <label for="email">Email:</label>
                     <input type="text" name="email" id="email" required>
 
-                    <label for="password">password:</label>
+                    <label for="password">Password:</label>
                     <input type="text" name="password" id="password" required>
 
+                    <label for="corso_frequentato">Corso frequentato:</label>
+                    <input type="text" name="corso_frequentato" id="corso_frequentato" required>
+
+                    <label for="operazione">Operazione:</label>
                     <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
                                     <option value="aggiungi">Aggiungi</option>
                                     <option value="modifica">Modifica</option>
@@ -133,7 +149,7 @@ if(!empty($email) && !empty($password)){
         <div class="row mt-4">
             <div class="col-sm-6">
                 <h3>inserisci o modifica un corso</h3>
-                <form action="update_corso.php" method="POST">
+                <form class="form-segreteria" action="update_corso.php" method="POST">
                         
                     <label for="id">id:</label>
                     <input type="text" name="id" id="id" required>
@@ -158,7 +174,7 @@ if(!empty($email) && !empty($password)){
 
             <div class="col-sm-6">
                 <h3>inserisci o modifica un insegnamento</h3>
-                <form action="update_insegnamento.php" method="POST">
+                <form class="form-segreteria" action="update_insegnamento.php" method="POST">
                         
                     <label for="id">id:</label>
                     <input type="text" name="id" id="id" required>
@@ -183,8 +199,9 @@ if(!empty($email) && !empty($password)){
             </div>
         </div>
 
-        <h3>vuoi cambiare password?</h3>
-        <form action="change_password.php">
+        
+        <form action="change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;">
+            <h4>vuoi cambiare password?    </br></h4>
             <label for="password">password:</label>
             <input type="text" name="password" id="password" required>
         </form>
