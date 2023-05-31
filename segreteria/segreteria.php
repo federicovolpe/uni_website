@@ -9,47 +9,43 @@ if(!empty($email) && !empty($password)){
     print("email: $email -</br>");
     print("password: $password -</br>");*/
 }
-    //Connessione al database
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
     if($conn){
         $query = "SELECT 1
-                FROM studente
+                FROM segreteria
                 WHERE email = $1 AND passwrd = $2 ;";
         $prepara = pg_prepare($conn, "query_di_verifica", $query);
         $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
 
         if(pg_num_rows($esito_verifica) >= 1){
             $query2 = " SELECT *
-                FROM studente
+                FROM segreteria
                 WHERE email = $1 AND passwrd = $2 ;";
             $prepara = pg_prepare($conn, "fetch_info", $query2);
             $result = pg_execute($conn, "fetch_info", array($email, $password));
-            //print("ho trovato qualcosa, righe : ". pg_num_rows($result) . "</br>");
-            if($result){ 
-                
+
+            if($result){     
                 //se la query riesce a raccogliere dei dati allora li memorizzo
                 $row = pg_fetch_assoc($result);
-                $matricola = $row['matricola'];
-                //print("matricola: $matricola</br>");
                 $nome = $row['nome'];
-                //print("nome: $nome</br>");
                 $cognome = $row['cognome']; 
+
+                //print("nome: $nome</br>");
                 //print("cognome: $cognome</br>");
-                $corso_frequentato = $row['corso_frequentato'];
             }
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
             print('credenziali non trovate');
-            $url_errore ="login.html?error=" . urlencode(1);
-            //header("Location: " . $url_errore);
-            //exit;
+            $url_errore ="../login.html?error=" . urlencode(1);
+            header("Location: " . $url_errore);
+            exit;
         }
         // Chiusura della connessione al database
         pg_close($conn);
     }else{  
         print("connessione fallita<br>");
         print("ti riporto al sito precedente<br>");
-        $url_errore ="login.html?error=" . urlencode(404);
+        $url_errore ="../login.html?error=" . urlencode(404);
         header("Location: ". $url_errore);
         exit;
     }
@@ -75,68 +71,123 @@ if(!empty($email) && !empty($password)){
     </nav>
         <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
     <div>
-        questa è la homepage della segreteria<br>
-        modifica o aggiungi un docente<br>
-        <form action="definisci_docente.php" method="POST">
+        <h3> questa è la homepage della segreteria</h3>
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>modifica o aggiungi un docente</h3>
+                <form action="update_docente.php" method="POST">
+                    <label for="id">id:</label>
+                    <input type="text" name="id" id="id" required>
 
-        <label for="id">id:</label>
-        <input type="text" name="id" id="id" required>
+                    <label for="nome">nome:</label>
+                    <input type="text" name="nome" id="nome" required>
+                    
+                    <label for="cognome">cognome:</label>
+                    <input type="text" name="cognome" id="cognome" required>
 
-        <label for="nome">nome:</label>
-        <input type="text" name="nome" id="nome" required>
-        
-        <label for="cognome">cognome:</label>
-        <input type="text" name="cognome" id="cognome" required>
+                    <label for="email">email:</label>
+                    <input type="text" name="email" id="email" required>
 
-        <label for="email">email:</label>
-        <input type="text" name="email" id="email" required>
+                    <label for="password">password:</label>
+                    <input type="text" name="password" id="password" required>
 
-        <label for="password">password:</label>
-        <input type="text" name="password" id="password" required>
-        
-        <button type="submit">Aggiungi</button>
-    </form>
-    modifica o aggiungi uno studente<br>
-    <form action="definisci_studente.php" method="POST">
-            
-        <label for="matricola">id:</label>
-        <input type="text" name="id" id="id" required>
+                    <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                    <option value="aggiungi">Aggiungi</option>
+                                    <option value="modifica">Modifica</option>
+                                    <option value="cancella">Cancella</option>
+                    </select>
+                    
+                    <button type="submit">Esegui</button>
+                </form>
+            </div>
 
-        <label for="nome">nome:</label>
-        <input type="text" name="nome" id="nome" required>
-        
-        <label for="cognome">cognome:</label>
-        <input type="text" name="cognome" id="cognome" required>
+            <div class="col-sm-6">
+                <h3>Modifica o aggiungi uno studente</h3>
+                <form action="update_studente.php" method="POST">
+                        
+                    <label for="matricola">id:</label>
+                    <input type="text" name="id" id="id" required>
 
-        <label for="email">email:</label>
-        <input type="text" name="email" id="email" required>
+                    <label for="nome">nome:</label>
+                    <input type="text" name="nome" id="nome" required>
+                    
+                    <label for="cognome">cognome:</label>
+                    <input type="text" name="cognome" id="cognome" required>
 
-        <label for="password">password:</label>
-        <input type="text" name="password" id="password" required>
-        
-        <button type="submit">Aggiungi</button>
-    </form>
-    inserisci o modifica un corso<br>
-    <form action="definisci_docente.php" method="POST">
-            
-        <label for="id">id:</label>
-        <input type="text" name="id" id="id" required>
+                    <label for="email">email:</label>
+                    <input type="text" name="email" id="email" required>
 
-        <label for="nome">nome:</label>
-        <input type="text" name="nome" id="nome" required>
-        
-        <label for="cognome">cognome:</label>
-        <input type="text" name="cognome" id="cognome" required>
+                    <label for="password">password:</label>
+                    <input type="text" name="password" id="password" required>
 
-        <label for="email">email:</label>
-        <input type="text" name="email" id="email" required>
+                    <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                    <option value="aggiungi">Aggiungi</option>
+                                    <option value="modifica">Modifica</option>
+                                    <option value="cancella">Cancella</option>
+                    </select>
+                    
+                    <button type="submit">Aggiungi</button>
+                </form>
+        </div>
 
-        <label for="password">password:</label>
-        <input type="text" name="password" id="password" required>
-        
-        <button type="submit">Aggiungi</button>
-    </form>
-    definizione di un corso di laurea triennale/magistrale<br>
+        <div class="row mt-4">
+            <div class="col-sm-6">
+                <h3>inserisci o modifica un corso</h3>
+                <form action="update_corso.php" method="POST">
+                        
+                    <label for="id">id:</label>
+                    <input type="text" name="id" id="id" required>
+
+                    <label for="nome">nome:</label>
+                    <input type="text" name="nome" id="nome" required>
+                    
+                    <select class="form-select" name="tipologia" id="tipologia" aria-label="tipologia">
+                                    <option value="triennale">triennale</option>
+                                    <option value="magistrale">magistrale</option>
+                    </select>
+
+                    <select class="form-select" name="operazione" id="operazione" aria-label="operazione">
+                                    <option value="aggiungi">Aggiungi</option>
+                                    <option value="modifica">Modifica</option>
+                                    <option value="cancella">Cancella</option>
+                    </select>
+                    
+                    <button type="submit">Aggiungi</button>
+                </form>
+            </div>
+
+            <div class="col-sm-6">
+                <h3>inserisci o modifica un insegnamento</h3>
+                <form action="update_insegnamento.php" method="POST">
+                        
+                    <label for="id">id:</label>
+                    <input type="text" name="id" id="id" required>
+
+                    <label for="nome">nome:</label>
+                    <input type="text" name="nome" id="nome" required>
+                    
+                    <select class="form-select" name="anno" id="anno" aria-label="anno">
+                                    <option value="primo">primo</option>
+                                    <option value="secondo">secondo</option>
+                                    <option value="terzo">terzo</option>
+                    </select>
+
+                    <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                    <option value="aggiungi">Aggiungi</option>
+                                    <option value="modifica">Modifica</option>
+                                    <option value="cancella">Cancella</option>
+                    </select>
+                    
+                    <button type="submit">Aggiungi</button>
+                </form>
+            </div>
+        </div>
+
+        <h3>vuoi cambiare password?</h3>
+        <form action="change_password.php">
+            <label for="password">password:</label>
+            <input type="text" name="password" id="password" required>
+        </form>
 
     
 </body>
