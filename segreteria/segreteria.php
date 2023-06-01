@@ -64,6 +64,25 @@ if ($conn) {
 </head>
 
 <body>
+    <!--<div> divisione per i messaggi di errore o di successo-->
+            <script>
+                const urlParams = new URLSearchParams(window.location.search);
+                const approved = urlParams.get('approved');
+                const msg = urlParams.get('msg');
+                if (approved === '0') {
+                    var successMessage = document.createElement('div');
+                    successMessage.className = 'p-3 mb-2 bg-success text-white';
+                    successMessage.textContent = 'operazione approvata dal database';
+                    document.body.appendChild(successMessage);
+                }
+                if (approved === '1') {
+                    var successMessage = document.createElement('div');
+                    successMessage.className = 'p-3 mb-2 bg-danger text-white';
+                    successMessage.textContent = msg;
+                    document.body.appendChild(successMessage);
+                }
+            </script>
+        <!--/div-->
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -71,27 +90,13 @@ if ($conn) {
             </a>
         </div>
     </nav>
-    <?php print("<h1>Benvenuto $nome $cognome</h1>"); ?>
-    <div>
+    <div style="text-align:center;"><?php print("<h1>Benvenuto $nome $cognome</h1></br>
+            <h3> questa è la homepage della segreteria</h3>"); ?></div>
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
 
-        <div><!-- divisione per i messaggi di errore o di successo-->
-            <script>
-                if (approved === '0') {
-                    var successMessage = document.createElement('div');
-                    successMessage.className = 'alert alert-success';
-                    successMessage.textContent = 'operazione approvata dal database';
-                    document.body.appendChild(successMessage);
-                }
-                if (approved === '1') {
-                    var successMessage = document.createElement('div');
-                    successMessage.className = 'alert alert-danger';
-                    successMessage.textContent = 'operazione non andata a buon fine';
-                    document.body.appendChild(successMessage);
-                }
-            </script>
-        </div>
+        
 
-        <h3> questa è la homepage della segreteria</h3>
+
         <div class="row">
             <div class="col-sm-6">
                 <h3>modifica o aggiungi un docente</h3>
@@ -236,51 +241,100 @@ if ($conn) {
             <div class="col-sm-6">
                 <h3>inserisci o modifica un corso</h3>
                 <form class="form-segreteria" action="update_corso.php" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">Id:</span>
+                                        <input type="text" class="form-control" name="id" id="id">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class = "input-group-text">Nome:</span>
+                                        <input type="text" class="form-control" name="nome" id="nome">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <label for="id">id:</label>
-                    <input type="text" name="id" id="id" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-row">
+                                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                            <option value="triennale">Triennale</option>
+                                            <option value="magistrale">Magistrale</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <label for="nome">nome:</label>
-                    <input type="text" name="nome" id="nome" required>
+                    <div class="form-row">
+                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                            <option value="aggiungi">Aggiungi</option>
+                            <option value="modifica">Modifica</option>
+                            <option value="cancella">Cancella</option>
+                        </select>
+                    </div>
 
-                    <select class="form-select" name="tipologia" id="tipologia" aria-label="tipologia">
-                        <option value="triennale">triennale</option>
-                        <option value="magistrale">magistrale</option>
-                    </select>
-
-                    <select class="form-select" name="operazione" id="operazione" aria-label="operazione">
-                        <option value="aggiungi">Aggiungi</option>
-                        <option value="modifica">Modifica</option>
-                        <option value="cancella">Cancella</option>
-                    </select>
-
-                    <button type="submit">Esegui</button>
+                    <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
                 </form>
             </div>
 
             <div class="col-sm-6">
-                <h3>inserisci o modifica un insegnamento</h3>
+                
                 <form class="form-segreteria" action="update_insegnamento.php" method="POST">
+                    <h3>inserisci o modifica un insegnamento</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">Id:</span>
+                                        <input type="text" class="form-control" name="id" id="id">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class = "input-group-text">Nome:</span>
+                                        <input type="text" class="form-control" name="nome" id="nome">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <label for="id">id:</label>
-                    <input type="text" name="id" id="id" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-row">
+                                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                            <option value="primo">Primo</option>
+                                            <option value="secondo">Secondo</option>
+                                            <option value="terzo">Terzo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <label for="nome">nome:</label>
-                    <input type="text" name="nome" id="nome" required>
+                    <div class="form-row">
+                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                            <option value="aggiungi">Aggiungi</option>
+                            <option value="modifica">Modifica</option>
+                            <option value="cancella">Cancella</option>
+                        </select>
+                    </div>
 
-                    <select class="form-select" name="anno" id="anno" aria-label="anno">
-                        <option value="primo">primo</option>
-                        <option value="secondo">secondo</option>
-                        <option value="terzo">terzo</option>
-                    </select>
-
-                    <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
-                        <option value="aggiungi">Aggiungi</option>
-                        <option value="modifica">Modifica</option>
-                        <option value="cancella">Cancella</option>
-                    </select>
-
-                    <button type="submit">Esegui</button>
+                    <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
                 </form>
             </div>
         </div>
@@ -291,6 +345,7 @@ if ($conn) {
             <label for="password">password:</label>
             <input type="text" name="password" id="password" required>
         </form>
+    </div>
 
 
 </body>
