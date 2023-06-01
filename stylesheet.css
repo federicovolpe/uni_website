@@ -17,16 +17,21 @@
 
 .login-form {
     padding: 10px;
-    display: div;
+    display: flex;
     align-items: center;
-    justify-content: center border;
+    justify-content: center;
     border: 2px solid blue;
-}
+    max-width: 80%;
+    border-radius: 4%;
+    margin: 0 auto; /* Added to center the form horizontally */
+    margin-top: 20vh; /* Adjust the margin-top value to center the form vertically */
+  }
 
 .form-segreteria{
     border: 1px solid blue;
-            padding: 5%;
-            width: 100%;
+            padding: 4%;
+            width: 90%;
+            border-radius: 3%;
 }
 @media (max-width: 1000px) {
     .form-segreteria {
