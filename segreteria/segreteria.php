@@ -74,10 +74,16 @@ if(!empty($email) && !empty($password)){
 
         <div><!-- divisione per i messaggi di errore o di successo-->
             <script>
-                if (approved === '1') {
+                if (approved === '0') {
                             var successMessage = document.createElement('div');
                             successMessage.className = 'alert alert-success';
                             successMessage.textContent = 'operazione approvata dal database';
+                            document.body.appendChild(successMessage);
+                }
+                if (approved === '1') {
+                            var successMessage = document.createElement('div');
+                            successMessage.className = 'alert alert-danger';
+                            successMessage.textContent = 'operazione non andata a buon fine';
                             document.body.appendChild(successMessage);
                 }
             </script>
@@ -121,19 +127,19 @@ if(!empty($email) && !empty($password)){
                     <input type="text" name="matricola" id="matricola" required>
 
                     <label for="nome">Nome:</label>
-                    <input type="text" name="nome" id="nome" required>
+                    <input type="text" name="nome" id="nome">
                     
                     <label for="cognome">Cognome:</label>
-                    <input type="text" name="cognome" id="cognome" required>
+                    <input type="text" name="cognome" id="cognome" >
 
                     <label for="email">Email:</label>
-                    <input type="text" name="email" id="email" required>
+                    <input type="text" name="email" id="email" >
 
                     <label for="password">Password:</label>
-                    <input type="text" name="password" id="password" required>
+                    <input type="text" name="password" id="password">
 
                     <label for="corso_frequentato">Corso frequentato:</label>
-                    <input type="text" name="corso_frequentato" id="corso_frequentato" required>
+                    <input type="text" name="corso_frequentato" id="corso_frequentato">
 
                     <label for="operazione">Operazione:</label>
                     <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
@@ -142,7 +148,7 @@ if(!empty($email) && !empty($password)){
                                     <option value="cancella">Cancella</option>
                     </select>
                     
-                    <button type="submit">Aggiungi</button>
+                    <button type="submit">Esegui</button>
                 </form>
         </div>
 
@@ -168,7 +174,7 @@ if(!empty($email) && !empty($password)){
                                     <option value="cancella">Cancella</option>
                     </select>
                     
-                    <button type="submit">Aggiungi</button>
+                    <button type="submit">Esegui</button>
                 </form>
             </div>
 
@@ -194,7 +200,7 @@ if(!empty($email) && !empty($password)){
                                     <option value="cancella">Cancella</option>
                     </select>
                     
-                    <button type="submit">Aggiungi</button>
+                    <button type="submit">Esegui</button>
                 </form>
             </div>
         </div>
