@@ -146,7 +146,11 @@ VALUES
   ('100009', '8610762518', '427844', '170623'), 
   ('100010', '7477422085', '554198', '190623'), 
   ('100011', '3526956576', '833919', '210623'), 
-  ('100012', '5837527637', '427844', '230623'); 
+  ('100012', '5837527637', '427844', '230623'),
+  ('000001', '7477422085', '554198', '160623'), --esame di sistemi embedded
+  ('000002', '6405967915', '427844', '150623'),  --esame di programmazione1
+  ('000003', '9428798504', '554198', '150623'), --esame di programmazione2
+  ('000004', '5193752943', '427844', '049722'); --esame di logica
 
 
 
@@ -215,10 +219,16 @@ CREATE TABLE iscrizioni(
 
 
 CREATE TABLE esiti(
-        studente CHAR(6) REFERENCES studente(matricola),
-        esame CHAR(6) REFERENCES esami(id),
-        esito NUMERIC NOT NULL
-    );
+    studente CHAR(6) REFERENCES studente(matricola),
+    esame CHAR(6) REFERENCES esami(id),
+    esito NUMERIC NOT NULL
+);
+--popolazione della tabella
+
+INSERT INTO esiti
+    VALUES
+    ()
+
 
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
 CREATE TABLE esami_prenotati(
@@ -232,22 +242,46 @@ CREATE TABLE esami_prenotati(
 
 CREATE OR REPLACE FUNCTION check_responsabile_insegnamento()
   RETURNS TRIGGER AS $$
-BEGIN
-  -- Check if the docente and insegnamento exist in the responsabile_insegnamento table
-  IF NOT EXISTS (
-    SELECT 1
-    FROM responsabile_insegnamento
-    WHERE docente = NEW.docente AND insegnamento = NEW.insegnamento
-  ) THEN
-    RAISE EXCEPTION 'Il docente specificato non risulta responsabile dell insegnamento.';
-  END IF;
-  
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+    BEGIN
+    -- Check if the docente and insegnamento exist in the responsabile_insegnamento table
+        IF NOT EXISTS (
+            SELECT 1
+            FROM responsabile_insegnamento
+            WHERE docente = NEW.docente AND insegnamento = NEW.insegnamento
+        ) THEN
+            RAISE EXCEPTION 'Il docente specificato non risulta responsabile dell insegnamento.';
+        END IF;
+    
+    RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
 
 -- Create the trigger
 CREATE TRIGGER responsabile_insegnamento_trigger
 BEFORE INSERT ON esami
 FOR EACH ROW
 EXECUTE FUNCTION check_responsabile_insegnamento();
+
+-- trigger che evita che un professore diventi responsabile di piu di 3 insegnamenti
+
+CREATE OR REPLACE FUNCTION n_insegnamenti_responsabile()
+    RETURNS TRIGGER AS $$
+    DECLARE 
+        conta_docente INTEGER;
+    BEGIN
+        SELECT COUNT(*) INTO conta_docente
+        FROM responsabile_insegnamento
+        WHERE docente = NEW.docente;
+
+        IF (conta_docente > 3) THEN 
+            RAISE EXCEPTION 'Il docente non può essere responsabile di più di 3 insegnamenti';
+        END IF;
+
+        RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER insegnamenti_responsabile_trigger
+    BEFORE INSERT ON responsabile_insegnamento
+    FOR EACH ROW
+    EXECUTE FUNCTION n_insegnamenti_responsabile();
