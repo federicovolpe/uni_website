@@ -77,6 +77,51 @@ if(!empty($email) && !empty($password)){
         questa è la homepage dello studente<br>
         ecco i tuoi voti :
 
+        <!-- inizio tabella -->
+        <?php
+// Assuming you have already established a database connection
+
+    // Query to retrieve data from the database table
+    $prenotati = "SELECT * 
+                  FROM esami_prenotati AS P
+                  JOIN esami AS E ON E.id = P.esame
+                  WHERE studente = $1";
+    $result = pg_prepare($conn, "esami_prenotati", $prenotati);
+    $result = pg_execute($conn, "esami_prenotati", array($matricola));
+
+    if ($result) { //se la query è andata a buon fine
+        
+        echo "<table>";
+        
+        while ($row = pg_fetch_assoc($result)) {// per ogni riga prelevata creo una riga di tabella
+            // Start a new table row
+            echo "<tr>";
+            
+            foreach ($row as $value) {// Loop through each column in the row
+                // Output the column value as a table cell
+                echo "<td>" . $value . "</td>";
+            }
+            
+            // Close the table row
+            echo "</tr>";
+        }
+        
+        // Close the HTML table
+        echo "</table>";
+        
+        // Free the result set
+        mysqli_free_result($result);
+    } else {
+    // Display an error message if the query fails
+    echo "Error executing the query: " . mysqli_error($connection);
+    }
+
+    // Close the database connection
+    pg_close($conn);
+    ?>
+
+<!--fine tabella -->
+
         <div class= "table-container">
         <table class="table-striped">
         <caption><?php print($corso_frequentato) ?></caption>
