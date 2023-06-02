@@ -135,18 +135,18 @@ CREATE TABLE esami(
 --riempimento tabella esami
 INSERT INTO esami (id, insegnamento, docente, data)
 VALUES
-  ('100001', '9914411111', '314434', '010623'),   -- Insegnamento '9914411111' by Docente '314434' on 01/06/23
-  ('100002', '1973869985', '619231', '030623'),   -- Insegnamento '1973869985' by Docente '619231' on 03/06/23
-  ('100003', '5210097035', '945514', '050623'),   -- Insegnamento '5210097035' by Docente '945514' on 05/06/23
-  ('100004', '3204759382', '719958', '070623'),   -- Insegnamento '3204759382' by Docente '719958' on 07/06/23
-  ('100005', '2995667581', '407789', '090623'),   -- Insegnamento '2995667581' by Docente '407789' on 09/06/23
-  ('100006', '3526956576', '991385', '110623'),   -- Insegnamento '3526956576' by Docente '991385' on 11/06/23
-  ('100007', '5837527637', '151049', '130623'),   -- Insegnamento '5837527637' by Docente '151049' on 13/06/23
-  ('100008', '1193746368', '833919', '150623'),   -- Insegnamento '1193746368' by Docente '833919' on 15/06/23
-  ('100009', '7393377009', '427844', '170623'),   -- Insegnamento '7393377009' by Docente '427844' on 17/06/23
-  ('100010', '2852290568', '554198', '190623'),   -- Insegnamento '2852290568' by Docente '554198' on 19/06/23
-  ('100011', '6967310076', '833919', '210623'),   -- Insegnamento '6967310076' by Docente '833919' on 21/06/23
-  ('100012', '8650908123', '427844', '230623');   -- Insegnamento '8650908123' by Docente '427844' on 23/06/23
+  ('100001', '9914411111', '314434', '010623'), 
+  ('100002', '1973869985', '619231', '030623'), 
+  ('100003', '5210097035', '945514', '050623'), 
+  ('100004', '3204759382', '719958', '070623'), 
+  ('100005', '2995667581', '407789', '090623'), 
+  ('100006', '3526956576', '833919', '110623'), 
+  ('100007', '5837527637', '427844', '130623'), 
+  ('100008', '1647855372', '833919', '150623'), 
+  ('100009', '8610762518', '427844', '170623'), 
+  ('100010', '7477422085', '554198', '190623'), 
+  ('100011', '3526956576', '833919', '210623'), 
+  ('100012', '5837527637', '427844', '230623'); 
 
 
 
@@ -229,19 +229,25 @@ CREATE TABLE esami_prenotati(
 --              FUNZIONI
 
 -- prima di inserire un esame devo controllare che l'insegnante specificato risulti responsabile di quell'insegnamento
-CREATE OR REPLACE FUNCTION esame_insert()
-    RETURNS TRIGGER
 
-    AS$$
-        BEGIN
-            --se il docente non è responsabile di quel corso allora 
-            IF new.docente not in(-- se
-            
-            )RAISE NOTICE 'il professore non risulta responsabile di questo corso';
-        END
-    $$ LANGUAGE 'plpgsql'
+CREATE OR REPLACE FUNCTION check_responsabile_insegnamento()
+  RETURNS TRIGGER AS $$
+BEGIN
+  -- Check if the docente and insegnamento exist in the responsabile_insegnamento table
+  IF NOT EXISTS (
+    SELECT 1
+    FROM responsabile_insegnamento
+    WHERE docente = NEW.docente AND insegnamento = NEW.insegnamento
+  ) THEN
+    RAISE EXCEPTION 'Il docente specificato non risulta responsabile dell insegnamento.';
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER esame_insert_trigger 
-    AFTER INSERT ON esame 
-    FOR EACH ROW 
-    EXECUTE FUNCTION esame_insert();
+-- Create the trigger
+CREATE TRIGGER responsabile_insegnamento_trigger
+BEFORE INSERT ON esami
+FOR EACH ROW
+EXECUTE FUNCTION check_responsabile_insegnamento();
