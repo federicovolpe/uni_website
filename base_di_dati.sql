@@ -147,6 +147,9 @@ VALUES
   ('100010', '7477422085', '554198', '190623'), 
   ('100011', '3526956576', '833919', '210623'), 
   ('100012', '5837527637', '427844', '230623'),
+  ('100013', '6967310076', '554198', '230522'),
+  ('100014', '6967310076', '554198', '220522'),
+  ('100015', '1193746368', '554198', '231222'),
   ('000001', '7477422085', '554198', '160623'), --esame di sistemi embedded
   ('000002', '6405967915', '427844', '150623'),  --esame di programmazione1
   ('000003', '9428798504', '554198', '150623'), --esame di programmazione2
@@ -285,3 +288,17 @@ CREATE OR REPLACE TRIGGER insegnamenti_responsabile_trigger
     BEFORE INSERT ON responsabile_insegnamento
     FOR EACH ROW
     EXECUTE FUNCTION n_insegnamenti_responsabile();
+
+--    - [ ] Trigger che vieta la modifica/eliminazione di un esame se il professore non è responsabile
+CREATE OR REPLACE FUNCTION update_esame(professore)
+    RETURNS TRIGGER 
+    AS $$
+        BEGIN
+        END;
+    $$ LANGUAGE plpgsql
+
+
+CREATE OR REPLACE TRIGGER update_esame_trigger
+    BEFORE UPDATE OR DELETE ON esame
+    FOR EACH ROW
+    EXECUTE FUNCTION update_esame(professore);

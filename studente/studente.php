@@ -110,7 +110,7 @@ if(!empty($email) && !empty($password)){
         echo "</table>";
         
         // Free the result set
-        mysqli_free_result($result);
+        pg_free_result($result);
     } else {
     // Display an error message if the query fails
     echo "Error executing the query: " . mysqli_error($connection);
