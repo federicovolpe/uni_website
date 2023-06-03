@@ -189,9 +189,9 @@ if(!empty($email) && !empty($password)){
         </select>
     </form>
         
-    <div>
+    <div style="margin: 0 auto;text-align: center;">
         <h2>vuoi programmare un nuovo esame </h2>
-        <a href="inserzione esame"> programma un nuovo esame </a>
+        <a href="inserzione_esame.php"> programma un nuovo esame </a>
     </div>
     <footer>
         <a href="index.php">homepage</a>
