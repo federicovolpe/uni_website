@@ -4,6 +4,7 @@
     session_start();
     $email = $_SESSION['email'];
     $password = $_SESSION['password'];
+
 if(!empty($email) && !empty($password)){
 }
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
@@ -27,6 +28,8 @@ if(!empty($email) && !empty($password)){
                 $nome = $row['nome'];
                 $cognome = $row['cognome']; 
                 $id = $row['id'];
+                //metto la variabile id nella sessione perchè può tornare utile nelle pagine successive
+                $_SESSION['id'] = $id;
             }
         } else {
             // Accesso non valido, reindirizzamento a pagina di errore
