@@ -8,7 +8,6 @@ if(!empty($email) && !empty($password)){
 }
     $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
     if($conn){
-        print("connessione stabilita</br>");
         $query = "SELECT 1
                 FROM docente
                 WHERE email = $1 AND passwrd = $2 ;";
@@ -63,6 +62,23 @@ if(!empty($email) && !empty($password)){
             </a>
         </div>
     </nav>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const approved = urlParams.get('approved');
+        const msg = urlParams.get('msg');
+        if (approved === '0') {
+            var successMessage = document.createElement('div');
+            successMessage.className = 'p-3 mb-2 bg-success text-white';
+            successMessage.textContent = 'operazione approvata dal database';
+            document.body.appendChild(successMessage);
+        }
+        if (approved === '1') {
+            var successMessage = document.createElement('div');
+            successMessage.className = 'p-3 mb-2 bg-danger text-white';
+            successMessage.textContent = msg;
+            document.body.appendChild(successMessage);
+        }
+    </script>
     <div>
         <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
     </div>
@@ -83,28 +99,31 @@ if(!empty($email) && !empty($password)){
                         JOIN insegnamento ON insegnamento.id = esami.insegnamento
                         WHERE docente = $1";
                 $prepare = pg_prepare($conn, "esami_in_programma", $sql);
-                if($prepare){
+                if ($prepare) {
                     $esami_in_prog = pg_execute($conn, "esami_in_programma", array($id));
-                    while($row = pg_fetch_assoc($esami_in_prog)){
+                    while ($row = pg_fetch_assoc($esami_in_prog)) {
                         print('
-    <tr>
-        <td>' . $row['insegnamento_n'] . '</td>
-        <td>' . $row['data'] . '</td>
-        <td>
-            <div class="btn-group" role="group" aria-label="Azioni">
-                <button type="button" onclick="redirectToUpdate(\'cancella\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Cancella</button>
-                <button type="button" onclick="redirectToUpdate(\'modifica\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Modifica</button>
-            </div>
-        </td>
-    </tr>
-    <script>
-        function redirectToUpdate(action, insegnamento) {
-            var url = "update_esame.php?action=" + action + "&insegnamento=" + encodeURIComponent(insegnamento);
-            window.location.href = url;
-        }
-    </script>
-');
-
+                            <tr>
+                                <td>' . $row['insegnamento_n'] . '</td>
+                                <td>' . $row['data'] . '</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Azioni">
+                                        <button type="button" onclick="redirectToUpdate(\'cancella\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Cancella</button>
+                                        <button type="button" onclick="redirectToUpdate(\'modifica\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Modifica</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <script>
+                                function redirectToUpdate(operazione, esame) {
+                                    if (operazione === \'cancella\') {
+                                        var url = "cancella_esame.php?esame=" + encodeURIComponent(esame);
+                                        window.location.href = url;
+                                    } else if (operazione === \'modifica\') {
+                                        var url = "update_esame.php?esame=" + encodeURIComponent(esame);
+                                        window.location.href = url;
+                                    }
+                                }
+                            </script>');
                     }
                 }else{
                     print("preparazione della query fallita");

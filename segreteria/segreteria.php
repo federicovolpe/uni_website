@@ -64,7 +64,6 @@ if ($conn) {
 </head>
 
 <body>
-    <!--<div> divisione per i messaggi di errore o di successo-->
             <script>
                 const urlParams = new URLSearchParams(window.location.search);
                 const approved = urlParams.get('approved');
@@ -82,7 +81,6 @@ if ($conn) {
                     document.body.appendChild(successMessage);
                 }
             </script>
-        <!--/div-->
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
