@@ -302,3 +302,27 @@ CREATE OR REPLACE TRIGGER update_esame_trigger
     BEFORE UPDATE OR DELETE ON esame
     FOR EACH ROW
     EXECUTE FUNCTION update_esame(professore);
+
+-- trigger che prima dell'inserzione di un esito per un  esame controlli
+--  che lo studente risulti effettivamente iscritto per quell'esame
+
+CREATE OR REPLACE FUNCTION verifica_iscrizione()
+    RETURNS TRIGGER 
+    AS$$
+        BEGIN
+        IF EXISTS (
+            SELECT studente 
+            FROM iscrizioni 
+            WHERE studente = NEW.studente AND esame = NEW.esame
+        ) THEN
+            RETURN NEW;
+        ELSE
+            RAISE EXCEPTION 'Lo studente non risulta iscritto a questo esame';
+        END IF;
+        END;
+    $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
+    BEFORE INSERT ON esiti
+    FOR EACH ROW
+    EXECUTE FUNCTION verifica_iscrizione();

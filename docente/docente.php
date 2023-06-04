@@ -196,9 +196,37 @@ if(!empty($email) && !empty($password)){
         <h2>vuoi programmare un nuovo esame </h2>
         <a href="inserzione_esame.php"> programma un nuovo esame </a>
     </div>
-    <footer>
-        <a href="index.php">homepage</a>
-    </footer>
+    <div style ="padding : 1%">
+    <hr>
+    </div>
+    <div style="display: flex;
+        justify-content: center;
+        height: 10vh;border:2px solid blue;">
+        <div style="display: grid;
+        gap: 10px;
+        justify-items: center;
+        text-align: center;
+        ">
+            <h3>inserzione esiti</h3>
+            <form action="registra_voti.php" method="POST">
+                <div style="padding:2%">
+                    <label for="m_studente">Matricola studente:</label>
+                    <input type="text" name="m_studente" id="m_studente">
+                </div>
+                <div style="padding:2%">
+                    <label for="esame">Esame:</label>
+                    <input type="text" name="esame" id="esame">
+                </div>
+                <div style="padding:2%">
+                    <label for="esito">Esito:</label>
+                    <input type="number" name="esito" id="esito">
+                </div>
+                <div style="padding:2%">
+                <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
