@@ -4,6 +4,7 @@ session_start();
     if (session_status() == PHP_SESSION_ACTIVE) {
         print("fancoolo </br>");
     $id = $_SESSION['id'];
+    $matricola = $_SESSION['matricola'];
     print("id: ".$id . "</br>");
     $tipologia = $_SESSION['tipologia'];
     print("tipologia utente: ". $tipologia . "</br>");
@@ -38,6 +39,22 @@ session_start();
                         $result = pg_execute($db, "cambio_password", array($nuova_password, $id));
                         if($result){
                             print("la password di: $id, è stata cambiata in $nuova_password");
+
+                        }else{
+                            print("l'esecuzione della query non è andata a buon fine");
+                        }
+                    }else{
+                        print("preparazione della query non riuscita");
+                    }
+                }else if($tipologia ==='studente'){
+                    $sql = "UPDATE studente
+                            SET passwrd = $1
+                            WHERE matricola = $2";
+                    $preparato = pg_prepare($db, "cambio_password", $sql);
+                    if($preparato){
+                        $result = pg_execute($db, "cambio_password", array($nuova_password, $matricola));
+                        if($result){
+                            print("la password di: $matricola, è stata cambiata in $nuova_password");
 
                         }else{
                             print("l'esecuzione della query non è andata a buon fine");

@@ -9,28 +9,32 @@ if(!empty($email) && !empty($password)){
     print("password: $password -</br>");*/
 }
     //Connessione al database
-    $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
-    if($conn){
+    $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+    if($db){
         $query = "SELECT 1
                 FROM studente
                 WHERE email = $1 AND passwrd = $2 ;";
-        $prepara = pg_prepare($conn, "query_di_verifica", $query);
-        $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
+        $prepara = pg_prepare($db, "query_di_verifica", $query);
+        $esito_verifica = pg_execute($db, "query_di_verifica", array($email, $password));
 
         if(pg_num_rows($esito_verifica) >= 1){
             $query2 = " SELECT *
                 FROM studente
                 WHERE email = $1 AND passwrd = $2 ;";
-            $prepara = pg_prepare($conn, "fetch_info", $query2);
-            $result = pg_execute($conn, "fetch_info", array($email, $password));
+            $prepara = pg_prepare($db, "fetch_info", $query2);
+            $result = pg_execute($db, "fetch_info", array($email, $password));
 
             if($result){ 
                 //se la query riesce a raccogliere dei dati allora li memorizzo
                 $row = pg_fetch_assoc($result);
                 $matricola = $row['matricola'];
+                print("matricola: ".$matricola."</br>");
                 $nome = $row['nome'];
                 $cognome = $row['cognome']; 
                 $corso_frequentato = $row['corso_frequentato'];
+
+                session_start();
+                $_SESSION['matricola'] = $matricola;
                 /*print("matricola: $matricola</br>");
                 print("nome: $nome</br>");
                 print("cognome: $cognome</br>");*/
@@ -43,7 +47,7 @@ if(!empty($email) && !empty($password)){
             exit;
         }
         // Chiusura della connessione al database
-        pg_close($conn);
+        pg_close($db);
     }else{  
         print("connessione fallita<br>");
         print("ti riporto al sito precedente<br>");
@@ -78,82 +82,61 @@ if(!empty($email) && !empty($password)){
         ecco i tuoi voti :
 
         <!-- inizio tabella -->
-        <?php
-// Assuming you have already established a database connection
-
-    // Query to retrieve data from the database table
-    $prenotati = "SELECT * 
-                  FROM esami_prenotati AS P
-                  JOIN esami AS E ON E.id = P.esame
-                  WHERE studente = $1";
-    $result = pg_prepare($conn, "esami_prenotati", $prenotati);
-    $result = pg_execute($conn, "esami_prenotati", array($matricola));
-
-    if ($result) { //se la query è andata a buon fine
-        
-        echo "<table>";
-        
-        while ($row = pg_fetch_assoc($result)) {// per ogni riga prelevata creo una riga di tabella
-            // Start a new table row
-            echo "<tr>";
-            
-            foreach ($row as $value) {// Loop through each column in the row
-                // Output the column value as a table cell
-                echo "<td>" . $value . "</td>";
-            }
-            
-            // Close the table row
-            echo "</tr>";
-        }
-        
-        // Close the HTML table
-        echo "</table>";
-        
-        // Free the result set
-        pg_free_result($result);
-    } else {
-    // Display an error message if the query fails
-    echo "Error executing the query: " . mysqli_error($connection);
-    }
-
-    // Close the database connection
-    pg_close($conn);
-    ?>
-
-<!--fine tabella -->
-
+    <div>corso frequentato: <?php print($corso_frequentato) ?></div>
         <div class= "table-container">
         <table class="table-striped">
-        <caption><?php print($corso_frequentato) ?></caption>
+        
             <thead>
                 <tr>
                     <th> Materia </th>
                     <th> Voto </th>
                     <th> Data </th>
+                    <th> Iscrizione</th>
                 </tr>
             </thead>
-            <tr>
-                <td> %materia1 </td>
-                <td> %voto </td>
-                <td> %data </td>
-            </tr>
-            <tr>
-                <td> %materia2 </td>
-                <td> %voto </td>
-                <td> %data </td>
-            </tr>
-            <tr>
-                <td> %materia3 </td>
-                <td> %voto </td>
-                <td> %data </td>
-            </tr>
+                <?php
+                    $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+                    if($db){
+                        $sql = "SELECT ES.esame_id, ES.nome, ES.data
+                                FROM studente AS S
+                                JOIN
+                                    (SELECT I.corso AS corso, E.id AS esame_id, I.nome, E.data
+                                    FROM esami AS E
+                                    INNER JOIN insegnamento AS I ON I.id = E.insegnamento) AS ES ON ES.corso = S.corso_frequentato
+                                WHERE S.matricola = $1";
+                        $preparato = pg_prepare($db, "esami_iscrivibili", $sql);
+
+                        if($preparato){
+                            $result = pg_execute($db, "esami_iscrivibili", array($matricola));
+                            if($result){
+                                while($row = pg_fetch_assoc($result)){
+                                    echo("<tr>
+                                            <td> ". $row['nome']. "</th>
+                                            <td> voto </th>
+                                            <th> ". $row['data']. "</th>
+                                            <th> form iscrizione </th>
+                                          </tr>");
+                                }
+                            }else{
+                                print("l'esecuzione della query non è andata a buon fine</br>");
+                            }
+                        }else{
+                            print("la preparazione della query non è andata a buon fine</br>");
+                        }
+                    } else{
+                        print("connessione con il database fallita");
+                    }
+                ?>
         </table>
     </div>
         
-    <div>
-        <h2>vuoi iscriverti ad un esame? </h2>
-        <a href="iscrizione esame"> iscriviti ad un esame! </a>
-    </div>
+
+    <form action="../change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;" method="POST">
+        <h4>vuoi cambiare password? </br></h4>
+        <label for="password">password:</label>
+        <input type="password" name="password" id="password" required>
+        <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
+    </form>
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
@@ -161,3 +144,4 @@ if(!empty($email) && !empty($password)){
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 
 </html>
+
