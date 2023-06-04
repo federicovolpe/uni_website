@@ -30,8 +30,10 @@ if ($conn) {
             $nome = $row['nome'];
             $cognome = $row['cognome'];
 
-            //print("nome: $nome</br>");
-            //print("cognome: $cognome</br>");
+                //salvo nella sessione l'id per la query del cambio password
+                session_start();
+                $_SESSION['id'] = $row['id'];
+
         }
     } else {
         // Accesso non valido, reindirizzamento a pagina di errore
@@ -91,8 +93,6 @@ if ($conn) {
     <div style="text-align:center;"><?php print("<h1>Benvenuto $nome $cognome</h1></br>
             <h3> questa è la homepage della segreteria</h3>"); ?></div>
     <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-
-        
 
 
         <div class="row">
@@ -338,10 +338,11 @@ if ($conn) {
         </div>
 
 
-        <form action="change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;">
+        <form action="../change_password1.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;" method="POST">
             <h4>vuoi cambiare password? </br></h4>
             <label for="password">password:</label>
-            <input type="text" name="password" id="password" required>
+            <input type="password" name="password" id="password" required>
+            <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
         </form>
     </div>
 

@@ -136,30 +136,11 @@ if(!empty($email) && !empty($password)){
 
     </div>
     </form>
-    <?php
-        //per ogni insegnamento di cui è responsabile il professore creo una opzione
-            $sql = "SELECT R.docente, I.nome AS nome_insegnamento
-                    FROM responsabile_insegnamento AS R
-                    JOIN insegnamento AS I ON I.id = R.insegnamento
-                    WHERE docente = $1";
-            print("query settata con id =".$id."</br>");
-            $result = pg_prepare($conn, "insegnamenti_responsabile", $sql);
-            $result = pg_execute($conn, "insegnamenti_responsabile", array($id));
-            print("query eseguita SELECT R.docente, I.nome AS nome_insegnamento
-            FROM responsabile_insegnamento AS R
-            JOIN insegnamento AS I ON I.id = R.insegnamento
-            WHERE docente = ".$id."</br> ==== >".pg_num_rows($result)."</br>errore: ".pg_last_error());
-            if(pg_num_rows($result)){
-                print("insegnamenti trovati!");
-                
-                while($row = pg_fetch_assoc($result)){
-                    echo($row['nome_insegnamento']."</br>");
-                }
-            }else{
-                echo("insegnamenti non trovati");
-            }
-        ?>
 
+    <div style="padding:2%;text-align: center;"> 
+        <hr> 
+        <h3>programma un nuovo esame:</h3>
+    </div>
     <form action="programma_esame.php">
         <label for="insegnamento">Insegnamento</label>
         <select class="form-select" name="insegnamento" id="insegnamento" aria-label="Default select example">
@@ -174,12 +155,12 @@ if(!empty($email) && !empty($password)){
                     WHERE docente = $1";
             print("query settata</br>");
             $result = pg_prepare($conn, "insegnamenti_responsabile", $sql);
-            $result = pg_execute($conn, "insegnamenti_responsabile", array($id));
+            $insegnamenti = pg_execute($conn, "insegnamenti_responsabile", array($id));
             print("query eseguita</br>");
-            if(pg_num_rows($result) >= 1){
+            if(pg_num_rows($insegnamenti) >= 1){
                 print("insegnamenti trovati!");
                 
-                while($row = pg_fetch_assoc($result)){
+                while($row = pg_fetch_assoc($insegnamenti)){
                     echo("<option value='" . $row['nome_insegnamento'] . "'>".$row['nome_insegnamento']."</option>");
                 }
             }else{
@@ -213,16 +194,30 @@ if(!empty($email) && !empty($password)){
                     <label for="m_studente">Matricola studente:</label>
                     <input type="text" name="m_studente" id="m_studente">
                 </div>
+
                 <div style="padding:2%">
                     <label for="esame">Esame:</label>
-                    <input type="text" name="esame" id="esame">
+                    <select class="form-select" name="esame" id="esame" aria-label="Default select example">
+            
+                    <?php 
+                        if($esami_in_prog){
+                            print("<div>insegnamenti trovatioo</div>". pg_num_rows($esami_in_prog));
+                            while($row = pg_fetch_assoc($esami_in_prog)){
+                                echo("<option value='" . $row['insegnamento_n'] . "'>" . $row['insegnamento_n'] . "</option>");
+                            }
+                        }else{
+                        print("<div>insegnamenti non trovati</div>");
+                        }
+                    ?>
                 </div>
+
                 <div style="padding:2%">
                     <label for="esito">Esito:</label>
-                    <input type="number" name="esito" id="esito">
+                    <input type="number" name="esito" id="esito" min="0" max="30">
                 </div>
+                
                 <div style="padding:2%">
-                <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
+                    <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
                 </div>
             </form>
         </div>

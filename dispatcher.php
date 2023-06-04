@@ -4,25 +4,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = $_POST['email'];
   $password = $_POST['password'];
   $tipologia = $_POST['tipologia'];
-  $additionalParam = $_POST['additionalParam'];
+  
+  //salvo la tipologia dell'utente perchè serve nella query del cambio password
+  session_start();
+  $_SESSION['tipologia'] = $tipologia;
+  
 
   // Process the form data and redirect to the appropriate page
   if ($tipologia === 'studente') {
-    session_start();
     $_SESSION['password'] = $_POST['password'];
     $_SESSION['email'] = $_POST['email'];
     $redirectUrl = 'studente/studente.php';
     header('Location: ' . $redirectUrl);
     exit;
+
   } elseif ($tipologia === 'docente') {
-    session_start();
     $_SESSION['password'] = $_POST['password'];
     $_SESSION['email'] = $_POST['email'];
     $redirectUrl = 'docente/docente.php';
     header('Location: ' . $redirectUrl);
     exit;
+
   } elseif ($tipologia === 'segreteria') {
-    session_start();
     $_SESSION['password'] = $_POST['password'];
     $_SESSION['email'] = $_POST['email'];
     $redirectUrl = 'segreteria/segreteria.php';

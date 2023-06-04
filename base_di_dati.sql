@@ -2,19 +2,20 @@ CREATE NEW DATABASE unimio;
 CREATE SCHEMA unimi.it;
 
 CREATE TABLE segreteria(
-    email VARCHAR(100) PRIMARY KEY,
+    id CHAR(6) PRIMARY KEY,
+    email VARCHAR(100) UNIQUE,
     passwrd VARCHAR(20) NOT NULL,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL
 );
 
-INSERT INTO segreteria (email, passwrd, nome, cognome)
+INSERT INTO segreteria (id,email, passwrd, nome, cognome)
 VALUES
-  ('alice@example.com', 'password1', 'Alice', 'Smith'),
-  ('bob@example.com', 'password2', 'Bob', 'Johnson'),
-  ('charlie@example.com', 'password3', 'Charlie', 'Brown'),
-  ('diana@example.com', 'password4', 'Diana', 'Wilson'),
-  ('ethan@example.com', 'password5', 'Ethan', 'Davis');
+  ('000001','alice@example.com', 'password1', 'Alice', 'Smith'),
+  ('000002','bob@example.com', 'password2', 'Bob', 'Johnson'),
+  ('000003','charlie@example.com', 'password3', 'Charlie', 'Brown'),
+  ('000004','diana@example.com', 'password4', 'Diana', 'Wilson'),
+  ('000005','ethan@example.com', 'password5', 'Ethan', 'Davis');
   
 
 CREATE TABLE studente(
@@ -224,7 +225,8 @@ CREATE TABLE iscrizioni(
 CREATE TABLE esiti(
     studente CHAR(6) REFERENCES studente(matricola),
     esame CHAR(6) REFERENCES esami(id),
-    esito NUMERIC NOT NULL
+    esito NUMERIC NOT NULL,
+    PRIMARY KEY (studente, esame)
 );
 --popolazione della tabella
 
@@ -308,8 +310,8 @@ CREATE OR REPLACE TRIGGER update_esame_trigger
 
 CREATE OR REPLACE FUNCTION verifica_iscrizione()
     RETURNS TRIGGER 
-    AS$$
-        BEGIN
+    AS $$
+    BEGIN
         IF EXISTS (
             SELECT studente 
             FROM iscrizioni 
@@ -319,8 +321,9 @@ CREATE OR REPLACE FUNCTION verifica_iscrizione()
         ELSE
             RAISE EXCEPTION 'Lo studente non risulta iscritto a questo esame';
         END IF;
-        END;
+    END;
     $$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
     BEFORE INSERT ON esiti
