@@ -30,22 +30,22 @@ CREATE TABLE studente(
 -- popolazione della tabella studente
 INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato)
 VALUES
-  (986899, 'Ancell', 'Janssens', 'ancell@example.com', 'password1', 9175738010),
-  (103246, 'Clara', 'Poyner', 'clara@example.com', 'password2', 9175738010),
-  (148008, 'Karyn', 'Claybourn', 'karyn@example.com', 'password3', 2124169738),
-  (511415, 'Harmony', 'MacClenan', 'harmony@example.com', 'password4', 2124169738),
-  (903187, 'Raine', 'Di Carli', 'raine@example.com', 'password5', 2124169738),
-  (722630, 'Anissa', 'Guitel', 'anissa@example.com', 'password6', 3759187480),
-  (358096, 'Vernen', 'Moss', 'vernen@example.com', 'password7', 3759187480),
-  (208078, 'Annabal', 'Pamment', 'annabal@example.com', 'password8', 3759187480),
-  (147692, 'Brigit', 'Jain', 'brigit@example.com', 'password9', 7028895757),
-  (905716, 'Dena', 'Barringer', 'dena@example.com', 'password10', 7028895757),
-  (657874, 'Willetta', 'Abrahami', 'willetta@example.com', 'password11', 7028895757),
-  (571848, 'Gardner', 'Strand', 'gardner@example.com', 'password12', 7028895757),
-  (645198, 'Worden', 'Gilhouley', 'worden@example.com', 'password13', 9202226989),
-  (342631, 'Bibi', 'Huskinson', 'bibi@example.com', 'password14', 9202226989),
-  (596144, 'Madlin', 'Findley', 'madlin@example.com', 'password15', 9202226989),
-  (966031, 'Federico', 'Volpe', 'federico.volpe@studenti.unimi.it','abc', 7028895757);
+  (986899, 'Ancell',    'Janssens', 'ancell@example.com', 'password1',  9175738010),
+  (103246, 'Clara',     'Poyner', 'clara@example.com', 'password2',     9175738010),
+  (148008, 'Karyn',     'Claybourn', 'karyn@example.com', 'password3',  2124169738),
+  (511415, 'Harmony',   'MacClenan', 'harmony@example.com', 'password4',2124169738),
+  (903187, 'Raine',     'Di Carli', 'raine@example.com', 'password5',   2124169738),
+  (722630, 'Anissa',    'Guitel', 'anissa@example.com', 'password6',    3759187480),
+  (358096, 'Vernen',    'Moss', 'vernen@example.com', 'password7',      3759187480),
+  (208078, 'Annabal',   'Pamment', 'annabal@example.com', 'password8',  3759187480),
+  (147692, 'Brigit',    'Jain', 'brigit@example.com', 'password9',      7028895757),
+  (905716, 'Dena',      'Barringer', 'dena@example.com', 'password10',  7028895757),
+  (657874, 'Willetta',  'Abrahami', 'willetta@example.com', 'password11',7028895757),
+  (571848, 'Gardner',   'Strand', 'gardner@example.com', 'password12',  7028895757),
+  (645198, 'Worden',    'Gilhouley', 'worden@example.com', 'password13',9202226989),
+  (342631, 'Bibi',      'Huskinson', 'bibi@example.com', 'password14',  9202226989),
+  (596144, 'Madlin',    'Findley', 'madlin@example.com', 'password15',  9202226989),
+  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc', 7028895757);
 
 
 CREATE TABLE docente(
@@ -59,16 +59,16 @@ CREATE TABLE docente(
 --popolazione della tabella docente
 INSERT INTO docente (id, nome, cognome, email, passwrd)
 VALUES
-  (314434, 'Bernardine', 'Harniman', 'bernardine@example.com', 'password1'),
-  (619231, 'Husein', 'Dugue', 'husein@example.com', 'password2'),
-  (945514, 'Leigh', 'Bakster', 'leigh@example.com', 'password3'),
-  (719958, 'Shaughn', 'Fouracres', 'shaughn@example.com', 'password4'),
-  (407789, 'Lina', 'Somerlie', 'lina@example.com', 'password5'),
-  (991385, 'Guthrie', 'Rove', 'guthrie@example.com', 'password6'),
-  (151049, 'Galven', 'Scothorne', 'galven@example.com', 'password7'),
-  (833919, 'Dalia', 'Izaac', 'dalia@example.com', 'password8'),
-  (427844, 'Elwyn', 'Renneke', 'elwyn@example.com', 'password9'),
-  (554198, 'Buddie', 'MacCart', 'buddie@example.com', 'password10');
+  (314434, 'Bernardine', 'Harniman',    'bernardine@example.com', 'password1'),
+  (619231, 'Husein',     'Dugue',       'husein@example.com',     'password2'),
+  (945514, 'Leigh',      'Bakster',     'leigh@example.com',      'password3'),
+  (719958, 'Shaughn',    'Fouracres',   'shaughn@example.com',    'password4'),
+  (407789, 'Lina',       'Somerlie',    'lina@example.com',       'password5'),
+  (991385, 'Guthrie',    'Rove',        'guthrie@example.com',    'password6'),
+  (151049, 'Galven',     'Scothorne',   'galven@example.com',     'password7'),
+  (833919, 'Dalia',      'Izaac',       'dalia@example.com',      'password8'),
+  (427844, 'Elwyn',      'Renneke',     'elwyn@example.com',      'password9'),
+  (554198, 'Buddie',     'MacCart',     'buddie@example.com',     'password10');
 
 
 CREATE TABLE corso(
@@ -81,11 +81,11 @@ CREATE TABLE corso(
 --popolazione della tabella corso
 INSERT INTO corso (id, nome_corso, laurea) 
     VALUES 
-    (9175738010, 'Sicurezza Informatica', 'magistrale');
-    (2124169738, 'Chimica', 'triennale');
-    (3759187480, 'Fisica', 'triennale');
-    (7028895757, 'Informatica', 'triennale');
-    (9202226989, 'Informatica Musicale', 'triennale');
+    (9175738010, 'Sicurezza Informatica',   'magistrale'),
+    (2124169738, 'Chimica',                 'triennale' ),
+    (3759187480, 'Fisica',                  'triennale' ),
+    (7028895757, 'Informatica',             'triennale' ),
+    (9202226989, 'Informatica Musicale',    'triennale' );
 
 
 
@@ -100,26 +100,26 @@ CREATE TABLE insegnamento(
 --popolazione tabella insegnamento 25 insegnamenti
 insert into insegnamento (id, nome, descrizione, anno, corso) 
 VALUES 
-    (9914411111, 'Affidabilità dei sistemi', null, 2, 9175738010),
-    (1973869985, 'Artificial intelligence', null, 1, 9175738010),
-    (5210097035, 'Componenti di biometria', null, 2, 9175738010),
-    (3204759382, 'Crittografia', null, 1,           9175738010),
-    (2995667581, 'Information management', null, 2, 9175738010),
-    (3526956576, 'Fisica generale', null, 2, 2124169738),
-    (5837527637, 'Chimica generale', null, 2, 2124169738),
-    (1193746368, 'Istituzioni di matematica', null, 1, 2124169738),
-    (7393377009, 'Chimica analitica', null, 2, 2124169738),
-    (2852290568, 'Chimica organica', null, 1, 2124169738),
-    (6967310076, 'Chimica 1', null, 2, 3759187480),
-    (8650908123, 'Elettronica 1', null, 1, 3759187480),
-    (4864051855, 'Fisica quantistica', null, 3, 3759187480),
-    (4789640943, 'Geometria', null, 1, 3759187480),
-    (1402416704, 'Astrofisica', null, 2, 3759187480),
-    (5193752943, 'Logica', null, 3,                              7028895757),
-    (7477422085, 'Sistemi embedded', null, 3,                    7028895757),
-    (2485318062, 'Basi di dati', null, 3,                        7028895757),
-    (6405967915, 'Programmazione 1', null, 1,                    7028895757),
-    (9428798504, 'Programmazione 2', null, 2,                    7028895757),
+    (9914411111, 'Affidabilità dei sistemi', null, 2,   9175738010),
+    (1973869985, 'Artificial intelligence', null, 1,    9175738010),
+    (5210097035, 'Componenti di biometria', null, 2,    9175738010),
+    (3204759382, 'Crittografia', null, 1,               9175738010),
+    (2995667581, 'Information management', null, 2,     9175738010),
+    (3526956576, 'Fisica generale', null, 2,            2124169738),
+    (5837527637, 'Chimica generale', null, 2,           2124169738),
+    (1193746368, 'Istituzioni di matematica', null, 1,  2124169738),
+    (7393377009, 'Chimica analitica', null, 2,          2124169738),
+    (2852290568, 'Chimica organica', null, 1,           2124169738),
+    (6967310076, 'Chimica 1', null, 2,                  3759187480),
+    (8650908123, 'Elettronica 1', null, 1,              3759187480),
+    (4864051855, 'Fisica quantistica', null, 3,         3759187480),
+    (4789640943, 'Geometria', null, 1,                  3759187480),
+    (1402416704, 'Astrofisica', null, 2,                3759187480),
+    (5193752943, 'Logica', null, 3,                     7028895757),
+    (7477422085, 'Sistemi embedded', null, 3,           7028895757),
+    (2485318062, 'Basi di dati', null, 3,               7028895757),
+    (6405967915, 'Programmazione 1', null, 1,           7028895757),
+    (9428798504, 'Programmazione 2', null, 2,           7028895757),
     (7037905580, 'Editoria digitale', null, 2,          9202226989),
     (6684943179, 'Crittografia sonora', null, 3,        9202226989),
     (1655851251, 'Acustica', null, 2,                   9202226989),
@@ -227,14 +227,16 @@ CREATE TABLE esiti(
     studente CHAR(6) REFERENCES studente(matricola),
     esame CHAR(6) REFERENCES esami(id),
     esito NUMERIC NOT NULL,
-    PRIMARY KEY (studente, esame)
+    PRIMARY KEY (studente, esame),
+    CHECK (esito >= 0 AND esito <= 30)
 );
 --popolazione della tabella
 
-INSERT INTO esiti
+INSERT INTO esiti (studente, esami, esito)
     VALUES
-    ()
-
+    (966031, 000004, 18), --esame di logica di federico
+    (966031, 000003, 27), --esame di programmazione2 di federico
+    (966031, 000002, 24); --esame di programmazione1 di federico
 
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
 CREATE TABLE esami_prenotati(
@@ -242,7 +244,56 @@ CREATE TABLE esami_prenotati(
     esame CHAR(6) REFERENCES esami,
     PRIMARY KEY (studente, esame)
 )
+
+-- inserimento delle prenotazioni degli esami
+
+INSERT INTO esiti (studente, esami, esito)
+    VALUES
+    (966031, 000004), --esame di logica di federico
+    (966031, 000003), --esame di programmazione2 di federico
+    (966031, 000002); --esame di programmazione1 di federico
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --              FUNZIONI
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- prima di inserire un esame devo controllare che l'insegnante specificato risulti responsabile di quell'insegnamento
 
@@ -330,3 +381,6 @@ CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
     BEFORE INSERT ON esiti
     FOR EACH ROW
     EXECUTE FUNCTION verifica_iscrizione();
+
+
+-- trigger

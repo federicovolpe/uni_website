@@ -63,6 +63,7 @@ if(!empty($email) && !empty($password)){
             <a class="navbar-brand" href="#">
                 <img src="../immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
             </a>
+            <button type="button" class="btn btn-outline-primary">logout</button>
         </div>
     </nav>
     <script>
