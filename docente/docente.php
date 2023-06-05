@@ -1,70 +1,21 @@
-<!--homepage dello studente dove si possono consultare gli esiti degli esami-->
+
 <?php
+    //include delle funzioni
+    include("../lib/functions.php");
+
 // Recupero dei dati dal modulo di accesso
-    session_start();
-    $email = $_SESSION['email'];
-    $password = $_SESSION['password'];
-
-if(!empty($email) && !empty($password)){
-}
-    $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
-    if($conn){
-        $query = "SELECT 1
-                FROM docente
-                WHERE email = $1 AND passwrd = $2 ;";
-        $prepara = pg_prepare($conn, "query_di_verifica", $query);
-        $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
-
-        if(pg_num_rows($esito_verifica) >= 1){
-            $query2 = " SELECT *
-                FROM docente
-                WHERE email = $1 AND passwrd = $2 ;";
-            $prepara = pg_prepare($conn, "fetch_info", $query2);
-            $result = pg_execute($conn, "fetch_info", array($email, $password));
-
-            if($result){     
-                //se la query riesce a raccogliere dei dati allora li memorizzo
-                $row = pg_fetch_assoc($result);
-                $nome = $row['nome'];
-                $cognome = $row['cognome']; 
-                $id = $row['id'];
-                //metto la variabile id nella sessione perchè può tornare utile nelle pagine successive
-                $_SESSION['id'] = $id;
-            }
-        } else {
-            // Accesso non valido, reindirizzamento a pagina di errore
-            print('credenziali non trovate');
-            $url_errore ="../login.html?error=" . urlencode(1);
-            header("Location: " . $url_errore);
-            exit;
-        }
-    }else{  
-        print("connessione fallita<br>");
-        print("ti riporto al sito precedente<br>");
-        $url_errore ="../login.html?error=" . urlencode(404);
-        header("Location: ". $url_errore);
-        exit;
-    }
+    verifica_recupera_info();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
-</head>
+<?php
+    include_once("../lib/head.php"); 
+    include_once('../lib/navbar.php');
+?>
 <body>
-<nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="../immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
-            </a>
-            <button type="button" class="btn btn-outline-primary">logout</button>
-        </div>
+    <nav class="navbar bg-body-tertiary">
+        <?php include_once('navbar.php')?>
     </nav>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -84,7 +35,7 @@ if(!empty($email) && !empty($password)){
         }
     </script>
     <div>
-        <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
+        <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     </div>
     <div>
         esami programmati dal docente<br>
@@ -98,13 +49,15 @@ if(!empty($email) && !empty($password)){
                 </tr>
             </thead>
             <?php
+
+            $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
                 $sql = "SELECT insegnamento.nome as insegnamento_n, data, esami.id as esami_id
                         FROM esami 
                         JOIN insegnamento ON insegnamento.id = esami.insegnamento
                         WHERE docente = $1";
                 $prepare = pg_prepare($conn, "esami_in_programma", $sql);
                 if ($prepare) {
-                    $esami_in_prog = pg_execute($conn, "esami_in_programma", array($id));
+                    $esami_in_prog = pg_execute($conn, "esami_in_programma", array($_SESSION['id']));
                     while ($row = pg_fetch_assoc($esami_in_prog)) {
                         print('
                             <tr>
@@ -156,7 +109,7 @@ if(!empty($email) && !empty($password)){
                     WHERE docente = $1";
             print("query settata</br>");
             $result = pg_prepare($conn, "insegnamenti_responsabile", $sql);
-            $insegnamenti = pg_execute($conn, "insegnamenti_responsabile", array($id));
+            $insegnamenti = pg_execute($conn, "insegnamenti_responsabile", array($_SESSION['id']));
             print("query eseguita</br>");
             if(pg_num_rows($insegnamenti) >= 1){
                 print("insegnamenti trovati!");
@@ -231,8 +184,8 @@ if(!empty($email) && !empty($password)){
         <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
     </form>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
-
+    
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 </html>

@@ -6,16 +6,19 @@ CREATE TABLE segreteria(
     email VARCHAR(100) UNIQUE,
     passwrd VARCHAR(20) NOT NULL,
     nome VARCHAR(20) NOT NULL,
-    cognome VARCHAR(20) NOT NULL
+    cognome VARCHAR(20) NOT NULL,
+
+    -- CONTROLLO CHE LA EMAIL FINISCA PER @segreteria.unimi.it
+    CONSTRAINT email CHECK (email LIKE '%@segreteria.unimi.it')
 );
 
 INSERT INTO segreteria (id,email, passwrd, nome, cognome)
 VALUES
-  ('000001','alice@example.com', 'password1', 'Alice', 'Smith'),
-  ('000002','bob@example.com', 'password2', 'Bob', 'Johnson'),
-  ('000003','charlie@example.com', 'password3', 'Charlie', 'Brown'),
-  ('000004','diana@example.com', 'password4', 'Diana', 'Wilson'),
-  ('000005','ethan@example.com', 'password5', 'Ethan', 'Davis');
+  ('000001','alice@segreteria.unimi.it', 'password1', 'Alice', 'Smith'),
+  ('000002','bob@segreteria.unimi.it', 'password2', 'Bob', 'Johnson'),
+  ('000003','charlie@segreteria.unimi.it', 'password3', 'Charlie', 'Brown'),
+  ('000004','diana@segreteria.unimi.it', 'password4', 'Diana', 'Wilson'),
+  ('000005','ethan@segreteria.unimi.it', 'password5', 'Ethan', 'Davis');
   
 
 CREATE TABLE studente(
@@ -24,27 +27,29 @@ CREATE TABLE studente(
     cognome VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     passwrd VARCHAR(20) NOT NULL,
-    corso_frequentato CHAR(100) REFERENCES corso(id) NOT NULL
+    corso_frequentato CHAR(100) REFERENCES corso(id) NOT NULL,
+    -- controllo che la email finisca per @studenti.unimi.it
+    CONSTRAINT email CHECK (email LIKE '%@studenti.unimi.it')
 );
 
 -- popolazione della tabella studente
 INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato)
 VALUES
-  (986899, 'Ancell',    'Janssens', 'ancell@example.com', 'password1',  9175738010),
-  (103246, 'Clara',     'Poyner', 'clara@example.com', 'password2',     9175738010),
-  (148008, 'Karyn',     'Claybourn', 'karyn@example.com', 'password3',  2124169738),
-  (511415, 'Harmony',   'MacClenan', 'harmony@example.com', 'password4',2124169738),
-  (903187, 'Raine',     'Di Carli', 'raine@example.com', 'password5',   2124169738),
-  (722630, 'Anissa',    'Guitel', 'anissa@example.com', 'password6',    3759187480),
-  (358096, 'Vernen',    'Moss', 'vernen@example.com', 'password7',      3759187480),
-  (208078, 'Annabal',   'Pamment', 'annabal@example.com', 'password8',  3759187480),
-  (147692, 'Brigit',    'Jain', 'brigit@example.com', 'password9',      7028895757),
-  (905716, 'Dena',      'Barringer', 'dena@example.com', 'password10',  7028895757),
-  (657874, 'Willetta',  'Abrahami', 'willetta@example.com', 'password11',7028895757),
-  (571848, 'Gardner',   'Strand', 'gardner@example.com', 'password12',  7028895757),
-  (645198, 'Worden',    'Gilhouley', 'worden@example.com', 'password13',9202226989),
-  (342631, 'Bibi',      'Huskinson', 'bibi@example.com', 'password14',  9202226989),
-  (596144, 'Madlin',    'Findley', 'madlin@example.com', 'password15',  9202226989),
+  (986899, 'Ancell',    'Janssens', 'ancell@studenti.unimi.it', 'password1',  9175738010),
+  (103246, 'Clara',     'Poyner', 'clara@studenti.unimi.it', 'password2',     9175738010),
+  (148008, 'Karyn',     'Claybourn', 'karyn@studenti.unimi.it', 'password3',  2124169738),
+  (511415, 'Harmony',   'MacClenan', 'harmony@studenti.unimi.it', 'password4',2124169738),
+  (903187, 'Raine',     'Di Carli', 'raine@studenti.unimi.it', 'password5',   2124169738),
+  (722630, 'Anissa',    'Guitel', 'anissa@studenti.unimi.it', 'password6',    3759187480),
+  (358096, 'Vernen',    'Moss', 'vernen@studenti.unimi.it', 'password7',      3759187480),
+  (208078, 'Annabal',   'Pamment', 'annabal@studenti.unimi.it', 'password8',  3759187480),
+  (147692, 'Brigit',    'Jain', 'brigit@studenti.unimi.it', 'password9',      7028895757),
+  (905716, 'Dena',      'Barringer', 'dena@studenti.unimi.it', 'password10',  7028895757),
+  (657874, 'Willetta',  'Abrahami', 'willetta@studenti.unimi.it', 'password11',7028895757),
+  (571848, 'Gardner',   'Strand', 'gardner@studenti.unimi.it', 'password12',  7028895757),
+  (645198, 'Worden',    'Gilhouley', 'worden@studenti.unimi.it', 'password13',9202226989),
+  (342631, 'Bibi',      'Huskinson', 'bibi@studenti.unimi.it', 'password14',  9202226989),
+  (596144, 'Madlin',    'Findley', 'madlin@studenti.unimi.it', 'password15',  9202226989),
   (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc', 7028895757);
 
 
@@ -53,22 +58,24 @@ CREATE TABLE docente(
     email VARCHAR(100) UNIQUE NOT NULL,
     passwrd VARCHAR(20) NOT NULL,
     nome VARCHAR(20) NOT NULL,
-    cognome VARCHAR(20) NOT NULL
+    cognome VARCHAR(20) NOT NULL,
+    -- controllo che la email finisca per @docenti.unimi.it
+    CONSTRAINT email CHECK (email LIKE '%@docenti.unimi.it')
 );
 
 --popolazione della tabella docente
 INSERT INTO docente (id, nome, cognome, email, passwrd)
 VALUES
-  (314434, 'Bernardine', 'Harniman',    'bernardine@example.com', 'password1'),
-  (619231, 'Husein',     'Dugue',       'husein@example.com',     'password2'),
-  (945514, 'Leigh',      'Bakster',     'leigh@example.com',      'password3'),
-  (719958, 'Shaughn',    'Fouracres',   'shaughn@example.com',    'password4'),
-  (407789, 'Lina',       'Somerlie',    'lina@example.com',       'password5'),
-  (991385, 'Guthrie',    'Rove',        'guthrie@example.com',    'password6'),
-  (151049, 'Galven',     'Scothorne',   'galven@example.com',     'password7'),
-  (833919, 'Dalia',      'Izaac',       'dalia@example.com',      'password8'),
-  (427844, 'Elwyn',      'Renneke',     'elwyn@example.com',      'password9'),
-  (554198, 'Buddie',     'MacCart',     'buddie@example.com',     'password10');
+  (314434, 'Bernardine', 'Harniman',    'bernardine@docenti.unimi.it', 'password1'),
+  (619231, 'Husein',     'Dugue',       'husein@docenti.unimi.it',     'password2'),
+  (945514, 'Leigh',      'Bakster',     'leigh@docenti.unimi.it',      'password3'),
+  (719958, 'Shaughn',    'Fouracres',   'shaughn@docenti.unimi.it',    'password4'),
+  (407789, 'Lina',       'Somerlie',    'lina@docenti.unimi.it',       'password5'),
+  (991385, 'Guthrie',    'Rove',        'guthrie@docenti.unimi.it',    'password6'),
+  (151049, 'Galven',     'Scothorne',   'galven@docenti.unimi.it',     'password7'),
+  (833919, 'Dalia',      'Izaac',       'dalia@docenti.unimi.it',      'password8'),
+  (427844, 'Elwyn',      'Renneke',     'elwyn@docenti.unimi.it',      'password9'),
+  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.it',     'password10');
 
 
 CREATE TABLE corso(
@@ -382,5 +389,3 @@ CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
     FOR EACH ROW
     EXECUTE FUNCTION verifica_iscrizione();
 
-
--- trigger
