@@ -56,38 +56,19 @@
             }
         </script>';
     }
-    function messaggi_errore_post(){
-        echo '<script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const approved = urlParams.get(\'approved\');
-            const msg = "' . $_POST['msg'] . '";
-            if (approved === \'0\') {
-                var successMessage = document.createElement(\'div\');
-                successMessage.className = \'p-3 mb-2 bg-success text-white\';
-                successMessage.textContent = msg;
-                document.body.appendChild(successMessage);
-            }
-            if (approved === \'1\') {
-                var successMessage = document.createElement(\'div\');
-                successMessage.className = \'p-3 mb-2 bg-danger text-white\';
-                successMessage.textContent = msg;
-                document.body.appendChild(successMessage);
-            }
-        </script>';
-        }
 
-        function messaggi_errore_post2(){
-            //se la variabile approved è settata a 0, e c'è un messaggio da mostrare
-            if(isset($_POST['approved']) && $_POST['approved'] == 0 && isset($_POST['msg'])){
-                echo '<div class="alert alert-success" role="alert">
-                ' . $_POST['msg'] . '</div>';
+    function messaggi_errore_post2(){
+        //se la variabile approved è settata a 0, e c'è un messaggio da mostrare
+        if(isset($_POST['approved']) && $_POST['approved'] == 0 && isset($_POST['msg'])){
+            echo '<div class="alert alert-success" role="alert">
+            ' . $_POST['msg'] . '</div>';
 
-            //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
-            }else if(isset($_POST['approved']) && $_POST['approved'] == 1 && isset($_POST['msg'])){
-                echo '<div class="alert alert-danger" role="alert">
-                ' . $_POST['msg'] . '</div>';
-            }
+        //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
+        }else if(isset($_POST['approved']) && $_POST['approved'] == 1 && isset($_POST['msg'])){
+            echo '<div class="alert alert-danger" role="alert">
+            ' . $_POST['msg'] . '</div>';
         }
+    }
 
     function script_boostrap(){
         $import = '<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
@@ -99,12 +80,12 @@
     function verifica_recupera_info(){
         $email = $_SESSION['email'];
         $password = $_SESSION['password'];
-
+        print('verifica email = '.$email.'<br>');
+         print('verifica password = '.$password.'<br>');
         //se le variabili non sono vuote
         if(!empty($email) && !empty($password)){
             $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
             if($conn){
-                print("connessione riuscita ricavo le infoo<br>");
                 
                 if(substr($email, -17) === 'studenti.unimi.it'){
                     print("query per i studenti<br>");
@@ -113,8 +94,11 @@
                         WHERE email = $1 AND passwrd = $2 ;";
                     $prepara = pg_prepare($conn, "query_di_verifica", $query);
                     $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
-
+                    print('query di verifica : SELECT 1
+                    FROM studente
+                    WHERE email = '.$email.' AND passwrd = '. $password .' ;');
                     if(pg_num_rows($esito_verifica) >= 1){
+                        print('VERIFICA RIUSCITA<br>');
                         $query2 = " SELECT *
                             FROM studente
                             WHERE email = $1 AND passwrd = $2 ;";
@@ -127,14 +111,14 @@
                             $_SESSION['cognome'] = $row['cognome'];    
                             $_SESSION['matricola'] = $row['matricola'];
                             $_SESSION['corso_frequentato'] = $row['corso_frequentato'];
-                            
+                        
+                            // segnalare al dispatcher che l'autenticazione ha avuto successo
+                            $_POST['approved'] = 0;
                         }
-                    } else {
-                        // Accesso non valido, reindirizzamento a pagina di errore
-                        print('credenziali non trovate');
-                        $url_errore ="../login.php?error=" . urlencode(1);
-                        header("Location: " . $url_errore);
-                        exit;
+                    } else {// Accesso non valido, reindirizzamento a pagina di errore     
+                        print("STUDENTE NON TROVATO<br>");                   
+                        $_POST['msg'] = "le credenziali non sono state trovate nel database";
+                        $_POST['approved'] = 1;
                     }
                 }
                 if(substr($email, -16) === 'docenti.unimi.it'){
@@ -158,13 +142,13 @@
                             $_SESSION['nome'] = $row['nome'];
                             $_SESSION['cognome'] = $row['cognome'];    
                             $_SESSION['id'] = $row['id'];
+                            
+                            // segnalare al dispatcher che l'autenticazione ha avuto successo
+                            $_POST['approved'] = 0;
                         }
-                    } else {
-                        // Accesso non valido, reindirizzamento a pagina di errore
-                        print('credenziali non trovate');
-                        $url_errore ="../login.php?error=" . urlencode(1);
-                        header("Location: " . $url_errore);
-                        exit;
+                    } else {// Accesso non valido, reindirizzamento a pagina di errore                        
+                        $_POST['msg'] = "le credenziali non sono state trovate nel database";
+                        $_POST['approved'] = 1;
                     }
                 }
                 if(substr($email, -19) === 'segreteria.unimi.it'){
@@ -188,6 +172,9 @@
                             $_SESSION['nome'] = $row['nome'];
                             $_SESSION['cognome'] = $row['cognome'];    
                             $_SESSION['id'] = $row['id'];
+
+                            // segnalare al dispatcher che l'autenticazione ha avuto successo
+                            $_POST['approved'] = 0;
                         }
                     } else {// Accesso non valido, reindirizzamento a pagina di errore                        
                         $_POST['msg'] = "le credenziali non sono state trovate nel database";

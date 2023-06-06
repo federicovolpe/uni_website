@@ -1,16 +1,9 @@
 <?php
+    session_start();
     //include delle funzioni
     include("../lib/functions.php");
-    session_start();
     unset($_SESSION['id']);
     
-    print("id: ".$_SESSION['id']."<br>
-    email: ".$_SESSION['email']."<br>
-    password: ".$_SESSION['password']."<br>
-    matricola: ".$_SESSION['matricola']."<br>
-    nome: ".$_SESSION['nome']."<br>
-    cognome: ".$_SESSION['cognome']."<br>
-    corso frequentato: ".$_SESSION['corso_frequentato']."<br>");
 ?>
 
 <!DOCTYPE html>

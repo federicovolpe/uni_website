@@ -1,12 +1,11 @@
 <?php
-    session_start();
-    include("lib/functions.php");
-    
+    include('../lib/functions.php');
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       // Retrieve form data
       $email = $_POST['email'];
       $password = $_POST['password'];
-      
+      print('email = '.$email.'<br>');
+      print('password = '.$password.'<br>');
       //salvo la tipologia dell'utente perchè serve nella query del cambio password
       
       
@@ -18,10 +17,12 @@
 
         //recupero le informazioni dello studente e vai alla pagina
         verifica_recupera_info();
-        print("dati recuperati con successo");
-        $redirectUrl = 'studente/studente.php';
-        header('Location: ' . $redirectUrl);
-        exit;
+
+        if($_POST['approved'] == 0){ 
+          $redirectUrl = 'studente/studente.php';
+          header('Location: ' . $redirectUrl);
+          exit;
+        }
 
       } elseif (substr($email, -16) === 'docenti.unimi.it') {
         $_SESSION['password'] = $_POST['password'];
@@ -48,20 +49,3 @@
 
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <!-- semplice testo per far notare che il login è fermo alla pagina del dispatcher -->
-  <h1>sei finito nella pagina del dispatchero</h1>
-
-  <?php
-    include_once("lib/variabili_sessione.php");
-  ?>
-</body>
-</html>
