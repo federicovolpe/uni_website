@@ -40,24 +40,19 @@ if (isset($_POST))  {
                         $inserito = pg_execute($db, "op_docente", array($id, $nome, $cognome, $email, $password));
 
                         if ($inserito) { //segnalazione con un messaggio di successo
-                            echo "lo docente è stato inserito";
-                            $url_successo ="segreteria.php?approved=" . urlencode(0);
-                            header("Location: " . $url_successo);
-                            exit;
+                            $_POST['approved'] = 0;
+                            $_POST['msg'] = "il docente è stato inserito con successo";
                         } else {     //segnalazione con un messaggio di fallito inserimento
-                            echo "lo docente non è stato inserito";
-                            $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("lo docente non è stato inserito");
-                            header("Location: " . $url_errore);
-                            exit;
+                            $_POST['approved'] = 1;
+                            $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
                         }
                     } else { // messaggio di log nella pagina se la preparazione della query non va a buon termine
-                        echo "qualcosa è andato storto nella preparazione della query.";
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = "qualcosa è andato storto nella preparazione della query.";
                     }
             }else{ //esiste già quelcuno con queste credenziali
-                echo "lo docente non è stato inserito";
-                $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Risulta già uno docente con la stessa id o email");
-                header("Location: " . $url_errore);
-                exit;
+                $_POST['approved'] = 1;
+                $_POST['msg'] = "Risulta già uno docente con la stessa id o email";
             }
             break;
 
@@ -85,18 +80,15 @@ if (isset($_POST))  {
                     
                     
                     if ($esito_modifica) {//ritorno al sito con un messaggio di successo
-                        $url_successo ="segreteria.php?approved=" . urlencode(0);
-                        header("Location: " . $url_successo);
-                        exit;
+                        $_POST['approved'] = 0;
+                        $_POST['msg'] = "il docente è stato modificato con successo";
                     } else {
-                        $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg="  . urlencode("la modifica dello docente non è andata a buon fine");
-                        header("Location: " . $url_errore);
-                        exit;
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
                     }
                 }else{
-                    $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Non risulta uno docente con questa id o email");
-                    header("Location: " . $url_errore);
-                    exit;
+                    $_POST['approved'] = 1;
+                     $_POST['msg'] = "non risulta un professore con questa email e password";
                 }
             break;
 
@@ -118,24 +110,20 @@ if (isset($_POST))  {
                         $cancellato = pg_execute($db, "op_docente", array($id, $email));
 
                         if ($cancellato) {
-                            echo "lo docente è stato cancellato";
-                            $url_successo ="segreteria.php?approved=" . urlencode(0);
-                            header("Location: " . $url_successo);
-                            exit;
+                            $_POST['approved'] = 0;
+                            $_POST['msg'] = "il docente è stato cancellato con successo";
                         } else {
-                            echo "lo docente non è stato cancellato";
-                            $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg="  . urlencode("la cancellazione dello docente non è andata a buon fine");;
-                            header("Location: " . $url_errore);
-                            exit;
+                            $_POST['approved'] = 1;
+                            $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
                         }
                     } else {
-                        echo "qualcosa è andato storto nella preparazione della query.";
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = "fallita la prepaqrazione della query";
                     }
 
                 }else{
-                    $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Non risulta uno docente con questa id o email");
-                    header("Location: " . $url_errore);
-                    exit;
+                    $_POST['approved'] = 1;
+                    $_POST['msg'] = "non risulta un professore con questa email e password";
                 }
 
             default:
@@ -145,9 +133,10 @@ if (isset($_POST))  {
 
         pg_close($db);
     } else {
-        echo "connessione al database fallita";
+        $_POST['approved'] = 1;
+        $_POST['msg'] = "connessione al db fallita";
     }
 }else{
-    echo("il $_POST non è settato!");
+    echo("variabili post non  settate!");
 }
 ?>

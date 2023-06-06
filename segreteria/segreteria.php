@@ -2,6 +2,12 @@
     //include delle funzioni
     include("../lib/functions.php");
     session_start();
+    
+    //se il parametro in get update_docente sono settati
+    if(isset($_GET['update_docente'])){
+        //chiamo la funzione update_docente
+        include_once('update_docente.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,13 +20,14 @@
         <?php include_once('navbar.php')?>
     </nav>
     <?php //stampa di eventuali messaggi di errore
+        messaggi_errore_post2();
         messaggi_errore();
     ?>
 
         <div class="row">
             <div class="col-sm-6">
                 <h3>modifica o aggiungi un docente</h3>
-                <form class="form-segreteria" action="update_docente.php" method="POST">
+                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_docente" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <div class="row">
@@ -260,12 +267,7 @@
         </div>
 
 
-        <form action="../change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;" method="POST">
-            <h4>vuoi cambiare password? </br></h4>
-            <label for="password">password:</label>
-            <input type="password" name="password" id="password" required>
-            <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
-        </form>
+        <?php include_once('../lib/cambio_password.php')?>
     </div>
 
 

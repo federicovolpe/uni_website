@@ -1,11 +1,11 @@
 <?php
-session_start();
     //unico file per il cambio password di docente e segreteria, cambia db in base alla tipologia di utente
     if (session_status() == PHP_SESSION_ACTIVE) {
-    $id = $_SESSION['id'];
-    $matricola = $_SESSION['matricola'];
-    $email = $_SESSION['email'];
-    $nuova_password = $_POST['password'];
+        //recupero delle variabili di sessione
+        $id = $_SESSION['id'];
+        $matricola = $_SESSION['matricola'];
+        $email = $_SESSION['email'];
+        $nuova_password = $_POST['password'];
 
 
     print("nuova password: ".$nuova_password . "</br>per l'utente: " . $id . "".$matricola."</br>con mail: ".$email."</br>");
@@ -20,14 +20,19 @@ session_start();
                 $preparato = pg_prepare($db, "cambio_password", $sql);
                 if($preparato){
                     $result = pg_execute($db, "cambio_password", array($nuova_password, $id));
-                    if($result){
-                        print("la password di: $id, è stata cambiata in $nuova_password");
-
+                    if($result){ 
+                        // se la query è andata a buon fine ritorno un messaggio di successo
+                        $_POST['msg'] = "la password di: $id, è stata cambiata in $nuova_password";
+                        $_POST['approved'] = 0;
                     }else{
-                        print("l'esecuzione della query non è andata a buon fine");
+                        //se la query non è andata a buon fine ritorno un messaggio di errore
+                        $_POST['msg'] = "l'esecuzione del cambio password non è andata a buon fine";
+                        $_POST['approved'] = 1;
                     }
                 }else{
-                    print("preparazione della query non riuscita");
+                    //se la query non è andata a buon fine ritorno un messaggio di errore
+                    $_POST['msg'] = "preparazione della query non riuscita";
+                    $_POST['approved'] = 1;
                 }
 
             }else if(substr($email, -16) === 'docenti.unimi.it'){
@@ -37,39 +42,50 @@ session_start();
                 $preparato = pg_prepare($db, "cambio_password", $sql);
                 if($preparato){
                     $result = pg_execute($db, "cambio_password", array($nuova_password, $id));
-                    if($result){
-                        print("la password di: $id, è stata cambiata in $nuova_password");
-
+                    if($result){ 
+                        // se la query è andata a buon fine ritorno un messaggio di successo
+                        $_POST['msg'] = "la password di: $id, è stata cambiata in $nuova_password";
+                        $_POST['approved'] = 0;
                     }else{
-                        print("l'esecuzione della query non è andata a buon fine");
+                        //se la query non è andata a buon fine ritorno un messaggio di errore
+                        $_POST['msg'] = "l'esecuzione del cambio password non è andata a buon fine";
+                        $_POST['approved'] = 1;
                     }
                 }else{
-                    print("preparazione della query non riuscita");
+                    //se la query non è andata a buon fine ritorno un messaggio di errore
+                    $_POST['msg'] = "preparazione della query non riuscita";
+                    $_POST['approved'] = 1;
                 }
+
             }else if(substr($email, -17) === 'studenti.unimi.it'){
-                print("cambio password per studente </br>");
+
                 $sql = "UPDATE studente
                         SET passwrd = $1
                         WHERE matricola = $2";
                 $preparato = pg_prepare($db, "cambio_password", $sql);
                 if($preparato){
                     $result = pg_execute($db, "cambio_password", array($nuova_password, $matricola));
-                    if($result){
-                        print("la password di: $matricola, è stata cambiata in $nuova_password");
-
+                    if($result){ 
+                        // se la query è andata a buon fine ritorno un messaggio di successo
+                        $_POST['msg'] = "la password di: $matricola, è stata cambiata in $nuova_password";
+                        $_POST['approved'] = 0;
                     }else{
-                        print("l'esecuzione della query non è andata a buon fine");
+                        //se la query non è andata a buon fine ritorno un messaggio di errore
+                        $_POST['msg'] = "l'esecuzione del cambio password non è andata a buon fine";
+                        $_POST['approved'] = 1;
                     }
                 }else{
-                    print("preparazione della query non riuscita");
+                    //se la query non è andata a buon fine ritorno un messaggio di errore
+                    $_POST['msg'] = "preparazione della query non riuscita";
+                    $_POST['approved'] = 1;
                 }
             }   
         }else{
-            print("connessione al db non riuscita");
-        }
-        
+            $_POST['msg'] = "connessione al db non riuscita";
+            $_POST['approved'] = 1;
+        } 
     }else{
-          print("la sessione non risulta attiva");
+        $_POST['msg'] = "non risultano variabili attive nella sessione";
+        $_POST['approved'] = 1;
     }
-
 ?>

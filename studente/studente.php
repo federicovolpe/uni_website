@@ -1,9 +1,15 @@
 <?php
     session_start();
     //include delle funzioni
-    include("../lib/functions.php");
+    include_once("../lib/functions.php");
     unset($_SESSION['id']);
-    
+    include_once('../lib/variabili_sessione.php');
+
+    //se la pagina è stata con una oprazione di cambio password
+    if(isset($_GET['change_password'])){
+        //utilizzo la funzione change password
+        include_once('../change_password.php');
+    }
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +22,7 @@
     <nav class="navbar bg-body-tertiary">
         <?php include_once('navbar.php')?>
     </nav>
-        <?php messaggi_errore()?>
+        <?php messaggi_errore_post2()?>
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     <div>
         questa è la homepage dello studente<br>
@@ -42,12 +48,7 @@
     </div>
         
 
-    <form action="../change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;" method="POST">
-        <h4>vuoi cambiare password? </br></h4>
-        <label for="password">password:</label>
-        <input type="password" name="password" id="password" required>
-        <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
-    </form>
+    <?php include_once('../lib/cambio_password.php')?>
     <?php script_boostrap()?>
 </body>
 </html>
