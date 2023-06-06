@@ -7,9 +7,6 @@
     if(isset($_GET['log_try'])&& $_GET['log_try'] == 1 ){
         print('vado nel dispatcher<br>');
         include_once("lib/dispatcher.php");
-        //per non fare eseguire il resto del codice
-        print('finito<br>');
-        exit;
     }
 
     // se non è stato tentato un login allora controllo se ci sono variabili di sessione settate, nel caso le cancello
