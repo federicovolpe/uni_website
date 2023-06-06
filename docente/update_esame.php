@@ -9,9 +9,7 @@
         //obiettivo: modificare la data dell'esame
         
         $newDate = $_POST['new_date'];
-        print("esame : ". $esame_id."</br>");
         $nuova_data_formattata = date_format(date_create($newDate), 'dmy');
-        print("data : ". $formattedDate."</br>");
         
     $db = pg_connect("dbname=unimio host=localhost port=5432");
         $sql = "UPDATE esami SET data = $1 WHERE id = $2";
@@ -20,20 +18,17 @@
         if($preparazione){
             $result = pg_execute($db, "update", array($nuova_data_formattata,$esame_id));
 
-            if($result){
-                $url_errore ="update_esame.php?approved=" . urlencode(0) . "&msg="  . urlencode("la modifica dell'esame".$esame_id." è andata a buon fine, nuova data = " . $newDate ) ;
-                header("Location: " . $url_errore);
-                exit;
+            if($result){//setto le variabili di riuscta
+                $_POST['msg'] = "la modifica dell'esame".$esame_id." è andata a buon fine, nuova data = " . $newDate ;
+                $_POST['approved'] = 0;
+
             }else{// l'esecuzione della query non è andata a buon fine
-                $url_errore ="update_esame.php?approved=" . urlencode(1) . "&msg="  . urlencode("la modifica dell'esame non è andata a buon fine");
-                header("Location: " . $url_errore);
-                exit;
+                $_POST['msg'] = "la modifica dell'esame".$esame_id." NON è andata a buon fine";
+                $_POST['approved'] = 1;
             }
         }else{
-            print("qualcosa è andato storto nella preparazione della query");
-            $url_errore ="update_esame.php?approved=" . urlencode(1) . "&msg="  . urlencode("la modifica dell'esame non è andata a buon fine");
-            header("Location: " . $url_errore);
-            exit;
+            $_POST['msg'] = "la preparazione della query NON è andata a buon fine";
+            $_POST['approved'] = 1;
         }
     }
 
@@ -45,7 +40,7 @@
 <body>
     <?php 
         include("../lib/navbar.php"); 
-        messaggi_errore();
+        messaggi_errore_post2();
         //quando viene aperta la pagina passo la variabile id esame fra le variabili $session per quendo verà effettuata la query di modifica
         $_SESSION['esame'] = $_GET['esame'];
     ?>

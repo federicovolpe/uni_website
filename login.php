@@ -27,6 +27,7 @@
             include_once("lib/variabili_sessione.php");
             //include del file navbar.php
             include_once("lib/navbar.php");
+             messaggi_errore_post2()
         ?>
     <div class="login-form">
         <div style="display: flex;
@@ -44,24 +45,6 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="codice_accesso">Password</span>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Inserisci password" aria-label="Password" aria-describedby="basic-addon1">
-
-                    <script>
-                        var params = new URLSearchParams(window.location.search);
-                        var error = params.get('error');
-                      
-                        if (error === '404') {
-                            var errorMessage = document.createElement('div');
-                            errorMessage.className = 'alert alert-danger';
-                            errorMessage.textContent = 'connessione al database fallita!';
-                            document.body.appendChild(errorMessage);
-                        }
-                        if (error === '1'){
-                            var errorMessage = document.createElement('div');
-                            errorMessage.className = 'alert alert-danger';
-                            errorMessage.textContent = 'le credenziali risultano errate!';
-                            document.body.appendChild(errorMessage);
-                        }
-                      </script>
                       
                     <input type="submit" id="accedi" label="Accedi" style="float: right" value="Accedi">
                 </div>
