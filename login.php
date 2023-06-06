@@ -1,35 +1,39 @@
 <?php
     //include functions.php
-    session_start();
     include_once("lib/functions.php");
+    session_start();
+    //indipendentemente se ci sono variabili di sessione o meno, distruggo la sessione
+    unset($_SESSION['id']);
+    unset($_SESSION['email']);
+    unset($_SESSION['matricola']);
+    unset($_SESSION['corso_frequentato']);
+    unset($_SESSION['password']);
+    unset($_SESSION['cognome']);
+    unset($_SESSION['nome']);
+    
     
 ?>
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet.css">
-    <style>
-        body {
-            background-color: black;
-        }
-    </style>
-</head>
+<?php
+    //include del file head.php
+    include_once("lib/head.php");
+?>
 
 <body>
         <?php
+            //include del file variabili_sessione.php
+            include_once("lib/variabili_sessione.php");
             //include del file navbar.php
-            include("../lib/navbar.php");
+            include_once("lib/navbar.php");
         ?>
     <div class="login-form">
         <div style="display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;">
-            <h1 class="text-center" style="color: blue">Benvenuto nella pagina di login</h1>
+            <h1 class="text-center" style="color: blue">Benvenuto nella pagina di loginn</h1>
 
             <form style="width: 50%; justify-content:center; align-items: center;"action="dispatcher.php" method="POST">
                 <div class="input-group mb-3">
@@ -41,13 +45,6 @@
                     <span class="input-group-text" id="codice_accesso">Password</span>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Inserisci password" aria-label="Password" aria-describedby="basic-addon1">
 
-                </div>
-                <select class="form-select" name="tipologia" id="tipologia" aria-label="Default select example">
-                        <option value="studente">Studente</option>
-                        <option value="docente">Docente</option>
-                        <option value="segreteria">Segreteria</option>
-                </select>
-                <div>
                     <script>
                         var params = new URLSearchParams(window.location.search);
                         var error = params.get('error');

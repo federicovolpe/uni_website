@@ -1,50 +1,21 @@
 <?php
     //include delle funzioni
     include("../lib/functions.php");
-    verifica_recupera_info();
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="../stylesheet.css">
-
-</head>
-
+<?php
+    include_once("../lib/head.php"); 
+    include_once('../lib/navbar.php');
+?>
 <body>
-            <script>
-                const urlParams = new URLSearchParams(window.location.search);
-                const approved = urlParams.get('approved');
-                const msg = urlParams.get('msg');
-                if (approved === '0') {
-                    var successMessage = document.createElement('div');
-                    successMessage.className = 'p-3 mb-2 bg-success text-white';
-                    successMessage.textContent = 'operazione approvata dal database';
-                    document.body.appendChild(successMessage);
-                }
-                if (approved === '1') {
-                    var successMessage = document.createElement('div');
-                    successMessage.className = 'p-3 mb-2 bg-danger text-white';
-                    successMessage.textContent = msg;
-                    document.body.appendChild(successMessage);
-                }
-            </script>
     <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="../immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
-            </a>
-        </div>
+        <?php include_once('navbar.php')?>
     </nav>
-    <div style="text-align:center;"><?php print("<h1>Benvenuto $nome $cognome</h1></br>
-            <h3> questa è la homepage della segreteria</h3>"); ?></div>
-    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-
+    <?php //stampa di eventuali messaggi di errore
+        messaggi_errore();
+    ?>
 
         <div class="row">
             <div class="col-sm-6">

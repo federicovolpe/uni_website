@@ -1,27 +1,30 @@
 <?php
     //include delle funzioni
     include("../lib/functions.php");
-    verifica_recupera_info();
+    session_start();
+    unset($_SESSION['id']);
+    
+    print("id: ".$_SESSION['id']."<br>
+    email: ".$_SESSION['email']."<br>
+    password: ".$_SESSION['password']."<br>
+    matricola: ".$_SESSION['matricola']."<br>
+    nome: ".$_SESSION['nome']."<br>
+    cognome: ".$_SESSION['cognome']."<br>
+    corso frequentato: ".$_SESSION['corso_frequentato']."<br>");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
-
-</head>
+<?php
+    include_once("../lib/head.php"); 
+    include_once('../lib/navbar.php');
+?>
 <body>
-        <?php
-            //include del file navbar.php
-            include("../lib/navbar.php");
-        ?>
+    <nav class="navbar bg-body-tertiary">
+        <?php include_once('navbar.php')?>
+    </nav>
         <?php messaggi_errore()?>
-        <?php  print("<h1>Benvenuto $nome $cognome</h1>");?>
+        <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     <div>
         questa è la homepage dello studente<br>
         ecco i tuoi voti :

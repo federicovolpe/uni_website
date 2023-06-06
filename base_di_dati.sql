@@ -50,7 +50,7 @@ VALUES
   (645198, 'Worden',    'Gilhouley', 'worden@studenti.unimi.it', 'password13',9202226989),
   (342631, 'Bibi',      'Huskinson', 'bibi@studenti.unimi.it', 'password14',  9202226989),
   (596144, 'Madlin',    'Findley', 'madlin@studenti.unimi.it', 'password15',  9202226989),
-  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc', 7028895757);
+  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc',    7028895757);
 
 
 CREATE TABLE docente(
@@ -75,7 +75,7 @@ VALUES
   (151049, 'Galven',     'Scothorne',   'galven@docenti.unimi.it',     'password7'),
   (833919, 'Dalia',      'Izaac',       'dalia@docenti.unimi.it',      'password8'),
   (427844, 'Elwyn',      'Renneke',     'elwyn@docenti.unimi.it',      'password9'),
-  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.it',     'password10');
+  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.ithg b', 'password10');
 
 
 CREATE TABLE corso(

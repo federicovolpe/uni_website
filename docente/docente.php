@@ -2,38 +2,23 @@
 <?php
     //include delle funzioni
     include("../lib/functions.php");
-
-// Recupero dei dati dal modulo di accesso
-    verifica_recupera_info();
+    session_start();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <?php
     include_once("../lib/head.php"); 
+    include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
+        messaggi_errore();
 ?>
 <body>
-    <nav class="navbar bg-body-tertiary">
-        <?php include_once('navbar.php')?>
-    </nav>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const approved = urlParams.get('approved');
-        const msg = urlParams.get('msg');
-        if (approved === '0') {
-            var successMessage = document.createElement('div');
-            successMessage.className = 'p-3 mb-2 bg-success text-white';
-            successMessage.textContent = 'operazione approvata dal database';
-            document.body.appendChild(successMessage);
-        }
-        if (approved === '1') {
-            var successMessage = document.createElement('div');
-            successMessage.className = 'p-3 mb-2 bg-danger text-white';
-            successMessage.textContent = msg;
-            document.body.appendChild(successMessage);
-        }
-    </script>
+<?php 
+    include_once("../lib/variabili_sessione.php");
+    include_once('../lib/navbar.php');
+        messaggi_errore();
+?>
     <div>
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     </div>
@@ -48,8 +33,7 @@
                     <th> Opzioni </th>
                 </tr>
             </thead>
-            <?php
-
+            <?php // generazione di tutte le righe della tabella
             $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
                 $sql = "SELECT insegnamento.nome as insegnamento_n, data, esami.id as esami_id
                         FROM esami 
@@ -95,53 +79,15 @@
         <hr> 
         <h3>programma un nuovo esame:</h3>
     </div>
-    <form action="programma_esame.php">
-        <label for="insegnamento">Insegnamento</label>
-        <select class="form-select" name="insegnamento" id="insegnamento" aria-label="Default select example">
-            
-        <?php
-        //per ogni insegnamento di cui è responsabile il professore creo una opzione
-        $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
-        if($conn){
-            $sql = "SELECT R.docente, I.nome AS nome_insegnamento
-                    FROM responsabile_insegnamento AS R
-                    JOIN insegnamento AS I ON I.id = R.insegnamento
-                    WHERE docente = $1";
-            print("query settata</br>");
-            $result = pg_prepare($conn, "insegnamenti_responsabile", $sql);
-            $insegnamenti = pg_execute($conn, "insegnamenti_responsabile", array($_SESSION['id']));
-            print("query eseguita</br>");
-            if(pg_num_rows($insegnamenti) >= 1){
-                print("insegnamenti trovati!");
-                
-                while($row = pg_fetch_assoc($insegnamenti)){
-                    echo("<option value='" . $row['nome_insegnamento'] . "'>".$row['nome_insegnamento']."</option>");
-                }
-            }else{
-                echo("insegnamenti non trovati");
-            }
-        }else{
-            echo("connessione col database marcita");
-        }
-        ?>
-        </select>
-    </form>
-        
-    <div style="margin: 0 auto;text-align: center;">
-        <h2>vuoi programmare un nuovo esame </h2>
-        <a href="inserzione_esame.php"> programma un nuovo esame </a>
+
     </div>
-    <div style ="padding : 1%">
-    <hr>
+        <?php include_once('../lib/form_inserisci_esame.php');?>
     </div>
-    <div style="display: flex;
-        justify-content: center;
-        height: 10vh;border:2px solid blue;">
-        <div style="display: grid;
-        gap: 10px;
-        justify-items: center;
-        text-align: center;
-        ">
+
+    <div style ="padding : 1%"><hr></div><!------------------------------------------------------------------->
+
+    <div style="display: flex; justify-content: center; height: 10vh; border:2px solid blue;">
+        <div style="display: grid; gap: 10px; justify-items: center; text-align: center;">
             <h3>inserzione esiti</h3>
             <form action="registra_voti.php" method="POST">
                 <div style="padding:2%">
@@ -177,14 +123,11 @@
         </div>
     </div>
 
-    <form action="../change_password.php" style="padding: 5%; justify-content: center; align-items: center; display: flex;" method="POST">
-        <h4>vuoi cambiare password? </br></h4>
-        <label for="password">password:</label>
-        <input type="password" name="password" id="password" required>
-        <button type="submit" style="padding:2%;" class="btn btn-primary">Cambia</button>
-    </form>
-</body>
-    
+    <?php //form per il cambio password 
+        include_once('../lib/cambio_password.php');
+    ?>
+
+</body> 
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>

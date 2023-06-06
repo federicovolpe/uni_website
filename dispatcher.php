@@ -1,38 +1,50 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Retrieve form data
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-  $tipologia = $_POST['tipologia'];
-  
-  //salvo la tipologia dell'utente perchè serve nella query del cambio password
-  session_start();
-  $_SESSION['tipologia'] = $tipologia;
-  
+    session_start();
+    include("lib/functions.php");
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      // Retrieve form data
+      $email = $_POST['email'];
+      $password = $_POST['password'];
+      
+      //salvo la tipologia dell'utente perchè serve nella query del cambio password
+      
+      
 
-  // Process the form data and redirect to the appropriate page
-  if ($tipologia === 'studente') {
-    $_SESSION['password'] = $_POST['password'];
-    $_SESSION['email'] = $_POST['email'];
-    $redirectUrl = 'studente/studente.php';
-    header('Location: ' . $redirectUrl);
-    exit;
+      // Process the form data and redirect to the appropriate page
+      if (substr($email, -17) === 'studenti.unimi.it') {
+        $_SESSION['password'] = $_POST['password'];
+        $_SESSION['email'] = $_POST['email'];
 
-  } elseif ($tipologia === 'docente') {
-    $_SESSION['password'] = $_POST['password'];
-    $_SESSION['email'] = $_POST['email'];
-    $redirectUrl = 'docente/docente.php';
-    header('Location: ' . $redirectUrl);
-    exit;
+        //recupero le informazioni dello studente e vai alla pagina
+        verifica_recupera_info();
+        print("dati recuperati con successo");
+        $redirectUrl = 'studente/studente.php';
+        header('Location: ' . $redirectUrl);
+        exit;
 
-  } elseif ($tipologia === 'segreteria') {
-    $_SESSION['password'] = $_POST['password'];
-    $_SESSION['email'] = $_POST['email'];
-    $redirectUrl = 'segreteria/segreteria.php';
-    header('Location: ' . $redirectUrl);
-    exit;
-  }
-}
+      } elseif (substr($email, -16) === 'docenti.unimi.it') {
+        $_SESSION['password'] = $_POST['password'];
+        $_SESSION['email'] = $_POST['email'];
+
+        //recupero le informazioni del docente e vai alla pagina
+        verifica_recupera_info();
+        print("dati recuperati con successo");
+        $redirectUrl = 'docente/docente.php';
+        header('Location: ' . $redirectUrl);
+        exit;
+      } elseif (substr($email, -19) === 'segreteria.unimi.it') {
+        $_SESSION['password'] = $_POST['password'];
+        $_SESSION['email'] = $_POST['email'];
+
+        //recupero le informazioni della segreteria e vai alla pagina
+        verifica_recupera_info();
+        print("dati recuperati con successo");
+        $redirectUrl = 'segreteria/segreteria.php';
+        header('Location: ' . $redirectUrl);
+        exit;
+      }
+    }
 
 
 ?>
@@ -46,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <!-- semplice testo per far notare che il login è fermo alla pagina del dispatcher -->
-  <h1>sei finito nella pagina del dispatcher</h1>
+  <h1>sei finito nella pagina del dispatchero</h1>
+
+  <?php
+    include_once("lib/variabili_sessione.php");
+  ?>
 </body>
 </html>
