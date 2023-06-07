@@ -25,7 +25,7 @@
                                 <td>
                                     <form action="'. $_SERVER['PHP_SELF'] .'" method="GET">
                                         <input type="hidden" name="esame" value="'. $row['esame_id'] .'">
-                                        <button type="submit">form iscrizione</button>
+                                        <button class="btn btn-primary" type="submit">form iscrizione</button>
                                     </form>
                                 </td>
                             </tr>';

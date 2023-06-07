@@ -23,7 +23,7 @@
     ?>
         <?php messaggi_errore_post2()?>
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
-    <div>
+    <div style="text-align: center;">
         questa è la homepage dello studente<br>
         dati dell'utente:<br>
         <table>
@@ -31,15 +31,15 @@
         </table>
 
         ti vuoi prenotare per un esame?<br>
-        <a href="prenota_esame.php">prenota un esame</a>
+        <a href="prenota_esame.php">prenota un esame</a><br>
 
-        vuoi visualizzare i tuoi voti?<br>
-        <a href="esiti_esami.php">esiti esami</a>
+        <br>vuoi visualizzare i tuoi voti?<br>
+        <a href="esiti_esami.php">esiti esami</a><br>
         <div>corso frequentato: <?php print($corso_frequentato) ?></div>
-    </div>    
-
-    <?php include_once('../lib/cambio_password.php')?>
-    <?php script_boostrap()?>
+    </div>
+        
+        <?php include_once('../lib/cambio_password.php')?>
+        <?php script_boostrap()?>
 </body>
 </html>
 
