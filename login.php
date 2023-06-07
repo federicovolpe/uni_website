@@ -50,7 +50,7 @@
                     <span class="input-group-text" id="codice_accesso">Password</span>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Inserisci password" aria-label="Password" aria-describedby="basic-addon1">
                       
-                    <input type="submit" id="accedi" label="Accedi" style="float: right" value="Accedi">
+                    <input class="btn btn-primary" type="submit" id="accedi" label="Accedi" style="float: right" value="Accedi">
                 </div>
             </form>
         </div>
@@ -60,5 +60,5 @@
     <?php include_once('lib/footer.php') ?>
 
 </body>
-<?php script_boostrap()?>
+<?php script_boostrap();?>
 </html>

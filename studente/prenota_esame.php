@@ -8,6 +8,7 @@
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
             
+            //query per inserire la prenotazione
             $query = "INSERT INTO prenotazione (matricola, esame) VALUES ('$matricola', '$esame')";
             $result = $conn->query($query);
             if($result){

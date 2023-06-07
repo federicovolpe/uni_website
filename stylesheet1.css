@@ -1,5 +1,5 @@
 .body {
-    background-color: black;
+    background-color: #ccffff;
 }
 
 .table td {
@@ -23,9 +23,11 @@
     border: 2px solid blue;
     max-width: 80%;
     border-radius: 4%;
-    margin: 0 auto; /* Added to center the form horizontally */
+    margin: 15% auto; /* Added to center the form horizontally */
     margin-top: 20vh; /* Adjust the margin-top value to center the form vertically */
-  }
+
+    flex-direction: column;  
+}
 
 .form-segreteria{
     border: 1px solid blue;
@@ -37,4 +39,25 @@
     .form-segreteria {
         width: 100%;
     }
+}
+
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+}
+
+html, body {
+    height: 100%;
 }

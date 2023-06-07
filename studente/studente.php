@@ -25,27 +25,18 @@
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     <div>
         questa è la homepage dello studente<br>
-        ti vuoi prenotare per un esame?
-    <a href="prenota_esame.php">prenota un esame</a>
-
-    vuoi visualizzare i tuoi voti?
-    <a href="esiti_esami.php">esiti esami</a>
-        <!-- inizio tabella -->
-    <div>corso frequentato: <?php print($corso_frequentato) ?></div>
-        <div class= "table-container">
-        <table class="table-striped">
-        
-            <thead>
-                <tr>
-                    <th> Materia </th>
-                    <th> Voto </th>
-                    <th> Data </th>
-                    <th> Iscrizione</th>
-                </tr>
-            </thead>
+        dati dell'utente:<br>
+        <table>
+            stampa dei dati dell'utente
         </table>
-    </div>
-        
+
+        ti vuoi prenotare per un esame?<br>
+        <a href="prenota_esame.php">prenota un esame</a>
+
+        vuoi visualizzare i tuoi voti?<br>
+        <a href="esiti_esami.php">esiti esami</a>
+        <div>corso frequentato: <?php print($corso_frequentato) ?></div>
+    </div>    
 
     <?php include_once('../lib/cambio_password.php')?>
     <?php script_boostrap()?>
