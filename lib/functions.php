@@ -5,30 +5,47 @@
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
             //tabella dove ci sono gli insegnamenti dello studente con un esame programmato
-            $sql = "SELECT ES.esame_id, ES.nome, ES.data
+            $esami_sql = "SELECT ES.esame_id, ES.nome, ES.data
                     FROM studente AS S
                     JOIN
                         (SELECT I.corso AS corso, E.id AS esame_id, I.nome, E.data
                         FROM esami AS E
                         INNER JOIN insegnamento AS I ON I.id = E.insegnamento) AS ES ON ES.corso = S.corso_frequentato
                         WHERE S.matricola = $1";
-            $preparato = pg_prepare($db, "esami_iscrivibili", $sql);
+           
+            $preparato1 = pg_prepare($db, "esami_iscrivibili", $esami_sql);
 
-            if($preparato){
-                $result = pg_execute($db, "esami_iscrivibili", array($matricola));
-                if($result){
-                    while($row = pg_fetch_assoc($result)){
+            if($preparato1){
+                $esami = pg_execute($db, "esami_iscrivibili", array($matricola));
+                if($esami){
+                    while($row = pg_fetch_assoc($esami)){
                         //l'ultima colonna metterà in post l'id dell'esame a cui ci si vuole prenotare
                         echo '<tr>
                                 <td>'. $row['nome'] .'</td>
                                 <td>'. $row['data'] .'</td>
-                                <td>
-                                    <form action="'. $_SERVER['PHP_SELF'] .'" method="GET">
-                                        <input type="hidden" name="esame" value="'. $row['esame_id'] .'">
-                                        <button class="btn btn-primary" type="submit">form iscrizione</button>
-                                    </form>
+                                <td>';
+
+                        //query per vedere se ci si è già iscritti a quell'esame
+                        $iscrizioni_sql = "SELECT * FROM iscrizioni WHERE esame = $1 AND studente = $2";
+                        $preparato2 = pg_prepare($db, "iscrizioni", $iscrizioni_sql);
+                        $iscritto = pg_execute($db, "iscrizioni", array($row['esame_id'],$matricola));
+
+                        //se l'esame risulta fra quelli a cui ci si è già iscritti allora mostro la cancellazione da un esame
+                        if(pg_num_rows($iscritto) >= 1){ 
+                            print'<form action="'. $_SERVER['PHP_SELF'] .'" method="GET">
+                                    <input type="hidden" name="c_esame" value="'. $row['esame_id'] .'">
+                                    <button class="btn btn-danger" type="submit">cancella iscrizione</button>
+                                </form>
                                 </td>
-                            </tr>';
+                                </tr>';
+                        }else{
+                            print'<form action="'. $_SERVER['PHP_SELF'] .'" method="GET">
+                                    <input type="hidden" name="esame" value="'. $row['esame_id'] .'">
+                                    <button class="btn btn-success" type="submit">iscriviti</button>
+                                </form>
+                                </td>
+                                </tr>';
+                        }
                     }
                 }else{
                     print("l'esecuzione della query non è andata a buon fine</br>");

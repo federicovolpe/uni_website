@@ -223,10 +223,7 @@ VALUES
   ('719958', '7028895757'), 
   ('407789', '9202226989');
 
-CREATE TABLE iscrizioni(
-    studente CHAR(6) REFERENCES studente(matricola),
-    esame CHAR(6) REFERENCES esami(id)
-);
+
 
 
 
@@ -246,11 +243,12 @@ INSERT INTO esiti (studente, esami, esito)
     (966031, 000002, 24); --esame di programmazione1 di federico
 
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
-CREATE TABLE esami_prenotati(
-    studente CHAR(6) REFERENCES studente, 
-    esame CHAR(6) REFERENCES esami,
+
+CREATE TABLE iscrizioni(
+    studente CHAR(6) REFERENCES studente(matricola),
+    esame CHAR(6) REFERENCES esami(id),
     PRIMARY KEY (studente, esame)
-)
+);
 
 -- inserimento delle prenotazioni degli esami
 
