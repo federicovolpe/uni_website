@@ -1,3 +1,5 @@
+<!-- pagina che mostra una tabella con gli esiti degli esami dello studente -->
+
 <?PHP 
     //fetch degli esami disponibili per lo studente corrente
     session_start();
@@ -21,23 +23,10 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css">
-
-</head>
+    <?php include_once("../lib/head.php"); ?>
 <body>
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="../immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> Università degli Studi di Milano
-            </a>
-        </div>
-    </nav>
+    <?php include_once('../lib/navbar.php'); ?>
+    
         <?php  print("<h2>esami a cui ti puoi prenotare</h2>");?>
     <div>
         <div class= "table-container">

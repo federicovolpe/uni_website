@@ -1,28 +1,34 @@
 <?php
-    function display_esami_tablella($matricola) {
+    function display_esami_prenotabili($matricola) {
+        
         //connessione al database
-
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
+            //tabella dove ci sono gli insegnamenti dello studente con un esame programmato
             $sql = "SELECT ES.esame_id, ES.nome, ES.data
                     FROM studente AS S
                     JOIN
                         (SELECT I.corso AS corso, E.id AS esame_id, I.nome, E.data
                         FROM esami AS E
                         INNER JOIN insegnamento AS I ON I.id = E.insegnamento) AS ES ON ES.corso = S.corso_frequentato
-                    WHERE S.matricola = $1";
+                        WHERE S.matricola = $1";
             $preparato = pg_prepare($db, "esami_iscrivibili", $sql);
 
             if($preparato){
                 $result = pg_execute($db, "esami_iscrivibili", array($matricola));
                 if($result){
                     while($row = pg_fetch_assoc($result)){
-                        echo("<tr>
-                                <td> ". $row['nome']. "</th>
-                                <td> voto </th>
-                                <th> ". $row['data']. "</th>
-                                <th> form iscrizione </th>
-                            </tr>");
+                        //l'ultima colonna metterà in post l'id dell'esame a cui ci si vuole prenotare
+                        echo '<tr>
+                                <td>'. $row['nome'] .'</td>
+                                <td>'. $row['data'] .'</td>
+                                <td>
+                                    <form action="'. $_SERVER['PHP_SELF'] .'" method="GET">
+                                        <input type="hidden" name="esame" value="'. $row['esame_id'] .'">
+                                        <button type="submit">form iscrizione</button>
+                                    </form>
+                                </td>
+                            </tr>';
                     }
                 }else{
                     print("l'esecuzione della query non è andata a buon fine</br>");
@@ -34,7 +40,6 @@
             print("connessione con il database fallita");
         }
     }
-
 
 
     function messaggi_errore() {

@@ -16,18 +16,20 @@
 <html lang="en">
 <?php
     include_once("../lib/head.php"); 
-    include_once('../lib/navbar.php');
 ?>
 <body>
-    <nav class="navbar bg-body-tertiary">
-        <?php include_once('navbar.php')?>
-    </nav>
+    <?php
+        include_once('../lib/navbar.php');
+    ?>
         <?php messaggi_errore_post2()?>
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
     <div>
         questa è la homepage dello studente<br>
-        ecco i tuoi voti :
+        ti vuoi prenotare per un esame?
+    <a href="prenota_esame.php">prenota un esame</a>
 
+    vuoi visualizzare i tuoi voti?
+    <a href="esiti_esami.php">esiti esami</a>
         <!-- inizio tabella -->
     <div>corso frequentato: <?php print($corso_frequentato) ?></div>
         <div class= "table-container">
@@ -41,9 +43,6 @@
                     <th> Iscrizione</th>
                 </tr>
             </thead>
-                <?php
-                    display_esami_tablella($matricola);
-                ?>
         </table>
     </div>
         
