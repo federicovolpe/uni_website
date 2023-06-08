@@ -250,8 +250,26 @@ CREATE TABLE iscrizioni(
     PRIMARY KEY (studente, esame)
 );
 
--- inserimento delle prenotazioni degli esami
+--tabella che contiene lo storico dei dati degli studenti che sono stati cancellati
+CREATE OR REPLACE TABLE storico_studente(){
+    matricola CHAR(6) PRIMARY KEY,
+    nome VARCHAR(20) NOT NULL,
+    cognome VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    passwrd VARCHAR(20) NOT NULL,
+    corso_frequentato CHAR(100) REFERENCES corso(id) NOT NULL,
+    -- controllo che la email finisca per @studenti.unimi.it
+    CONSTRAINT email CHECK (email LIKE '%@studenti.unimi.it')
+}
 
+--tabella che contiene tutto lo storico dei voti degli studenti che sono stati cancellati
+CREATE OR REPLACE TABLE storico_carriera(){
+    studente CHAR(6) REFERENCES studente(matricola),
+    esame CHAR(6) REFERENCES esami(id),
+    esito NUMERIC NOT NULL,
+    PRIMARY KEY (studente, esame),
+    CHECK (esito >= 0 AND esito <= 30)
+}
 
 
 
@@ -379,3 +397,6 @@ CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
     BEFORE INSERT ON esiti
     FOR EACH ROW
     EXECUTE FUNCTION verifica_iscrizione();
+
+
+-- trigger che prima della cancellazione di uno studente sposta i suoi dati sul database

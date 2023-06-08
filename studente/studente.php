@@ -10,10 +10,25 @@
         //utilizzo la funzione change password
         include_once('../change_password.php');
     }
-    
+
     //se lo studente intende fare la rinuncia agli studi
     if(isset($_GET['rinuncia_agli_studi'])){
-
+        $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+        if($db){
+            $rinuncia_sql = "DELETE FROM studente WHERE matricola = $1";
+            $preparato = pg_prepare($db, 'rinuncia', $rinuncia_sql);
+            $result = pg_execute($db, 'rinuncia', array($_SESSION['matricola']));
+            if($result){
+                $_POST['msg'] = "Rinuncia avvenuta con successo";
+                $_POST['approved'] = 0;
+            }else{
+                $_POST['msg'] = "Rinuncia fallita";
+                $_POST['approved'] = 1;
+            }
+        }else{
+            $_POST['msg'] = "connessione al database fallita";
+            $_POST['approved'] = 1;
+        }
     }
 ?>
 
