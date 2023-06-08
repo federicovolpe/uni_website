@@ -50,7 +50,8 @@ VALUES
   (645198, 'Worden',    'Gilhouley', 'worden@studenti.unimi.it', 'password13',9202226989),
   (342631, 'Bibi',      'Huskinson', 'bibi@studenti.unimi.it', 'password14',  9202226989),
   (596144, 'Madlin',    'Findley', 'madlin@studenti.unimi.it', 'password15',  9202226989),
-  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc',    7028895757);
+  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc',    7028895757),
+  (986892  , 'prova',  'prova', 'prova@studenti.unimi.it'  ,'password1' ,9175738010  );
 
 
 CREATE TABLE docente(
@@ -245,13 +246,25 @@ INSERT INTO esiti (studente, esame, esito)
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
 
 CREATE TABLE iscrizioni(
-    studente CHAR(6) REFERENCES studente(matricola),
+    studente CHAR(6) REFERENCES studente(matricola) ON DELETE CASCADE,
     esame CHAR(6) REFERENCES esami(id),
     PRIMARY KEY (studente, esame)
 );
 
+INSERT INTO iscrizioni(studente, esame)
+    VALUES
+        ('986899' , '100001'),
+        ('986899'  ,  '100004'),
+        ('966031'   , '100010'),
+        ('966031'   , '000001'),
+        ('966031'   , '000002'),
+        ('966031'   , '000003'),
+        ('966031'   , '000004'),
+        ('986892'   , '000002');
+
+
 --tabella che contiene lo storico dei dati degli studenti che sono stati cancellati
-CREATE OR REPLACE TABLE storico_studente(){
+CREATE TABLE storico_studente(
     matricola CHAR(6) PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL,
@@ -260,16 +273,16 @@ CREATE OR REPLACE TABLE storico_studente(){
     corso_frequentato CHAR(100) REFERENCES corso(id) NOT NULL,
     -- controllo che la email finisca per @studenti.unimi.it
     CONSTRAINT email CHECK (email LIKE '%@studenti.unimi.it')
-}
+);
 
 --tabella che contiene tutto lo storico dei voti degli studenti che sono stati cancellati
-CREATE OR REPLACE TABLE storico_carriera(){
-    studente CHAR(6) REFERENCES studente(matricola),
+CREATE TABLE storico_carriera(
+    studente CHAR(6) REFERENCES storico_studente(matricola),
     esame CHAR(6) REFERENCES esami(id),
     esito NUMERIC NOT NULL,
     PRIMARY KEY (studente, esame),
     CHECK (esito >= 0 AND esito <= 30)
-}
+);
 
 
 
@@ -400,3 +413,39 @@ CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
 
 
 -- trigger che prima della cancellazione di uno studente sposta i suoi dati sul database
+
+CREATE OR REPLACE FUNCTION cancellazione_studente()
+    RETURNS TRIGGER
+    AS $$
+    BEGIN
+        -- INSERZIONE dei valori della tabella studente nello storico
+        INSERT INTO storico_studente (matricola, nome, cognome, email, passwrd, corso_frequentato)
+        VALUES (OLD.matricola, OLD.nome, OLD.cognome, OLD.email, OLD.passwrd, OLD.corso_frequentato);
+
+        RETURN OLD;
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER cancellazione_studente_trigger
+    BEFORE DELETE ON studente
+    FOR EACH ROW
+    EXECUTE FUNCTION cancellazione_studente();
+
+
+
+-- trigger per il salvataggio dei dati riguardanti un esito cancellato(dato dalla cancellazione di uno studente)
+CREATE OR REPLACE FUNCTION salvataggio_esiti()
+    RETURNS TRIGGER
+    AS $$
+        BEGIN
+            INSERT INTO storico_carriera (studente, esame, esito)
+            VALUES (OLD.studente, OLD.esame, OLD.esito);
+            RETURN OLD;
+        END;
+    $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER salvataggio_esiti_trigger
+    BEFORE DELETE ON esiti
+    FOR EACH ROW
+    EXECUTE FUNCTION salvataggio_esiti();
