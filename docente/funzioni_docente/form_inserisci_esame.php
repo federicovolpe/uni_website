@@ -33,8 +33,8 @@
                 </div>
                 <div class="col">
                     <div class="input-group mb-3">
-                    <label for="date">Data esame:</label>
-                        <input type="date" id="date" name="date" required>
+                    <label for="data">Data esame:</label>
+                        <input type="date" id="data" name="data" required>
                     </div>
                 </div>
             </div>

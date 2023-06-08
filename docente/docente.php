@@ -1,8 +1,12 @@
-
 <?php
     //include delle funzioni
     include("../lib/functions.php");
     session_start();
+    //se il professore ha tentato di inserire un esame
+    if(isset($_GET['inserisci_esame'])){
+        //codice sql per inserire un esame
+        include_once('funzioni_docente/inserzione_esame.php');
+    }
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +21,7 @@
 <?php 
     include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
-        messaggi_errore();
+        messaggi_errore_post2();
 ?>
     <div>
         <?php  print("<h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>");?>
@@ -81,7 +85,7 @@
     </div>
 
     </div>
-        <?php include_once('../lib/form_inserisci_esame.php');?>
+        <?php include_once('funzioni_docente/form_inserisci_esame.php');?>
     </div>
 
     <div style ="padding : 1%"><hr></div><!------------------------------------------------------------------->
