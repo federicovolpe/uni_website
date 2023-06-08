@@ -236,11 +236,11 @@ CREATE TABLE esiti(
 );
 --popolazione della tabella
 
-INSERT INTO esiti (studente, esami, esito)
+INSERT INTO esiti (studente, esame, esito)
     VALUES
-    (966031, 000004, 18), --esame di logica di federico
-    (966031, 000003, 27), --esame di programmazione2 di federico
-    (966031, 000002, 24); --esame di programmazione1 di federico
+    ('966031', '000004', 18), --esame di logica di federico
+    ('966031', '000003', 27), --esame di programmazione2 di federico
+    ('966031', '000002', 24); --esame di programmazione1 di federico
 
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
 
@@ -251,13 +251,6 @@ CREATE TABLE iscrizioni(
 );
 
 -- inserimento delle prenotazioni degli esami
-
-INSERT INTO esiti (studente, esami, esito)
-    VALUES
-    (966031, 000004), --esame di logica di federico
-    (966031, 000003), --esame di programmazione2 di federico
-    (966031, 000002); --esame di programmazione1 di federico
-
 
 
 
@@ -376,7 +369,7 @@ CREATE OR REPLACE FUNCTION verifica_iscrizione()
         ) THEN
             RETURN NEW;
         ELSE
-            RAISE EXCEPTION 'Lo studente non risulta iscritto a questo esame';
+            RAISE EXCEPTION 'Lo studente % non risulta iscritto all''esame %', NEW.studente, NEW.esame;
         END IF;
     END;
     $$ LANGUAGE plpgsql;
@@ -386,4 +379,3 @@ CREATE OR REPLACE TRIGGER verifica_iscrizione_trigger
     BEFORE INSERT ON esiti
     FOR EACH ROW
     EXECUTE FUNCTION verifica_iscrizione();
-

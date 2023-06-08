@@ -10,6 +10,11 @@
         //utilizzo la funzione change password
         include_once('../change_password.php');
     }
+    
+    //se lo studente intende fare la rinuncia agli studi
+    if(isset($_GET['rinuncia_agli_studi'])){
+
+    }
 ?>
 
 <!DOCTYPE html>
@@ -35,11 +40,19 @@
 
         <br>vuoi visualizzare i tuoi voti?<br>
         <a href="esiti_esami.php">esiti esami</a><br>
-        <div>corso frequentato: <?php print($corso_frequentato) ?></div>
     </div>
         
         <?php include_once('../lib/cambio_password.php')?>
         <?php script_boostrap()?>
+
+    
+        <div class="rinuncia_studi" style="position: fixed; bottom: 10px; right: 10px;">
+    <h4>Vuoi Rinunciare agli studi?</h4>
+    <form class="c-password" action="<?php echo $_SERVER['PHP_SELF']; ?>?rinuncia_agli_studi" method="POST">
+        <button type="submit" class="btn btn-primary">Rinuncia</button>
+    </form>
+</div>
+
 </body>
 </html>
 

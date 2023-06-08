@@ -1,4 +1,46 @@
 <?php
+    function display_esiti_esami($matricola) {
+        //connessione al database
+        $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+        
+        if($db){
+            //tabella dove ci sono tutti gli esiti degli esami dello studente
+            $esiti_sql = "SELECT I.nome, ES.data, E.esito
+                            FROM esiti AS E
+                            INNER JOIN esami AS ES ON E.esame = ES.id
+                            INNER JOIN insegnamento AS I ON ES.insegnamento = I.id
+                            WHERE E.studente = $1
+                            GROUP BY E.esame, I.nome, ES.data, E.esito";
+           
+            $preparato1 = pg_prepare($db, "esiti", $esiti_sql);
+
+            if($preparato1){
+                $esiti = pg_execute($db, "esiti", array($matricola));
+                if(pg_num_rows($esiti) > 0){
+                    while($row = pg_fetch_assoc($esiti)){
+                        echo '<tr>
+                                <td>'. $row['nome'] .'</td>
+                                <td>'. $row['data'] .'</td>';
+                        if( $row['esito'] < 18){
+                            echo '<td style="color: red;">'. $row['esito'] .'</td>';
+                        }else{
+                            echo '<td style="color: green;">'. $row['esito'] .'</td>';
+                        }
+                    }
+                }else{                  
+                    $_POST['msg'] = 'non ci sono esiti registrati per lo studente '.$matricola;
+                    $_POST['approved'] = 1;
+                }
+            }else{                  
+                $_POST['msg'] = pg_last_error();
+                $_POST['approved'] = 1;
+            }
+        }else{                  
+            $_POST['msg'] = 'connessione al database non riuscita';
+            $_POST['approved'] = 1;
+        }
+    }
+    
     function display_esami_prenotabili($matricola) {
         
         //connessione al database
@@ -137,8 +179,7 @@
                             // segnalare al dispatcher che l'autenticazione ha avuto successo
                             $_POST['approved'] = 0;
                         }
-                    } else {// Accesso non valido, reindirizzamento a pagina di errore     
-                        print("STUDENTE NON TROVATO<br>");                   
+                    } else {// Accesso non valido, reindirizzamento a pagina di errore                      
                         $_POST['msg'] = "le credenziali non sono state trovate nel database";
                         $_POST['approved'] = 1;
                     }
