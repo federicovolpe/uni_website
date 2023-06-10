@@ -55,6 +55,9 @@
 
         <br>vuoi visualizzare i tuoi voti?<br>
         <a href="esiti_esami.php">esiti esami</a><br>
+
+        <br>stampa la tua carriera<br>
+        <a href="esiti_esami.php">esiti esami</a><br>
     </div>
         
         <?php include_once('../lib/cambio_password.php')?>

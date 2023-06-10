@@ -167,9 +167,11 @@ VALUES
 
 
 CREATE TABLE propedeuticità(
-    insegnamento_1 CHAR(10) REFERENCES insegnamento(id),
-    insegnamento_2 CHAR(10) REFERENCES insegnamento(id)
+    insegnamento CHAR(10) REFERENCES insegnamento(id),
+    propedeutico CHAR(10) REFERENCES insegnamento(id)
 );
+insert into propedeuticità (insegnamento, propedeutico) 
+values('9428798504','6405967915'); 
 
 
 --tabella che assegna ad ogni insegnamento un docente responsabile
@@ -475,3 +477,39 @@ CREATE TRIGGER before_insert_esami
 BEFORE INSERT ON esami
 FOR EACH ROW
 EXECUTE FUNCTION generate_esami_id();
+
+-- trigger che prima di una iscrizione di uno studente ad un esame controlli 
+--che siano già stati passati tutti gli esami propedeutici
+
+CREATE OR REPLACE FUNCTION controllo_propedeutici()
+    RETURNS TRIGGER
+    AS $$
+    BEGIN
+        IF (SELECT COUNT(*) = (SELECT COUNT(*)
+                                FROM propedeuticità AS P
+                                WHERE P.insegnamento IN (SELECT I.id
+                                                        FROM esami AS E
+                                                        LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
+                                                        WHERE E.id = '100017')
+                                ) AS all_tuples_present
+            FROM propedeuticità AS P
+            WHERE P.insegnamento IN (SELECT I.id
+                                    FROM esiti AS E
+                                    JOIN esami AS Es ON E.esame = Es.id
+                                    JOIN insegnamento AS I ON I.id = Es.insegnamento
+                                    WHERE E.studente = NEW.studente AND E.esito >= 18)
+            )
+        THEN
+            RETURN NEW;
+        ELSE
+            RAISE EXCEPTION 'Lo studente % non risulta aver superato tutti gli esami propedeutici', NEW.studente;
+        END IF;
+    END;
+    $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER controllo_propedeutici_trigger
+    BEFORE INSERT ON iscrizioni
+    FOR EACH ROW
+    EXECUTE FUNCTION controllo_propedeutici();
+
