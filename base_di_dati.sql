@@ -486,11 +486,12 @@ CREATE OR REPLACE FUNCTION controllo_propedeutici()
     AS $$
     BEGIN
         IF (SELECT COUNT(*) = (SELECT COUNT(*)
+                                -- 
                                 FROM propedeuticità AS P
                                 WHERE P.insegnamento IN (SELECT I.id
                                                         FROM esami AS E
                                                         LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
-                                                        WHERE E.id = '100017')
+                                                        WHERE E.id = NEW.esame)
                                 ) AS all_tuples_present
             FROM propedeuticità AS P
             WHERE P.insegnamento IN (SELECT I.id
