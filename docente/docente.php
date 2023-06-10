@@ -12,6 +12,10 @@
         //codice sql per inserire un esito
         include_once('funzioni_docente/sql_inserzione_esiti.php');
     }
+    if(isset($_GET['cancella_esame'])){
+        //codice sql per cancellare un esame
+        include_once('cancella_esame.php');
+    }
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +42,7 @@
             <thead>
                 <tr>
                     <th> Insegnamento </th>
-                    <th> Dataa </th>
+                    <th> Data </th>
                     <th> Opzioni </th>
                 </tr>
             </thead>
@@ -57,23 +61,16 @@
                                 <td>' . $row['insegnamento_n'] . '</td>
                                 <td>' . $row['data'] . '</td>
                                 <td>
-                                    <div class="btn-group" role="group" aria-label="Azioni">
-                                        <button type="button" onclick="redirectToUpdate(\'cancella\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Cancella</button>
-                                        <button type="button" onclick="redirectToUpdate(\'modifica\', ' . $row['esami_id'] . ')" class="btn btn-outline-primary">Modifica</button>
-                                    </div>
+                                    <form action="' . $_SERVER['PHP_SELF'] . '?cancella_esame=' . $row['esami_id'] . '" method="POST">
+                                        <button type="submit">Cancella Esame</button>
+                                    </form>
+                                    <form action="funzioni_docente/update_esame.php?esame=' . $row['esami_id'] . '" method="POST">
+                                        <button type="submit">Modificea ' . $row['esami_id'] . '</button>
+                                    </form>
                                 </td>
                             </tr>
-                            <script>
-                                function redirectToUpdate(operazione, esame) {
-                                    if (operazione === \'cancella\') {
-                                        var url = "cancella_esame.php?esame=" + encodeURIComponent(esame);
-                                        window.location.href = url;
-                                    } else if (operazione === \'modifica\') {
-                                        var url = "update_esame.php?esame=" + encodeURIComponent(esame);
-                                        window.location.href = url;
-                                    }
-                                }
-                            </script>');
+                        ');
+
                     }
                 }else{
                     print("preparazione della query fallita");
