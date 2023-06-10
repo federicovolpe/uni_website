@@ -5,7 +5,12 @@
     //se il professore ha tentato di inserire un esame
     if(isset($_GET['inserisci_esame'])){
         //codice sql per inserire un esame
+        print('inserimento esame');
         include_once('funzioni_docente/inserzione_esame.php');
+    }
+    if(isset($_GET['inserisci_esiti'])){
+        //codice sql per inserire un esito
+        include_once('funzioni_docente/sql_inserzione_esiti.php');
     }
 ?>
 
@@ -33,7 +38,7 @@
             <thead>
                 <tr>
                     <th> Insegnamento </th>
-                    <th> Data </th>
+                    <th> Dataa </th>
                     <th> Opzioni </th>
                 </tr>
             </thead>
@@ -90,42 +95,7 @@
 
     <div style ="padding : 1%"><hr></div><!------------------------------------------------------------------->
 
-    <div style="display: flex; justify-content: center; height: 10vh; border:2px solid blue;">
-        <div style="display: grid; gap: 10px; justify-items: center; text-align: center;">
-            <h3>inserzione esiti</h3>
-            <form action="registra_voti.php" method="POST">
-                <div style="padding:2%">
-                    <label for="m_studente">Matricola studente:</label>
-                    <input type="text" name="m_studente" id="m_studente">
-                </div>
-
-                <div style="padding:2%">
-                    <label for="esame">Esame:</label>
-                    <select class="form-select" name="esame" id="esame" aria-label="Default select example">
-            
-                    <?php 
-                        if($esami_in_prog){
-                            print("<div>insegnamenti trovatioo</div>". pg_num_rows($esami_in_prog));
-                            while($row = pg_fetch_assoc($esami_in_prog)){
-                                echo("<option value='" . $row['insegnamento_n'] . "'>" . $row['insegnamento_n'] . "</option>");
-                            }
-                        }else{
-                        print("<div>insegnamenti non trovati</div>");
-                        }
-                    ?>
-                </div>
-
-                <div style="padding:2%">
-                    <label for="esito">Esito:</label>
-                    <input type="number" name="esito" id="esito" min="0" max="30">
-                </div>
-                
-                <div style="padding:2%">
-                    <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php print'ciao'; include_once('funzioni_docente/form_inserzione_esiti.php');?>
 
     <?php //form per il cambio password 
         include_once('../lib/cambio_password.php');

@@ -12,7 +12,6 @@ CREATE TABLE segreteria(
     CONSTRAINT email CHECK (email LIKE '%@segreteria.unimi.it')
 );
 
-INSERT INTO segreteria (id,email, passwrd, nome, cognome)
 VALUES
   ('000001','alice@segreteria.unimi.it', 'password1', 'Alice', 'Smith'),
   ('000002','bob@segreteria.unimi.it', 'password2', 'Bob', 'Johnson'),
@@ -76,7 +75,7 @@ VALUES
   (151049, 'Galven',     'Scothorne',   'galven@docenti.unimi.it',     'password7'),
   (833919, 'Dalia',      'Izaac',       'dalia@docenti.unimi.it',      'password8'),
   (427844, 'Elwyn',      'Renneke',     'elwyn@docenti.unimi.it',      'password9'),
-  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.ithg b', 'password10');
+  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.ithg b', 'password10'); -- responsabile sistemi embedded
 
 
 CREATE TABLE corso(
@@ -253,7 +252,7 @@ CREATE TABLE iscrizioni(
 
 INSERT INTO iscrizioni(studente, esame)
     VALUES
-        ('986899' , '100001'),
+        ('986899' ,   '100001'),
         ('986899'  ,  '100004'),
         ('966031'   , '100010'),
         ('966031'   , '000001'),

@@ -1,4 +1,4 @@
-<form class="form-segreteria" method="POST">
+<form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
     <div class="form-row">
         <div class="form-group">
             <div class="row">
@@ -29,7 +29,7 @@
                                 echo("connessione col database marcita");
                             }
                         ?>
-        </select>
+                    </select>
                 </div>
                 <div class="col">
                     <div class="input-group mb-3">
