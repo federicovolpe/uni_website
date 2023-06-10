@@ -449,3 +449,30 @@ CREATE OR REPLACE TRIGGER salvataggio_esiti_trigger
     BEFORE DELETE ON esiti
     FOR EACH ROW
     EXECUTE FUNCTION salvataggio_esiti();
+
+-- creare un trigger per l'inserimento di un nuovo esame da parte di un professore
+-- il trigger provvederà alla creazione di un codice id unico
+
+CREATE OR REPLACE FUNCTION generate_esami_id()
+RETURNS TRIGGER AS $$
+DECLARE
+    last_id CHAR(6);
+    new_id INTEGER;
+BEGIN
+    SELECT MAX(id) INTO last_id FROM esami;
+    
+    IF last_id IS NULL THEN
+        NEW.id := '000001';
+    ELSE
+        new_id := CAST(last_id AS INTEGER) + 1;
+        NEW.id := LPAD(CAST(new_id AS VARCHAR), 6, '0');
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER before_insert_esami
+BEFORE INSERT ON esami
+FOR EACH ROW
+EXECUTE FUNCTION generate_esami_id();
