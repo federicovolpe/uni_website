@@ -15,14 +15,15 @@ if (isset($_POST))  {
         $cognome = $_POST['cognome'];
     }
     $operazione = $_POST['operazione'];
-
+    print('raggiunto l\'update docenteeeeeeeeeeeeeeeeeeeeee<br>');
     // connessione al database
     $db = pg_connect("host=localhost port=5432 dbname=unimio");
 
     if ($db) {
         switch($operazione){
             case 'aggiungi':
-                //controllo che non ci sia già uno docente con la stessa id
+                print('raggiunto il caso aggiungi<br>');
+                //controllo che non ci sia già uno docente con lo stessa id
                 $check = "SELECT 1
                     FROM docente
                     WHERE id = $1 OR email = $2";
@@ -32,19 +33,19 @@ if (isset($_POST))  {
 
             if(empty($result_check)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
                 
-                    $sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
+                    $inserzione_sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
                             VALUES ($1, $2, $3, $4, $5)";
-                    $result = pg_prepare($db, "op_docente", $sql);
+                    $preparato = pg_prepare($db, "inserzione", $inserzione_sql);
                     
-                    if ($result) { //se la preparazione della query va a buon fine allora la eseguo
-                        $inserito = pg_execute($db, "op_docente", array($id, $nome, $cognome, $email, $password));
+                    if ($preparato) { //se la preparazione della query va a buon fine allora la eseguo
+                        $inserito = pg_execute($db, "inserzione", array($id, $nome, $cognome, $email, $password));
 
                         if ($inserito) { //segnalazione con un messaggio di successo
                             $_POST['approved'] = 0;
                             $_POST['msg'] = "il docente è stato inserito con successo";
                         } else {     //segnalazione con un messaggio di fallito inserimento
                             $_POST['approved'] = 1;
-                            $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
+                            $_POST['msg'] = pg_last_error();
                         }
                     } else { // messaggio di log nella pagina se la preparazione della query non va a buon termine
                         $_POST['approved'] = 1;
@@ -52,12 +53,11 @@ if (isset($_POST))  {
                     }
             }else{ //esiste già quelcuno con queste credenziali
                 $_POST['approved'] = 1;
-                $_POST['msg'] = "Risulta già uno docente con la stessa id o email";
+                $_POST['msg'] = "Risulta già uno docente con lo stesso id o email";
             }
             break;
 
             case 'modifica':
-                print("entrato nella modifica / ");
 
                 //query per verificare la presenza del suddetto docente
                 $check = "  SELECT 1
@@ -67,16 +67,47 @@ if (isset($_POST))  {
                 $result_check = pg_prepare($db, "check", $check);
                 $result_check = pg_execute($db, "check", array($id,$email));
 
-                if($result_check = 1){ //se il numero di righe è 1 allora lo docente risulta presente
-                    $sql = "UPDATE docente 
-                            SET nome              = $2, 
-                                cognome           = $3, 
-                                email             = $4, 
-                                passwrd           = $5
-                            WHERE id = $1";
+                if($result_check >= 1){ //se il numero di righe è 1 allora lo docente risulta presente
+
+                    $contaparametri = 2;
+                    $sql = "UPDATE docente
+                            SET ";
+                    $array = [];  // Initialize an empty array
+                    $array[] = $id;
+                    if (isset($_POST['nome']) && !empty($_POST['nome'])) {
+                        $sql .= "nome = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['nome'];
+                    }
+                    
+                    if (isset($_POST['cognome']) && !empty($_POST['cognome'])) {
+                        $sql .= "cognome = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['cognome'];
+                    }
+                    
+                    if (isset($_POST['email']) && !empty($_POST['email'])) {
+                        $sql .= "email = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['email'];
+                    }
+                    
+                    if (isset($_POST['password']) && !empty($_POST['password'])) {
+                        $sql .= "passwrd = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['password'];
+                    }
+                    
+                    //togliere l'ultima virgola dalla query
+                    if (substr($sql, -1) === ',') {
+                        $sql = substr($sql, 0, -1);
+                    }
+                    $sql = $sql . " WHERE id = $1";
+                    print("query creata : ".$sql."<br> con l'array: ");
+                    print_r($array);
 
                     $result = pg_prepare($db, "op_docente", $sql);
-                    $esito_modifica = pg_execute($db, "op_docente", array($id, $nome, $cognome, $email, $password));
+                    $esito_modifica = pg_execute($db, "op_docente", $array);
                     
                     
                     if ($esito_modifica) {//ritorno al sito con un messaggio di successo
@@ -84,7 +115,7 @@ if (isset($_POST))  {
                         $_POST['msg'] = "il docente è stato modificato con successo";
                     } else {
                         $_POST['approved'] = 1;
-                        $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
+                        $_POST['msg'] = pg_last_error();
                     }
                 }else{
                     $_POST['approved'] = 1;
@@ -114,7 +145,7 @@ if (isset($_POST))  {
                             $_POST['msg'] = "il docente è stato cancellato con successo";
                         } else {
                             $_POST['approved'] = 1;
-                            $_POST['msg'] = "fallita l'esecuzione della query di inserimento";
+                            $_POST['msg'] = pg_last_error();
                         }
                     } else {
                         $_POST['approved'] = 1;
@@ -125,10 +156,11 @@ if (isset($_POST))  {
                     $_POST['approved'] = 1;
                     $_POST['msg'] = "non risulta un professore con questa email e password";
                 }
+            break;
 
             default:
-                echo("qualcosa è andato storto nella selezione dell'operazione");
-                break;
+            $_POST['approved'] = 1;
+            $_POST['msg'] = "l'operazione ".$operazione."non è stata riconosciuta";
         }
 
         pg_close($db);

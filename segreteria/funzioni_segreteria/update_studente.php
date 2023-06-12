@@ -111,13 +111,8 @@ if (isset($_POST))  {
                         $sql = substr($sql, 0, -1);
                     }
                     $sql = $sql . " WHERE matricola = $1";
-                    print("query creata : ".$sql."<br> con l'array: ");
-                    print_r($array);
 
                     $result = pg_prepare($db, "op_studente", $sql);
-                    if(!$result){
-                        print("<br>".pg_last_error());
-                    }
                     $esito_modifica = pg_execute($db, "op_studente", $array);
                     
                     

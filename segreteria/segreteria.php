@@ -29,7 +29,9 @@
 <html lang="en">
 <?php
     include_once("../lib/head.php"); 
+    include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
+
 ?>
 <body>
     <nav class="navbar bg-body-tertiary">
@@ -42,14 +44,14 @@
         <div class="row">
             <div class="col-sm-6">
                 <h3>modifica o aggiungi un docente</h3>
-                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_docente'" method="POST">
+                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_docente" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col">
                                 <div class="input-group mb-3">
-                                        <span class = "input-group-text">Id:</span>
-                                        <input type="text" class="form-control" name="id" id="id" required>
+                                    <span class="input-group-text">Id:</span>
+                                        <input type="text" name="id" id="id" pattern="[0-9]{6}" title="Please enter exactly 6 numeric characters" required>
                                     </div>
                                 </div>
                                 <div class="col">
