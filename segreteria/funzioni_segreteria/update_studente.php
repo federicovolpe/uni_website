@@ -43,24 +43,19 @@ if (isset($_POST))  {
                         $inserito = pg_execute($db, "op_studente", array($matricola, $nome, $cognome, $email, $password, $corso_frequentato));
 
                         if ($inserito) { //segnalazione con un messaggio di successo
-                            echo "lo studente è stato inserito";
-                            $url_successo ="segreteria.php?approved=" . urlencode(0);
-                            header("Location: " . $url_successo);
-                            exit;
+                            $_POST['approved'] = 0;
+                            $_POST['msg'] = "lo studente è stato inserito";
                         } else {     //segnalazione con un messaggio di fallito inserimento
-                            echo "lo studente non è stato inserito";
-                            $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("lo studente non è stato inserito");
-                            header("Location: " . $url_errore);
-                            exit;
+                            $_POST['approved'] = 1;
+                            $_POST['msg'] = pg_last_error();
                         }
                     } else { // messaggio di log nella pagina se la preparazione della query non va a buon termine
-                        echo "qualcosa è andato storto nella preparazione della query.";
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = pg_last_error();
                     }
             }else{ //esiste già quelcuno con queste credenziali
-                echo "lo studente non è stato inserito";
-                $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Risulta già uno studente con la stessa matricola o email");
-                header("Location: " . $url_errore);
-                exit;
+                $_POST['approved'] = 1;
+                $_POST['msg'] = pg_last_error();
             }
             break;
 
@@ -89,18 +84,15 @@ if (isset($_POST))  {
                     
                     
                     if ($esito_modifica) {//ritorno al sito con un messaggio di successo
-                        $url_successo ="segreteria.php?approved=" . urlencode(0);
-                        header("Location: " . $url_successo);
-                        exit;
+                        $_POST['approved'] = 0;
+                        $_POST['msg'] = "lo studente è stato modificato";
                     } else {
-                        $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg="  . urlencode("la modifica dello studente non è andata a buon fine");
-                        header("Location: " . $url_errore);
-                        exit;
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = pg_last_error();
                     }
                 }else{
-                    $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Non risulta uno studente con questa matricola o email");
-                    header("Location: " . $url_errore);
-                    exit;
+                    $_POST['approved'] = 1;
+                    $_POST['msg'] = pg_last_error();
                 }
             break;
 
@@ -121,37 +113,35 @@ if (isset($_POST))  {
                     if ($result) { //se la preparazione della query va a buon fine allora la eseguo
                         $cancellato = pg_execute($db, "op_studente", array($matricola, $email));
 
-                        if ($cancellato) {
-                            echo "lo studente è stato cancellato";
-                            $url_successo ="segreteria.php?approved=" . urlencode(0);
-                            header("Location: " . $url_successo);
-                            exit;
+                        if ($cancellato) {//ritorno un messaggio di successo per la cancellazione
+                            $_POST['approved'] = 0;
+                            $_POST['msg'] = "lo studente è stato cancellato con successo";
                         } else {
-                            echo "lo studente non è stato cancellato";
-                            $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg="  . urlencode("la cancellazione dello studente non è andata a buon fine");;
-                            header("Location: " . $url_errore);
-                            exit;
+                            $_POST['approved'] = 1;
+                            $_POST['msg'] = pg_last_error();
                         }
                     } else {
-                        echo "qualcosa è andato storto nella preparazione della query.";
+                        $_POST['approved'] = 1;
+                        $_POST['msg'] = pg_last_error();
                     }
 
                 }else{
-                    $url_errore ="segreteria.php?approved=" . urlencode(1) . "&msg=" . urlencode("Non risulta uno studente con questa matricola o email");
-                    header("Location: " . $url_errore);
-                    exit;
+                    $_POST['approved'] = 1;
+                    $_POST['msg'] = pg_last_error();
                 }
 
             default:
-                echo("qualcosa è andato storto nella selezione dell'operazione");
-                break;
+                $_POST['approved'] = 1;
+                $_POST['msg'] = "operazione non riconosciuta";
         }
 
         pg_close($db);
     } else {
-        echo "connessione al database fallita";
+        $_POST['approved'] = 1;
+        $_POST['msg'] = "connessione al database fallita";
     }
 }else{
-    echo("il $_POST non è settato!");
+    $_POST['approved'] = 1;
+    $_POST['msg'] = "parametri non sufficienti";
 }
 ?>

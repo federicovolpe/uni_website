@@ -248,7 +248,7 @@ INSERT INTO esiti (studente, esame, esito)
 
 CREATE TABLE iscrizioni(
     studente CHAR(6) REFERENCES studente(matricola) ON DELETE CASCADE,
-    esame CHAR(6) REFERENCES esami(id),
+    esame CHAR(6) REFERENCES esami(id) ON DELETE SET NULL,
     PRIMARY KEY (studente, esame)
 );
 
@@ -513,4 +513,5 @@ CREATE OR REPLACE TRIGGER controllo_propedeutici_trigger
     BEFORE INSERT ON iscrizioni
     FOR EACH ROW
     EXECUTE FUNCTION controllo_propedeutici();
+
 
