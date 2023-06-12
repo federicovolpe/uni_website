@@ -2,16 +2,13 @@
 
 ###scelte progettuali per il database
 per la creazione del database si è scelto di seguire il seguente schema ER
-![alt text](immagini/Drawing1.png)
+![alt text](immagini/diagramma.png)
 
 ###scelte progettuali per le pagine web
 ####-> pagina di login
-è una semplica pagina di login che permette il riempimento di una form con i dati dell'utente quali username(email) e password.
-per velocizzare ulteriormente la efficienza del database si è deciso di implementare un selettore che permetterà di selezionare la tabella del database dalla quale esaminare i dati per fare il login (studente, docente, segreteria).
-
-
-#### -> pagina per autenticazione
-l'autenticazione per gli user si compone di due pagine web, una [login.html](login.html) dove viene implementata una interfaccia grafica con html e una ([dispatcher.php](dispatcher.php)), quest'ultima si occuperà di reindirizzare l'utente alla propria pagina personale(studente, docente o segreteria), passando le variabili mail e password tramite l'apertura di una sessione.
+è una semplica pagina di login che permette il riempimento di una form con i dati dell'utente quali email e password.
+##### -> la pagina del dispatcher ([dispatcher.php](dispatcher.php))
+ quest'ultima si occuperà di reindirizzare l'utente alla propria pagina personale(studente, docente o segreteria), passando le variabili mail e password tramite l'apertura di una sessione.
 
 #### -> pagina principale utente
 le pagine di ogni tipologia di utente avranno alcuni aspetti comuni:
@@ -27,3 +24,11 @@ la pagina studente permetterà di consultare i dati riguardanti l'esito degli es
 
 **pagina docente:**
 la pagina docente permetterà di poter inserire dei voti per ogni singolo studente inoltre permette, tramite la compilazione di un form, di inserire nuove date per gli esami
+
+**pagina segreteria**
+la pagina segreteria.php conterrà diversi form per l'apportazione di modifiche sul database, in particolare saranno presenti 5 form 
+- uno per la modifica/inserimento/cancellazione di un utente @docenti.unimi.it
+- uno per la modifica/inserimento/cancellazione di un utente @studenti.unimi.it
+- uno per la modifica/inserimento/cancellazione di un corso universitario
+- uno per la modifica/inserimento/cancellazione di un insegnamento
+- uno per la stampa della carriera completa o effettiva di uno studente
