@@ -11,7 +11,7 @@
     }
     if(isset($_GET['update_studente'])){
         //chiamo la funzione update_studente
-        echo'operazione di update_studente'. $_POST['matricola'];
+        echo'operazione di update_studente'. $_POST['matricola']." corso: ".$_POST['corso'];
         include_once('funzioni_segreteria/update_studente.php');
     }
     if(isset($_GET['update_insegnamento'])){
@@ -162,27 +162,22 @@
                                             <select class="form-select" name="corso" id="corso" aria-label="Default select example">
                                                 <!--opzioni fra i corsi disponibili -->
                                                 <?php
-                                                print'ciao';
-                                                    $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
+                                                    $conn = pg_connect("host=localhost port=5432 dbname=unimio");
                                                     if($conn){
-                                                        print'connesso!<br>';
                                                         $sql = "SELECT *
                                                                 FROM corso;";
-                                                        print'sql : '.$sql.'<br>';
                                                         $preparato = pg_prepare($conn, "corsi_disponibili", $sql);
-                                                        print'preparato : '.$preparato.'<br>';
                                                         if($preparato){
-                                                            $eseguito = pg_execute($conn, "corsi_disponibili");
-                                                            print'preparato!<br>';
-                                                            if(pg_num_rows($eseguito) >= 1){
-                                                                $arrya = pg_fetch_array($eseguito);
-                                                                print('array: '.pg_num_rows($eseguito).'<br>');
-                                                                while($row = pg_fetch_assoc($eseguito)){
-                                                                    echo("<option value='" . $row['id'] . "'>".$row['nome_corso']." / ". $row['id']. "</option>");
+                                                            $eseguito = pg_execute($conn, "corsi_disponibili",array());
+                                                            if (pg_num_rows($eseguito) >= 1) {
+                                                                print('array: ' . pg_num_rows($eseguito) . '<br>');
+                                                                while ($row = pg_fetch_assoc($eseguito)) {
+                                                                    echo ("<option value='" . $row['id'] . "'>" . $row['nome_corso'] . " / " . $row['id'] . "</option>");
                                                                 }
-                                                            }else{
+                                                            } else {
                                                                 print("corsi non trovati");
                                                             }
+                                                            
                                                         }
                                                     }else{
                                                         echo("connessione col database marcita");

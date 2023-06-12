@@ -14,8 +14,8 @@ if (isset($_POST))  {
     if (isset($_POST['cognome'])){
         $cognome = $_POST['cognome'];
     }
-    if (isset($_POST['corso_frequentato'])){
-        $corso_frequentato = $_POST['corso_frequentato'];
+    if (isset($_POST['corso'])){
+        $corso_frequentato = $_POST['corso'];
     }
     $operazione = $_POST['operazione'];
 
@@ -60,7 +60,6 @@ if (isset($_POST))  {
             break;
 
             case 'modifica':
-                print("entrato nella modifica / ");
 
                 //query per verificare la presenza del suddetto studente
                 $check = "  SELECT 1
@@ -71,16 +70,55 @@ if (isset($_POST))  {
                 $result_check = pg_execute($db, "check", array($matricola,$email));
 
                 if($result_check = 1){ //se il numero di righe è 1 allora lo studente risulta presente
+                    //compongo la query in base ai campi che sono settati per essere modificati
+                    $contaparametri = 2;
                     $sql = "UPDATE studente 
-                            SET nome              = $2, 
-                                cognome           = $3, 
-                                email             = $4, 
-                                passwrd           = $5, 
-                                corso_frequentato = $6
-                            WHERE matricola = $1";
+                            SET ";
+                    $array = [];  // Initialize an empty array
+                    $array[] = $matricola;
+                    if (isset($_POST['nome']) && !empty($_POST['nome'])) {
+                        $sql .= "nome = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['nome'];
+                    }
+                    
+                    if (isset($_POST['cognome']) && !empty($_POST['cognome'])) {
+                        $sql .= "cognome = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['cognome'];
+                    }
+                    
+                    if (isset($_POST['email']) && !empty($_POST['email'])) {
+                        $sql .= "email = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['email'];
+                    }
+                    
+                    if (isset($_POST['password']) && !empty($_POST['password'])) {
+                        $sql .= "passwrd = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['password'];
+                    }
+                    
+                    if (isset($_POST['corso']) && !empty($_POST['corso'])) {
+                        $sql .= "corso_frequentato = $$contaparametri,";
+                        $contaparametri++;
+                        $array[] = $_POST['corso'];
+                    }
+                    
+                    //togliere l'ultima virgola dalla query
+                    if (substr($sql, -1) === ',') {
+                        $sql = substr($sql, 0, -1);
+                    }
+                    $sql = $sql . " WHERE matricola = $1";
+                    print("query creata : ".$sql."<br> con l'array: ");
+                    print_r($array);
 
                     $result = pg_prepare($db, "op_studente", $sql);
-                    $esito_modifica = pg_execute($db, "op_studente", array($matricola, $nome, $cognome, $email, $password, $corso_frequentato,));
+                    if(!$result){
+                        print("<br>".pg_last_error());
+                    }
+                    $esito_modifica = pg_execute($db, "op_studente", $array);
                     
                     
                     if ($esito_modifica) {//ritorno al sito con un messaggio di successo
@@ -107,11 +145,11 @@ if (isset($_POST))  {
 
                 if($result_check = 1){
 
-                    $sql = "DELETE FROM studente WHERE matricola = $1 AND email = $2";
+                    $sql = "DELETE FROM studente WHERE matricola = $1";
                     $result = pg_prepare($db, "op_studente", $sql);
                 
                     if ($result) { //se la preparazione della query va a buon fine allora la eseguo
-                        $cancellato = pg_execute($db, "op_studente", array($matricola, $email));
+                        $cancellato = pg_execute($db, "op_studente", array($matricola));
 
                         if ($cancellato) {//ritorno un messaggio di successo per la cancellazione
                             $_POST['approved'] = 0;
@@ -129,10 +167,11 @@ if (isset($_POST))  {
                     $_POST['approved'] = 1;
                     $_POST['msg'] = pg_last_error();
                 }
+            break;
 
             default:
                 $_POST['approved'] = 1;
-                $_POST['msg'] = "operazione non riconosciuta";
+                $_POST['msg'] = "operazione non riconosciuta ".$operazione;
         }
 
         pg_close($db);

@@ -269,7 +269,7 @@ CREATE TABLE storico_studente(
     matricola CHAR(6) PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
     passwrd VARCHAR(20) NOT NULL,
     corso_frequentato CHAR(100) REFERENCES corso(id) NOT NULL,
     -- controllo che la email finisca per @studenti.unimi.it
