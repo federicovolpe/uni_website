@@ -8,9 +8,10 @@
         $db = pg_connect("dbname=unimio host=localhost port=5432");
         if($db){
 
-            //fetch id insegnamento
-            $idsql = "SELECT id FROM insegnamento WHERE nome = $1";
-            $id_insegnamento = pg_prepare($db, 'prova',$idsql);
+            //fetch id insegnamento perchè il nome dell'insegnamento non è utile
+            $id_sql = "SELECT id FROM insegnamento WHERE nome = $1";
+            $id_insegnamento = pg_prepare($db, 'prova',$id_sql);
+
             if($id_insegnamento){
                 $id_insegnamento = pg_execute($db, 'prova', array($insegnamento));
                 if($id_insegnamento){

@@ -28,8 +28,6 @@
 
 <body>
         <?php
-            //include del file variabili_sessione.php
-            include_once("lib/variabili_sessione.php");
             //include del file navbar.php
             include_once("lib/navbar.php");
             messaggi_errore_post2();

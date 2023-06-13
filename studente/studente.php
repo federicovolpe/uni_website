@@ -41,7 +41,10 @@
     <script>
         // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a login.php
         if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-            window.location.href = '../login.php';
+            //se la pagina da cui è stata referenziata è diversa da esiti_esami.php o prenota_esame.php
+            if (document.referrer !== 'esiti_esami.php' && document.referrer !== 'prenota_esame.php') {
+                window.location.href = '../login.php';
+            }
         }
     </script>
 </head>
@@ -65,8 +68,8 @@
         <br>vuoi visualizzare i tuoi voti?<br>
         <a href="esiti_esami.php">esiti esami</a><br>
 
-        <br>stampa la tua carriera<br>
-        <a href="esiti_esami.php">esiti esami</a><br>
+        <br>stampa la tua carriera valida<br>
+        <?php include_once('funzioni_studente/carriera_valida.php');?>
     </div>
 
     <!-----------------              form di cambio password           ------------------->
