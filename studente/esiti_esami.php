@@ -22,7 +22,7 @@
             messaggi_errore_post2();
     ?>
     
-        <?php  print("<h2>esami a cui ti puoi prenotare</h2>");?>
+        <h2>tutti gli esiti degli esami sostenuti</h2>
     <div>
         <div class= "table-container">
         <table class="table table-striped">

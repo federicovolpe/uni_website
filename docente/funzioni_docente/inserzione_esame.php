@@ -3,7 +3,6 @@
         $id_docente = $_SESSION['id'];
         $insegnamento = $_POST['insegnamento']; //l'insegnamento è espresso con il nome
         $date = $_POST['data'];
-        $nuova_data_formattata = date_format(date_create($date), 'dmy');
         
         //connessione al database
         $db = pg_connect("dbname=unimio host=localhost port=5432");
@@ -29,7 +28,7 @@
             $preparazione = pg_prepare($db , "update", $sql);
 
             if($preparazione){
-                pg_execute($db, "update", array($id_insegnamento, $id_docente, $nuova_data_formattata));
+                pg_execute($db, "update", array($id_insegnamento, $id_docente, $date));
                 $_POST['msg'] = "esame inserito con successo docente: $id_docente</br>insegnamento: $id_insegnamento</br>data: $date</br>";
                 $_POST['approved'] = 0;
 

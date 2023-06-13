@@ -6,6 +6,7 @@
     if(isset($_GET['inserisci_esame'])){
         //codice sql per inserire un esame
         print('inserimento esame');
+        print('NUOVA DATA: -----'. $_POST['data']);
         include_once('funzioni_docente/inserzione_esame.php');
     }
     if(isset($_GET['inserisci_esiti'])){
@@ -22,13 +23,9 @@
 <html lang="en">
 <?php
     include_once("../lib/head.php"); 
-    include_once("../lib/variabili_sessione.php");
-    include_once('../lib/navbar.php');
-        messaggi_errore();
 ?>
 <body>
 <?php 
-    include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
         messaggi_errore_post2();
 ?>
@@ -57,19 +54,22 @@
                     $esami_in_prog = pg_execute($conn, "esami_in_programma", array($_SESSION['id']));
                     while ($row = pg_fetch_assoc($esami_in_prog)) {
                         print('
-                            <tr>
-                                <td>' . $row['insegnamento_n'] . '</td>
-                                <td>' . $row['data'] . '</td>
-                                <td>
-                                    <form action="' . $_SERVER['PHP_SELF'] . '?cancella_esame=' . $row['esami_id'] . '" method="POST">
-                                        <button type="submit">Cancella Esame</button>
-                                    </form>
-                                    <form action="funzioni_docente/update_esame.php?esame=' . $row['esami_id'] . '" method="POST">
-                                        <button type="submit">Modificea ' . $row['esami_id'] . '</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        ');
+    <tr>
+        <td>' . $row['insegnamento_n'] . '</td>
+        <td>' . $row['data'] . '</td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Actions">
+                <form action="' . $_SERVER['PHP_SELF'] . '?cancella_esame=' . $row['esami_id'] . '" method="POST">
+                    <button type="submit" class="btn btn-danger">Cancella Esame</button>
+                </form>
+                <form action="funzioni_docente/update_esame.php?esame=' . $row['esami_id'] . '" method="POST">
+                    <button type="submit" class="btn btn-primary">Modifica</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+');
+
 
                     }
                 }else{
@@ -92,7 +92,7 @@
 
     <div style ="padding : 1%"><hr></div><!------------------------------------------------------------------->
 
-    <?php print'ciao'; include_once('funzioni_docente/form_inserzione_esiti.php');?>
+    <?php include_once('funzioni_docente/form_inserzione_esiti.php');?>
 
     <?php //form per il cambio password 
         include_once('../lib/cambio_password.php');

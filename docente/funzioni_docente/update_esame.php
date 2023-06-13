@@ -2,7 +2,7 @@
     //include delle funzioni
     session_start();
     include("../../lib/functions.php");
-    
+
     $_SESSION['esame_id']  = $_GET['esame'];
     print'esame id: '.$_SESSION['esame_id'];
     //se è stato premuto il tasto submit allora la variabile chaange è settata a 1
@@ -10,8 +10,7 @@
         //obiettivo: modificare la data dell'esame
         //recupero delle variabili settate in post per la modifica
         $esame_id = $_POST['esame']; 
-        $newDate = $_POST['new_date'];
-        $nuova_data_formattata = date_format(date_create($newDate), 'dmy');
+        $newDate = $_POST['new_date'];;
         
         $db = pg_connect("dbname=unimio host=localhost port=5432");
         if($db){
@@ -19,10 +18,10 @@
             $preparazione = pg_prepare($db , "update", $sql);
 
             if($preparazione){
-                $result = pg_execute($db, "update", array($nuova_data_formattata,$esame_id));
+                $result = pg_execute($db, "update", array($newDate, $esame_id));
 
                 if($result){//setto le variabili di riuscta
-                    $_POST['msg'] = "la modifica dell'esame".$esame_id." è andata a buon fine, nuova data = " . $newDate ;
+                    $_POST['msg'] = "la modifica dell'esame: ".$esame_id." è andata a buon fine, nuova data = " . $newDate ;
                     $_POST['approved'] = 0;
 
                 }else{// l'esecuzione della query non è andata a buon fine

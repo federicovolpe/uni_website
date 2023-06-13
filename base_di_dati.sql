@@ -138,7 +138,7 @@ CREATE TABLE esami(
     id CHAR(6) PRIMARY KEY,
     insegnamento CHAR(10) REFERENCES insegnamento(id),
     docente CHAR(6) REFERENCES docente(id),
-    data CHAR(6)
+    data DATE
 );
 
 --riempimento tabella esami

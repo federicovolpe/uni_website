@@ -1,4 +1,12 @@
-<form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
+
+<form style="border: 1px solid blue;
+    padding: 4%;
+    width: 90%;
+    border-radius: 3%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;"
+    " action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
     <div class="form-row">
         <div class="form-group">
             <div class="row">
@@ -40,7 +48,5 @@
             </div>
         </div>
     </div>
-
-
-    <button type="submit" style="padding:2%;" class="btn btn-primary">Inserisci</button>
+    <button type="submit" style="padding:3px;" class="btn btn-primary">Inserisci</button>
 </form>
