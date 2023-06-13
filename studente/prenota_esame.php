@@ -55,7 +55,16 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<head>
     <?php include_once("../lib/head.php"); ?>
+    <script>
+        // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a studente.php
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+            window.location.href = 'studente.php';
+        }
+    </script>
+</head>
+
 <body>
     <?php include_once('../lib/navbar.php'); 
             messaggi_errore_post2();

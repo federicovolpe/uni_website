@@ -3,9 +3,8 @@
     //include delle funzioni
     include_once("../lib/functions.php");
     unset($_SESSION['id']);
-    include_once('../lib/variabili_sessione.php');
 
-    //se la pagina è stata con una oprazione di cambio password
+    //se la pagina è stata con una operazione di cambio password
     if(isset($_GET['change_password'])){
         //utilizzo la funzione change password
         include_once('../change_password.php');
@@ -15,9 +14,12 @@
     if(isset($_GET['rinuncia_agli_studi'])){
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
+            
+            //query di cancellamento dello studente
             $rinuncia_sql = "DELETE FROM studente WHERE matricola = $1";
             $preparato = pg_prepare($db, 'rinuncia', $rinuncia_sql);
             $result = pg_execute($db, 'rinuncia', array($_SESSION['matricola']));
+
             if($result){
                 $_POST['msg'] = "Rinuncia avvenuta con successo";
                 $_POST['approved'] = 0;
@@ -32,11 +34,18 @@
     }
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<?php
-    include_once("../lib/head.php"); 
-?>
+<head>
+    <?php include_once("../lib/head.php"); ?>
+    <script>
+        // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a login.php
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+            window.location.href = '../login.php';
+        }
+    </script>
+</head>
+
 <body>
     <?php
         include_once('../lib/navbar.php');
@@ -59,17 +68,17 @@
         <br>stampa la tua carriera<br>
         <a href="esiti_esami.php">esiti esami</a><br>
     </div>
-        
+
+    <!-----------------              form di cambio password           ------------------->
+    <div class="rinuncia_studi" style="position: fixed; bottom: 10px; right: 10px;">
+        <h4>Vuoi Rinunciare agli studi?</h4>
+        <form class="c-password" action="<?php echo $_SERVER['PHP_SELF']; ?>?rinuncia_agli_studi" method="POST">
+            <button type="submit" class="btn btn-primary">Rinuncia</button>
+        </form>
+    </div>
+
         <?php include_once('../lib/cambio_password.php')?>
         <?php script_boostrap()?>
-
-    
-        <div class="rinuncia_studi" style="position: fixed; bottom: 10px; right: 10px;">
-    <h4>Vuoi Rinunciare agli studi?</h4>
-    <form class="c-password" action="<?php echo $_SERVER['PHP_SELF']; ?>?rinuncia_agli_studi" method="POST">
-        <button type="submit" class="btn btn-primary">Rinuncia</button>
-    </form>
-</div>
 
 </body>
 </html>

@@ -98,3 +98,14 @@ html, body {
     color: #fff;
     cursor: pointer;
 }
+
+.nome_cognome {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #d5f3f5;
+}
+.navbar-text {
+    font-weight: bold;
+    margin-bottom: 5px;
+}

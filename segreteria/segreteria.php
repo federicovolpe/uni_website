@@ -27,12 +27,21 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
 <?php
     include_once("../lib/head.php"); 
     include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
 
 ?>
+    <script>
+        // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a login.php
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+            window.location.href = '../login.php';
+        }
+    </script>
+</head>
+
 <body>
     <nav class="navbar bg-body-tertiary">
         <?php include_once('navbar.php')?>
