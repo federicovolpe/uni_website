@@ -56,3 +56,8 @@
             ?>
         </table>
     </div>
+    SELECT I.nome AS insegnamento, esiti.esito, E.data 
+    FROM esiti JOIN esami AS E ON E.id = esiti.esame 
+    JOIN insegnamento AS I on I.id = E.insegnamento 
+    WHERE studente = '966031' AND esiti.esito >= 18 AND E.data = (SELECT MAX(data) 
+    FROM esami WHERE esami.insegnamento = E.insegnamento

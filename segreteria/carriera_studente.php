@@ -23,7 +23,7 @@
             messaggi_errore_post2();
     ?>
     
-    <?php if(isset($_POST['carriera_completa'])){
+    <?php if($_POST['options'] == 'carriera_completa'){
     ?>
         <h2>tutti gli esiti degli esami sostenuti</h2>
     <div>
@@ -48,13 +48,12 @@
     </div>
 
     <!----------------------------------------- STAMPA DELLA CARRIERA VALIDA --------------------------------->
-    <?php }else if(isset($_POST['carriera valida'])){?>
+    <?php }else if($_POST['options'] == 'carriera_valida'){?>
         
         <h2>carriera valida dello studente</h2>
         <div>
         <div class= "table-container">
         <table class="table table-striped">
-        <caption><?php print("corso: ". $_SESSION['corso_frequentato'] . " utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
             <thead>
                 <tr>
                     <th scope="col"> Materia </th>
@@ -63,7 +62,6 @@
                 </tr>
             </thead>
             <?php
-            $matricola = $_SESSION['matricola'];  //recupero della matricola per la query
                 $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         
                 if($db){
@@ -92,7 +90,8 @@
                                     echo '<td style="color: green;">'. $row['esito'] .'</td>';
                                 }
                             }
-                        }else{                  
+                        }else{             
+                            print'nessun esito registrato per: '.$esiti_sql.' <br> e matricola: '.$matricol;     
                             $_POST['msg'] = 'non ci sono esiti registrati per lo studente '.$matricola;
                             $_POST['approved'] = 1;
                         }
