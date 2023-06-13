@@ -44,7 +44,7 @@
 
 <body>
     <nav class="navbar bg-body-tertiary">
-        <?php include_once('navbar.php')?>
+        <?php include_once('../lib/navbar.php')?>
     </nav>
     <?php //stampa di eventuali messaggi di errore
         messaggi_errore_post2();

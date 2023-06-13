@@ -485,16 +485,15 @@ CREATE OR REPLACE FUNCTION controllo_propedeutici()
     RETURNS TRIGGER
     AS $$
     BEGIN
-        IF (SELECT COUNT(*) = (SELECT COUNT(*)
-                                -- 
+        IF (SELECT COUNT(*) = (SELECT COUNT(*) -- conto delle righe della tabella propedeuticità che hanno un insegnamento presente nella tabella...
                                 FROM propedeuticità AS P
-                                WHERE P.insegnamento IN (SELECT I.id
+                                WHERE P.insegnamento IN (SELECT I.id -- ...degli insegnamenti che hanno un esame con esito >= 18
                                                         FROM esami AS E
                                                         LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
                                                         WHERE E.id = NEW.esame)
                                 ) AS all_tuples_present
             FROM propedeuticità AS P
-            WHERE P.insegnamento IN (SELECT I.id
+            WHERE P.insegnamento IN (SELECT I.id --tabella dove 
                                     FROM esiti AS E
                                     JOIN esami AS Es ON E.esame = Es.id
                                     JOIN insegnamento AS I ON I.id = Es.insegnamento
