@@ -316,6 +316,21 @@
             </div>
         </div>
 
+        controlla la carriera di uno studente
+        <form action="carriera_studente.php" method="POST">
+
+            <span class = "input-group-text">Matricola:</span>
+            <input type="text" class="form-control" name="matricola" id="matricola" required>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="options" value="carriera_completa" id="valida" autocomplete="off" checked> carriera completa
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="options" value="carriera_valida" id="option2" autocomplete="off"> carriera valida
+                </label>
+            </div>
+            <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
+        </form>
 
         <?php include_once('../lib/cambio_password.php')?>
     </div>
