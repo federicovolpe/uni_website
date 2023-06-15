@@ -285,6 +285,11 @@ CREATE TABLE storico_carriera(
     CHECK (esito >= 0 AND esito <= 30)
 );
 
+INSERT INTO storico_carriera(studente, esame, esito)    
+    VALUES(
+        '986892','000003','25'
+    );
+
 
 
 
@@ -485,25 +490,40 @@ CREATE OR REPLACE FUNCTION controllo_propedeutici()
     RETURNS TRIGGER
     AS $$
     BEGIN
-        IF (SELECT COUNT(*) = (SELECT COUNT(*) -- conto delle righe della tabella propedeuticità che hanno un insegnamento presente nella tabella...
-                                FROM propedeuticità AS P
-                                WHERE P.insegnamento IN (SELECT I.id -- ...degli insegnamenti che hanno un esame con esito >= 18
-                                                        FROM esami AS E
-                                                        LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
-                                                        WHERE E.id = NEW.esame)
-                                ) AS all_tuples_present
+    IF EXISTS ( --SE L'ESAME HA DELLE PROPEDEUTICITà CONTROLLO CHE SIANO STATE SUPERATE
+            SELECT 1
             FROM propedeuticità AS P
-            WHERE P.insegnamento IN (SELECT I.id --tabella dove 
-                                    FROM esiti AS E
-                                    JOIN esami AS Es ON E.esame = Es.id
-                                    JOIN insegnamento AS I ON I.id = Es.insegnamento
-                                    WHERE E.studente = NEW.studente AND E.esito >= 18)
+            WHERE P.insegnamento IN (
+                SELECT I.id
+                FROM esami AS E
+                LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
+                WHERE E.id = NEW.esame
             )
-        THEN
-            RETURN NEW;
-        ELSE
-            RAISE EXCEPTION 'Lo studente % non risulta aver superato tutti gli esami propedeutici', NEW.studente;
-        END IF;
+        )
+        THEN -- CONTROLLO CHE TUTTE LE PROPEDEUTICITà SIANO STATE PASSATE
+            IF (SELECT COUNT(*) = (SELECT COUNT(*) -- conto delle righe della tabella propedeuticità che hanno un insegnamento presente nella tabella...
+                                    FROM propedeuticità AS P
+                                    WHERE P.insegnamento IN (SELECT I.id -- ...degli insegnamenti corrispondenti all'esame selezionato
+                                                            FROM esami AS E
+                                                            LEFT JOIN insegnamento AS I ON I.id = E.insegnamento
+                                                            WHERE E.id = NEW.esame)
+                                    ) AS all_tuples_present
+                FROM propedeuticità AS P
+                WHERE P.insegnamento IN (SELECT I.id --tabella degli insegnamenti per cui lo studente ha passato l'esame
+                                        FROM esiti AS E
+                                        JOIN esami AS Es ON E.esame = Es.id
+                                        JOIN insegnamento AS I ON I.id = Es.insegnamento
+                                        WHERE E.studente = NEW.studente AND E.esito >= 18)
+                )
+            THEN -- se le propedeuticità sono state passate allora procedo con l'inserimento
+                RETURN NEW;
+            ELSE -- se le propedeuticità non sono state tutte passate allora lo segnalo con un errore
+                RAISE EXCEPTION 'Lo studente % non risulta aver superato tutti gli esami propedeutici', NEW.studente;
+            END IF;
+    ELSE -- se l'insegnamento non risulta avere propedeuticità allora posso procedere con l'inserimento
+        RETURN NEW;
+    END IF;
+        
     END;
     $$ LANGUAGE plpgsql;
 
@@ -512,5 +532,4 @@ CREATE OR REPLACE TRIGGER controllo_propedeutici_trigger
     BEFORE INSERT ON iscrizioni
     FOR EACH ROW
     EXECUTE FUNCTION controllo_propedeutici();
-
 

@@ -100,27 +100,6 @@
         }
     }
 
-
-    function messaggi_errore() {
-        echo '<script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const approved = urlParams.get(\'approved\');
-            const msg = urlParams.get(\'msg\');
-            if (approved === \'0\') {
-                var successMessage = document.createElement(\'div\');
-                successMessage.className = \'p-3 mb-2 bg-success text-white\';
-                successMessage.textContent = $msg;
-                document.body.appendChild(successMessage);
-            }
-            if (approved === \'1\') {
-                var successMessage = document.createElement(\'div\');
-                successMessage.className = \'p-3 mb-2 bg-danger text-white\';
-                successMessage.textContent = $msg;
-                document.body.appendChild(successMessage);
-            }
-        </script>';
-    }
-
     function messaggi_errore_post2(){
         //se la variabile approved è settata a 0, e c'è un messaggio da mostrare
         if(isset($_POST['approved']) && $_POST['approved'] == 0 && isset($_POST['msg'])){

@@ -36,9 +36,9 @@
 ?>
     <script>
         // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a login.php
-        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-            window.location.href = '../login.php';
-        }
+        //if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+          //  window.location.href = '../login.php';
+        //}
     </script>
 </head>
 
@@ -323,10 +323,18 @@
             <input type="text" class="form-control" name="matricola" id="matricola" required>
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary active">
-                    <input type="radio" name="options" value="carriera_completa" id="valida" autocomplete="off" checked> carriera completa
+                    <input type="radio" name="tipo_carriera" value="carriera_completa" id="valida" autocomplete="off" checked> carriera completa
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="options" value="carriera_valida" id="option2" autocomplete="off"> carriera valida
+                    <input type="radio" name="tipo_carriera" value="carriera_valida" id="option2" autocomplete="off"> carriera valida
+                </label>
+            </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="storico_studente" value="studente_passato" id="valida" autocomplete="off" checked> studente passato
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="storico_studente" value="studente_attuale" id="option2" autocomplete="off"> studente attuale
                 </label>
             </div>
             <button type="submit" style="padding:2%;" class="btn btn-primary">Esegui</button>
