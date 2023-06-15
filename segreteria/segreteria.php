@@ -265,43 +265,80 @@
             </div>
 
             <div class="col-sm-6">
-                
-                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_insegnamento'" method="POST">
-                    <h3>inserisci o modifica un insegnamento</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text">Id:</span>
-                                        <input type="text" class="form-control" name="id" id="id">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="input-group mb-3">
-                                        <span class = "input-group-text">Nome:</span>
-                                        <input type="text" class="form-control" name="nome" id="nome">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_insegnamento'" method="POST">
+      <h3>Inserisci o modifica un insegnamento</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <div class="input-group mb-3">
+                <span class="input-group-text">Id:</span>
+                <input type="text" class="form-control" name="id" id="id">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-3">
+                <span class="input-group-text">Nome:</span>
+                <input type="text" class="form-control" name="nome" id="nome">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-row">
-                                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
-                                            <option value="primo">Primo</option>
-                                            <option value="secondo">Secondo</option>
-                                            <option value="terzo">Terzo</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <div class="form-row align-items-center">
+                <div class="col">
+                  <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                  <option value="primo">Primo</option>
+                    <option value="secondo">Secondo</option>
+                    <option value="terzo">Terzo</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="cfu-input">CFU:</label>
+                  <input type="number" name="cfu" min="1" max="15" step="1">
+                </div>
+                <div class="col">
+                  <label for="descrizione-input">Descrizione:</label>
+                  <textarea class="form-control" name="descrizione" id="descrizione" rows="4"></textarea>
+                </div>
+                <div class="col">
+                  <label for="corso-input">Corso:</label>
+                  <select class="form-select" name="corso" id="corso" aria-label="Default select example">
+                    <?php //generazione della selezione dei corsi
+                      $db = pg_connect("host=localhost port=5432 dbname=unimio ");
+                      $sql = "SELECT nome_corso as nome, id FROM corso";
+                      $result = pg_query($db, $sql);
+                      print'numero di righe: '.pg_num_rows($result);
+                      while ($row = pg_fetch_assoc($result)) {
+                        echo "<option value='" . $row['id'] . "'>" . $row['nome'] . "</option>";
+                      }
+                    ?>
+                  </select>
+                    <div id="propedeutici">
+                      
                     </div>
+                    
+                    <?php
+                        $db = pg_connect("host=localhost port=5432 dbname=unimio ");
+                        $sql = "SELECT nome, id FROM insegnamento WHERE corso = $1";
+                        $result = pg_query_params($db, $sql, array($_POST['corso']));
+                        print'numero di righe: '.pg_num_rows($result);
+                        while ($row = pg_fetch_assoc($result)) {
+                            echo "<option value='" . $row['id'] . "'>" . $row['nome'] . "</option>";
+                        }
+                    ?>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
                     <div class="form-row">
                         <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
