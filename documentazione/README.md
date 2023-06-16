@@ -90,18 +90,6 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
     <img src="../media/docente_homepage.png" style="margin-left: 10px; width: 50%; border: 2px solid blue">
 </div>
 
-**pagina docente:**
-la pagina docente mostra come prima cosa la tabella che rappresenterà il calendario degli esami del professore.
-questa mostrerà l'insegnamento, la data, due pulsanti per la modifica (connesso allo script *([update_esame.php](update_esame.php))*) o la cancellazione del suddetto esame (connesso allo script *([cancella_esame.php](cancella_esame.php))*).
-successivamente verrà mostrato un form generato dalla pagina:
-- *([form_inserisci_esame.php](form_inserisci_esame.php))*
-    ha il compito di raccogliere le informazioni per un nuovo esame, quali: insegnamento, data dell'esame
-    il compito dell'inserimento nel database viene poi delegato al file *([inserzione_esame.php](inserzione_esame.php))* che si occuperà fra l'altro di riportare eventuale messaggi di errore o di successo legati all'esecuzione della query alla pagina precedente (ad esempio la presenza di un esame con lo stesso id già inserito nel database).
-
-successivamente verrà mostrato un form per l'inserzione degli esiti, anche questo ha la sua pagina dedicata:
-- *([form_inserzione_esiti.php](form_inserzione_esiti.php))*
-    questo si occupa della raccolta di dati quali: la matricola dello studente interessato; l'esame; l'esito da assegnare. l'esecuzione della operazione di inserimento come nel caso precedente viene delegata alla pagina *([sql_inserzione_esiti.php](sql_inserzione_esiti.php))* quest'ultimo si occupera di effettuare tutte le verifiche necessarie per l'inserzione (come la verifica dell'iscrizione dello studente a quell'esame, o la correttezza dell'id stuente).
-
 
 **pagina segreteria**
 la pagina segreteria.php conterrà diversi form per l'apportazione di modifiche sul database, in particolare saranno presenti 5 form 
