@@ -96,10 +96,6 @@ session_start();
                         $modifica_sql .= "descrizione = $$contaparametri";
                         $contaparametri++;
                         $array[] = $_SESSION['descrizione'];
-                    }if(isset($_SESSION['descrizione']) && !empty($_SESSION['descrizione'])){
-                        $modifica_sql .= "descrizione = $$contaparametri";
-                        $contaparametri++;
-                        $array[] = $_SESSION['descrizione'];
                     }if(isset($_SESSION['corso']) && !empty($_SESSION['corso'])){
                         $modifica_sql .= "corso = $$contaparametri";
                         $contaparametri++;
@@ -138,7 +134,7 @@ session_start();
                 }
                 break;
 
-            case 'elimina': //cancellazione dell'insegnamento con l'id inserito
+            case 'cancella': //cancellazione dell'insegnamento con l'id inserito
                 $check_sql = "SELECT 1
                         FROM insegnamento
                         WHERE id = $1";

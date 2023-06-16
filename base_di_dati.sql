@@ -79,12 +79,18 @@ VALUES
 
 
 CREATE TABLE corso(
-    id CHAR(10) PRIMARY KEY,
+    id CHAR(10) PRIMARY KEY ON DELETE CASCADE,
     nome_corso VARCHAR(100) NOT NULL UNIQUE,
     laurea VARCHAR(10), 
     descrizione TEXT,
     CONSTRAINT laurea CHECK (laurea = 'triennale' OR laurea = 'magistrale')
 );
+
+ALTER TABLE corso 
+ADD CONSTRAINT cancella_responsabilità
+FOREIGN KEY (id) 
+REFERENCES responsabile_corso (corso) 
+ON DELETE CASCADE;
 
 --popolazione della tabella corso
 INSERT INTO corso (id, nome_corso, descrizione, laurea) 
@@ -240,8 +246,8 @@ INSERT INTO responsabile_insegnamento (docente, insegnamento)
     ('554198', '4104514266');
 
 CREATE TABLE responsabile_corso(
-    docente CHAR(6) REFERENCES docente(id),
-    corso CHAR(10) REFERENCES corso(id)
+    docente CHAR(6) REFERENCES docente(id) ON DELETE CASCADE,
+    corso CHAR(10) REFERENCES corso(id) ON DELETE CASCADE
 );
 
 --popolazione della tabella responsabile_corso
@@ -561,3 +567,39 @@ CREATE OR REPLACE TRIGGER controllo_propedeutici_trigger
     FOR EACH ROW
     EXECUTE FUNCTION controllo_propedeutici();
 
+-- trigger per la cancellazione di un corso, quando viene cancellato un corso vengono anche rimossi tutte le referenze nella
+-- tablella responsabile_corso
+
+CREATE OR REPLACE FUNCTION elimina_responsabilità_corso()
+    RETURNS TRIGGER 
+    AS $$
+        BEGIN
+            DELETE FROM responsabile_corso
+            WHERE corso = OLD.id;
+            RETURN OLD;
+        END;
+    $$
+    LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER elimina_responsabilità_corso_trigger
+    BEFORE DELETE ON corso
+    FOR EACH ROW
+    EXECUTE FUNCTION elimina_responsabilità_corso();
+
+-- trigger simmetrico al precedente ma attivato quando viene cancellato un docente
+
+CREATE OR REPLACE FUNCTION elimina_responsabilità_docente()
+    RETURNS TRIGGER 
+    AS $$
+        BEGIN
+            DELETE FROM responsabile_corso
+            WHERE docente = OLD.id;
+            RETURN OLD;
+        END;
+    $$
+    LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER elimina_responsabilità_docente_trigger
+    BEFORE DELETE ON docente
+    FOR EACH ROW
+    EXECUTE FUNCTION elimina_responsabilità_docente();

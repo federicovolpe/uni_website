@@ -5,8 +5,15 @@ per la creazione del database si è scelto di seguire il seguente schema ER
 ![alt text](immagini/diagramma.png)
 
 ###scelte progettuali per le pagine web
-####-> pagina di login
-è una semplica pagina di login che permette il riempimento di una form con i dati dell'utente quali email e password.
+<div style="display: flex; align-items: center;">
+<h3> pagina di login<br></h3>
+    <p>
+è una semplica pagina di login che permette il riempimento di una form con i dati dell'utente quali email e password.</p>
+    <img src="immagini/login.gif" alt="GIF" style="margin-left: 10px; width: 50%">
+</div>
+
+
+
 ##### -> la pagina del dispatcher ([dispatcher.php](dispatcher.php))
  quest'ultima si occuperà di reindirizzare l'utente alla propria pagina personale(studente, docente o segreteria), passando le variabili mail e password tramite l'apertura di una sessione.
 

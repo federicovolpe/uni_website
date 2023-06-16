@@ -223,7 +223,7 @@
         <div class="row mt-4">
             <div class="col-sm-6">
                 <h3>inserisci o modifica un corso</h3>
-                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_insegnamento'" method="POST">
+                <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_corso" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <div class="row">
@@ -248,7 +248,7 @@
                 </div>
                 <div class="col">
                   <label for="docente_responsabile">Docente responsabile:</label>
-                  <select class="form-select" name="insegnante_responsabile" id="insegnante_responsabile" aria-label="Default select example">
+                  <select class="form-select" name="docente_responsabile" id="docente_responsabile" aria-label="Default select example">
                     <?php //generazione della selezione dei corsi
                       $db = pg_connect("host=localhost port=5432 dbname=unimio ");
                       $sql = "SELECT nome, cognome, id FROM docente";
