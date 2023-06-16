@@ -20,52 +20,44 @@ if (isset($_POST))  {
     $db = pg_connect("host=localhost port=5432 dbname=unimio");
 
     if ($db) {
+        //controllo che non ci sia già uno docente con lo stessa id
+        $check = "SELECT 1
+            FROM docente
+            WHERE id = $1 OR email = $2";
+
+        $result_check = pg_prepare($db, "check", $sql);
+        $result_check = pg_execute($db, "check", array($id,$email));
+
         switch($operazione){
             case 'aggiungi':
-                print('raggiunto il caso aggiungi<br>');
-                //controllo che non ci sia già uno docente con lo stessa id
-                $check = "SELECT 1
-                    FROM docente
-                    WHERE id = $1 OR email = $2";
 
-                $result_check = pg_prepare($db, "check", $sql);
-                $result_check = pg_execute($db, "check", array($id,$email));
-
-            if(empty($result_check)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
-                
-                    $inserzione_sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
-                            VALUES ($1, $2, $3, $4, $5)";
-                    $preparato = pg_prepare($db, "inserzione", $inserzione_sql);
+                if(empty($result_check)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
                     
-                    if ($preparato) { //se la preparazione della query va a buon fine allora la eseguo
-                        $inserito = pg_execute($db, "inserzione", array($id, $nome, $cognome, $email, $password));
+                        $inserzione_sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
+                                VALUES ($1, $2, $3, $4, $5)";
+                        $preparato = pg_prepare($db, "inserzione", $inserzione_sql);
+                        
+                        if ($preparato) { //se la preparazione della query va a buon fine allora la eseguo
+                            $inserito = pg_execute($db, "inserzione", array($id, $nome, $cognome, $email, $password));
 
-                        if ($inserito) { //segnalazione con un messaggio di successo
-                            $_POST['approved'] = 0;
-                            $_POST['msg'] = "il docente è stato inserito con successo";
-                        } else {     //segnalazione con un messaggio di fallito inserimento
+                            if ($inserito) { //segnalazione con un messaggio di successo
+                                $_POST['approved'] = 0;
+                                $_POST['msg'] = "il docente è stato inserito con successo";
+                            } else {     //segnalazione con un messaggio di fallito inserimento
+                                $_POST['approved'] = 1;
+                                $_POST['msg'] = pg_last_error();
+                            }
+                        } else { // messaggio di log nella pagina se la preparazione della query non va a buon termine
                             $_POST['approved'] = 1;
-                            $_POST['msg'] = pg_last_error();
+                            $_POST['msg'] = "qualcosa è andato storto nella preparazione della query.";
                         }
-                    } else { // messaggio di log nella pagina se la preparazione della query non va a buon termine
-                        $_POST['approved'] = 1;
-                        $_POST['msg'] = "qualcosa è andato storto nella preparazione della query.";
-                    }
-            }else{ //esiste già quelcuno con queste credenziali
-                $_POST['approved'] = 1;
-                $_POST['msg'] = "Risulta già uno docente con lo stesso id o email";
-            }
-            break;
+                }else{ //esiste già quelcuno con queste credenziali
+                    $_POST['approved'] = 1;
+                    $_POST['msg'] = "Risulta già uno docente con lo stesso id o email";
+                }
+                break;
 
             case 'modifica':
-
-                //query per verificare la presenza del suddetto docente
-                $check = "  SELECT 1
-                            FROM docente
-                            WHERE id = $1 AND email = $2";
-
-                $result_check = pg_prepare($db, "check", $check);
-                $result_check = pg_execute($db, "check", array($id,$email));
 
                 if($result_check >= 1){ //se il numero di righe è 1 allora lo docente risulta presente
 
@@ -125,12 +117,6 @@ if (isset($_POST))  {
 
 
             case 'cancella':
-                $check = "  SELECT 1
-                            FROM docente
-                            WHERE id = $1 AND email = $2";
-
-                $result_check = pg_prepare($db, "check", $check);
-                $result_check = pg_execute($db, "check", array($id,$email));
 
                 if($result_check = 1){
 

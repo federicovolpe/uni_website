@@ -80,27 +80,19 @@ if (isset($_POST))  {
                         $sql .= "nome = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['nome'];
-                    }
-                    
-                    if (isset($_POST['cognome']) && !empty($_POST['cognome'])) {
+                    }if (isset($_POST['cognome']) && !empty($_POST['cognome'])) {
                         $sql .= "cognome = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['cognome'];
-                    }
-                    
-                    if (isset($_POST['email']) && !empty($_POST['email'])) {
+                    }if (isset($_POST['email']) && !empty($_POST['email'])) {
                         $sql .= "email = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['email'];
-                    }
-                    
-                    if (isset($_POST['password']) && !empty($_POST['password'])) {
+                    }if (isset($_POST['password']) && !empty($_POST['password'])) {
                         $sql .= "passwrd = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['password'];
-                    }
-                    
-                    if (isset($_POST['corso']) && !empty($_POST['corso'])) {
+                    }if (isset($_POST['corso']) && !empty($_POST['corso'])) {
                         $sql .= "corso_frequentato = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['corso'];

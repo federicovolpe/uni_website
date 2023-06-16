@@ -6,24 +6,18 @@
     //se il parametro in get update_docente sono settati
     if(isset($_GET['update_docente'])){
         //chiamo la funzione update_docente
-        echo'operazione di update_docente';
         include_once('funzioni_segreteria/update_docente.php');
-    }
-    if(isset($_GET['update_studente'])){
+
+    }if(isset($_GET['update_studente'])){
         //chiamo la funzione update_studente
-        echo'operazione di update_studente'. $_POST['matricola']." corso: ".$_POST['corso'];
         include_once('funzioni_segreteria/update_studente.php');
-    }
-    if(isset($_GET['update_insegnamento'])){
-        //chiamo la funzione update_insegnamento
-        echo'operazione di update_insegnamento';
-        include_once('funzioni_segreteria/update_insegnamento.php');
-    }
-    if(isset($_GET['update_corso'])){
+
+    }if(isset($_GET['update_corso'])){
         //chiamo la funzione update_corso
-        echo'operazione di update_corso';
         include_once('funzioni_segreteria/update_corso.php');
-    }
+
+    }// non c'è bisogno di fare anche per update_insegnamento perchè è già stato fatto un redirect nel form
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +42,18 @@
     </nav>
     <?php //stampa di eventuali messaggi di errore
         messaggi_errore_post2();
+        //stampa degli eventuali messaggi in $_SESSION
+        if(isset($_SESSION['approved']) && $_SESSION['approved'] == 0 && isset($_SESSION['msg'])){
+            echo '<div class="alert alert-success" role="alert">
+            ' . $_SESSION['msg'] . '</div>';
+            
+        //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
+        }else if(isset($_SESSION['approved']) && $_SESSION['approved'] == 1 && isset($_SESSION['msg'])){
+            echo '<div class="alert alert-danger" role="alert">
+            ' . $_SESSION['msg'] . '</div>';
+        }
+        unset($_SESSION['msg']); 
+        unset($_SESSION['approved']); 
     ?>
 
         <div class="row">
@@ -224,25 +230,41 @@
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Id:</span>
-                                        <input type="text" class="form-control" name="id" id="id">
+                                        <input type="text" class="form-control" name="id_corso" id="id_corso">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <span class = "input-group-text">Nome:</span>
-                                        <input type="text" class="form-control" name="nome" id="nome">
+                                        <input type="text" class="form-control" name="nome_corso" id="nome_corso">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <div class="col">
+                  <label for="descrizione_corso">Descrizione:</label>
+                  <textarea class="form-control" name="descrizione_corso" id="descrizione_corso" rows="4"></textarea>
+                </div>
+                <div class="col">
+                  <label for="docente_responsabile">Docente responsabile:</label>
+                  <select class="form-select" name="insegnante_responsabile" id="insegnante_responsabile" aria-label="Default select example">
+                    <?php //generazione della selezione dei corsi
+                      $db = pg_connect("host=localhost port=5432 dbname=unimio ");
+                      $sql = "SELECT nome, cognome, id FROM docente";
+                      $result = pg_query($db, $sql);
+                      while ($row = pg_fetch_assoc($result)) {
+                        echo "<option value='" . $row['id'] . "'>" . $row['nome'] ." ".$row['cognome']." / " .$row['id']."</option>";
+                      }
+                    ?>
+                  </select>
+                </div>
                     <div class="form-row">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col">
                                     <div class="form-row">
-                                        <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
+                                        <select class="form-select" name="laurea" id="laurea" aria-label="Default select example">
                                             <option value="triennale">Triennale</option>
                                             <option value="magistrale">Magistrale</option>
                                         </select>
@@ -265,15 +287,15 @@
             </div>
 
             <div class="col-sm-6">
-    <form class="form-segreteria" action="<?php echo $_SERVER['PHP_SELF']; ?>?update_insegnamento'" method="POST">
+    <form class="form-segreteria" action="funzioni_segreteria/update_insegnamento.php" method="POST">
       <h3>Inserisci o modifica un insegnamento</h3>
       <div class="form-row">
         <div class="form-group">
           <div class="row">
             <div class="col">
               <div class="input-group mb-3">
-                <span class="input-group-text">Id:</span>
-                <input type="text" class="form-control" name="id" id="id">
+                <span class="input-group-text">id:</span>
+                <input type="text" class="form-control" name="id_insegnamento" id="id_insegnamento" required>
               </div>
             </div>
             <div class="col">
@@ -292,10 +314,10 @@
             <div class="col">
               <div class="form-row align-items-center">
                 <div class="col">
-                  <select class="form-select" name="operazione" id="operazione" aria-label="Default select example">
-                  <option value="primo">Primo</option>
-                    <option value="secondo">Secondo</option>
-                    <option value="terzo">Terzo</option>
+                  <select class="form-select" name="anno" id="anno" aria-label="Default select example">
+                  <option value="1">Primo</option>
+                    <option value="2">Secondo</option>
+                    <option value="3">Terzo</option>
                   </select>
                 </div>
                 <div class="col">
@@ -307,31 +329,30 @@
                   <textarea class="form-control" name="descrizione" id="descrizione" rows="4"></textarea>
                 </div>
                 <div class="col">
+                  <label for="docente_responsabile">Docente responsabile:</label>
+                  <select class="form-select" name="insegnante_responsabile" id="insegnante_responsabile" aria-label="Default select example">
+                    <?php //generazione della selezione dei corsi
+                      $db = pg_connect("host=localhost port=5432 dbname=unimio ");
+                      $sql = "SELECT nome, cognome, id FROM docente";
+                      $result = pg_query($db, $sql);
+                      while ($row = pg_fetch_assoc($result)) {
+                        echo "<option value='" . $row['id'] . "'>" . $row['nome'] ." ".$row['cognome']." / " .$row['id']."</option>";
+                      }
+                    ?>
+                  </select>
+                </div>
+                <div class="col">
                   <label for="corso-input">Corso:</label>
                   <select class="form-select" name="corso" id="corso" aria-label="Default select example">
                     <?php //generazione della selezione dei corsi
                       $db = pg_connect("host=localhost port=5432 dbname=unimio ");
                       $sql = "SELECT nome_corso as nome, id FROM corso";
                       $result = pg_query($db, $sql);
-                      print'numero di righe: '.pg_num_rows($result);
                       while ($row = pg_fetch_assoc($result)) {
                         echo "<option value='" . $row['id'] . "'>" . $row['nome'] . "</option>";
                       }
                     ?>
                   </select>
-                    <div id="propedeutici">
-                      
-                    </div>
-                    
-                    <?php
-                        $db = pg_connect("host=localhost port=5432 dbname=unimio ");
-                        $sql = "SELECT nome, id FROM insegnamento WHERE corso = $1";
-                        $result = pg_query_params($db, $sql, array($_POST['corso']));
-                        print'numero di righe: '.pg_num_rows($result);
-                        while ($row = pg_fetch_assoc($result)) {
-                            echo "<option value='" . $row['id'] . "'>" . $row['nome'] . "</option>";
-                        }
-                    ?>
                 </div>
               </div>
             </div>
