@@ -1,0 +1,1 @@
+file che prevede la spiegazione del mio setup
