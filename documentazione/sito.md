@@ -11,7 +11,7 @@ per la creazione del database si è scelto di seguire il seguente schema ER
         <p>È una semplice pagina di login che permette il riempimento di una form con i dati dell'utente 
         quali email e password.</p>
     </div>
-    <img src="../immagini/login.gif" alt="GIF" style="margin-left: 10px; width: 50%">
+    <img src="../media/login.gif" alt="GIF" style="margin-left: 10px; width: 50%">
 </div>
 nella pagina di login è presente un flag che indica se è stato tentato un accesso, se cosi fosse viene chiamato lo script:
 

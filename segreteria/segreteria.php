@@ -24,7 +24,7 @@
 <head>
 <?php
     include_once("../lib/head.php"); 
-    include_once("../lib/variabili_sessione.php");
+    //include_once("../lib/variabili_sessione.php");
     include_once('../lib/navbar.php');
 
 ?>

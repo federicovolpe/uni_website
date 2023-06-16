@@ -133,8 +133,6 @@
 
         <?php include_once('../lib/cambio_password.php')?>
         <?php script_boostrap()?>
-
-        
 </body>
 </html>
 

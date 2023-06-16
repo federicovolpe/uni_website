@@ -3,7 +3,7 @@
     <div class="container-fluid">
     
         <a class="navbar-brand" href="#">
-            <img src="/uni_website/immagini/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> 
+            <img src="/uni_website/media/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> 
             Università degli Studi di Milano
         </a>
             <?php

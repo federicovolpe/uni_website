@@ -50,7 +50,7 @@ VALUES
   (342631, 'Bibi',      'Huskinson', 'bibi@studenti.unimi.it', 'password14',  9202226989),
   (596144, 'Madlin',    'Findley', 'madlin@studenti.unimi.it', 'password15',  9202226989),
   (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc',    7028895757),
-  (986892  , 'prova',  'prova', 'prova@studenti.unimi.it'  ,'password1' ,9175738010  );
+  (986892  , 'prova',  'prova', 'prova@studenti.unimi.it'  ,'password1' ,  9175738010  );
 
 
 CREATE TABLE docente(
