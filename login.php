@@ -2,7 +2,6 @@
     //include functions.php
     include_once("lib/functions.php");
     session_start();
-    include_once("/lib/variabili_sessione.php");
 
     //se è stato tentato  un login allora utilizzo il dispatcher per il controllo e fetchd dei dati e il reindirizzamento
     if(isset($_GET['log_try'])&& $_GET['log_try'] == 1 ){
@@ -41,7 +40,7 @@
                 settata per attivare il dispatcher-->
             <form style="width: 50%; justify-content:center; align-items: center;"action="login.php?log_try=1" method="POST">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="email">Emaail</span>
+                    <span class="input-group-text" id="email">Email</span>
                     <input type="text" class="form-control"  name="email" placeholder="Inserisci email" aria-label="email" aria-describedby="basic-addon1">
                 </div>
 
