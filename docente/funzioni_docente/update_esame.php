@@ -47,7 +47,7 @@
         $_SESSION['esame_id'] = $_GET['esame'];
     ?>
     
-    <h1>Update Esame</h1>
+    <h1>Modifica dell'esame</h1>
 
     esame da modificare: 
         <?php 

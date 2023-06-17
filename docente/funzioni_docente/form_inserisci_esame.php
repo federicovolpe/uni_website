@@ -1,13 +1,14 @@
-
 <form style="border: 1px solid blue;
     padding: 4%;
     width: 90%;
     border-radius: 3%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin: 0 auto;"
-    " action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
-    <div class="form-row">
+    action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
+    <h3 style="text-align: center;">programma un nuovo esame:</h3>
+    <div class="form-row" style="text-align: center;">
         <div class="form-group">
             <div class="row">
                 <div class="col">

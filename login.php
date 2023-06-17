@@ -2,6 +2,7 @@
     //include functions.php
     include_once("lib/functions.php");
     session_start();
+    include_once("/lib/variabili_sessione.php");
 
     //se è stato tentato  un login allora utilizzo il dispatcher per il controllo e fetchd dei dati e il reindirizzamento
     if(isset($_GET['log_try'])&& $_GET['log_try'] == 1 ){

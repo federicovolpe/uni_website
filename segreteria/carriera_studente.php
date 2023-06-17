@@ -18,10 +18,7 @@
 </head>
 
 <body>
-    <?php include_once('../lib/navbar.php'); 
-            include_once('../lib/variabili_sessione.php');
-            
-    ?>
+    <?php include_once('../lib/navbar.php'); ?>
     
     <?php if($_POST['tipo_carriera'] == 'carriera_completa'){ // stampa di una carriera completa di uno studente?>
         <h2>tutti gli esiti degli esami sostenuti</h2>
@@ -90,8 +87,8 @@
     <!----------------------------------------- STAMPA DELLA CARRIERA VALIDA --------------------------------->
     <?php }else if($_POST['tipo_carriera'] == 'carriera_valida'){?>
         
+        <div class="row" style="margin-top: 3%;margin: 5%;">
         <h2>carriera valida dello studente</h2>
-        <div>
         <div class= "table-container">
         <table class="table table-striped">
             <thead>
