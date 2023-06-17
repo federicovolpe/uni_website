@@ -22,16 +22,16 @@ if (isset($_POST))  {
         //controllo che non ci sia già uno docente con lo stessa id
         $check = "SELECT 1
             FROM docente
-            WHERE id = $1 OR email = $2";
+            WHERE id = $1";
 
-        $result_check = pg_prepare($db, "check", $sql);
-        $result_check = pg_execute($db, "check", array($id,$email));
+        $result_check = pg_prepare($db, "check", $check);
+        $result_check = pg_execute($db, "check", array($id));
+        $result_check = pg_fetch_row($result_check);
 
         switch($operazione){
             case 'aggiungi':
 
-                if(empty($result_check)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
-                    
+                if(empty($result_check && !$result_check[0] == 1)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
                         $inserzione_sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
                                 VALUES ($1, $2, $3, $4, $5)";
                         $preparato = pg_prepare($db, "inserzione", $inserzione_sql);
@@ -58,7 +58,7 @@ if (isset($_POST))  {
 
             case 'modifica':
 
-                if($result_check >= 1){ //se il numero di righe è 1 allora lo docente risulta presente
+                if($result_check && $result_check[0] == 1){ //se il numero di righe è 1 allora lo docente risulta presente
 
                     $contaparametri = 2;
                     $sql = "UPDATE docente
@@ -110,24 +110,24 @@ if (isset($_POST))  {
                     }
                 }else{
                     $_POST['approved'] = 1;
-                     $_POST['msg'] = "non risulta un professore con questa email e password";
+                     $_POST['msg'] = "non risulta un professore con questa email e password!:res ".$result_check[0];
                 }
             break;
 
 
             case 'cancella':
 
-                if($result_check = 1){
+                if($result_check && $result_check[0] == 1){
 
-                    $sql = "DELETE FROM docente WHERE id = $1 AND email = $2";
-                    $result = pg_prepare($db, "op_docente", $sql);
+                    $cancella_sql = "DELETE FROM docente WHERE id = $1";
+                    $result = pg_prepare($db, "op_docente", $cancella_sql);
                 
                     if ($result) { //se la preparazione della query va a buon fine allora la eseguo
-                        $cancellato = pg_execute($db, "op_docente", array($id, $email));
+                        $cancellato = pg_execute($db, "op_docente", array($id));
 
                         if ($cancellato) {
                             $_POST['approved'] = 0;
-                            $_POST['msg'] = "il docente è stato cancellato con successo";
+                            $_POST['msg'] = "il docente ".$id." è stato cancellato con successo";
                         } else {
                             $_POST['approved'] = 1;
                             $_POST['msg'] = pg_last_error();

@@ -1,6 +1,5 @@
 <?php
     $db = pg_connect("host = localhost port = 5432 dbname = unimio");
-print'entrato nello script php----------------------------------<br>';
     //control
     if($db){
         //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
@@ -10,11 +9,12 @@ print'entrato nello script php----------------------------------<br>';
             WHERE id = $1";
         $result = pg_prepare($db, "check", $check_sql);
         $result = pg_execute($db, "check", array($_POST['id_corso']));
+        $result_check = pg_fetch_row($result);
         
         switch ($_POST['operazione']){
             case 'aggiungi':
-                print'entrato nell\'inserzione<br>';
-                if($result == 1){//ritorno un messaggio di errore
+
+                if($result_check[0] == 1){//ritorno un messaggio di errore
                     $_POST['approved'] = 1;
                     $_POST['msg'] = "Esiste già un insegnamento con questo id";
                 }else{
@@ -32,7 +32,7 @@ print'entrato nello script php----------------------------------<br>';
 
                         if($inserito){
                             $_POST['approved'] = 0;
-                            $_POST['msg'] = "L'insegnamento è stato inserito con successo";
+                            $_POST['msg'] = "L'insegnamento ".$id." è stato inserito con successo";
                         }else{
                             $_POST['approved'] = 1;
                             $_POST['msg'] = pg_last_error();
@@ -46,24 +46,24 @@ print'entrato nello script php----------------------------------<br>';
 
             case 'modifica':
                 
-                if($result = 1){
+                if($result_check && $result_check[0] == 1){
                     //composizione della query in base ai parametri inseriti
                     $contaparametri = 2;
                     $modifica_sql = "UPDATE corso 
-                                    SET";
+                                    SET ";
                     $array = [];
                     $array[] = $_POST['id_corso'];
                                         //------------  inizio della composizione  --------
                     if(isset($_POST['nome_corso']) && !empty($_POST['nome_corso'])){
-                        $modifica_sql .= "nome_corso = $$contaparametri";
+                        $modifica_sql .= "nome_corso = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['nome_corso'];
                     }if(isset($_POST['descrizione_corso']) && !empty($_POST['descrizione_corso'])){
-                        $modifica_sql .= "descrizione = $$contaparametri";
+                        $modifica_sql .= "descrizione = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['descrizione_corso'];
                     }if(isset($_POST['laurea']) && !empty($_POST['laurea'])){
-                        $modifica_sql .= "laurea = $$contaparametri";
+                        $modifica_sql .= "laurea = $$contaparametri,";
                         $contaparametri++;
                         $array[] = $_POST['laurea'];
                     }
@@ -75,14 +75,19 @@ print'entrato nello script php----------------------------------<br>';
                     $modifica_sql = $modifica_sql ." WHERE id = $1";
                     
                     $preparato = pg_prepare($db, "modifica", $modifica_sql);
-                    $esito_modifica = pg_execute($db, "modifica", $array);
+                    if($preparato){
+                        $esito_modifica = pg_execute($db, "modifica", $array);
 
-                    if($esito_modifica){
-                        $_POST['approved'] = 0;
-                        $_POST['msg'] = "Il corso è stato modificato con successo";
+                        if($esito_modifica){
+                            $_POST['approved'] = 0;
+                            $_POST['msg'] = "Il corso ".$id." è stato modificato con successo";
+                        }else{
+                            $_POST['approved'] = 1;
+                            $_POST['msg'] = pg_last_error();
+                        }
                     }else{
                         $_POST['approved'] = 1;
-                        $_POST['msg'] = pg_last_error();
+                            $_POST['msg'] = 'qualcosa è andato storto nella preparazione della query: '.$modifica_sql;
                     }
                 }else{//ritorno un messaggio di errore
                     $_POST['approved'] = 1;
@@ -91,7 +96,7 @@ print'entrato nello script php----------------------------------<br>';
                 break;
 
             case 'cancella': //cancellazione dell'insegnamento con l'id inserito
-                    if($result){
+                    if($result_check && $result_check[0] == 1){
                         $cancellazione_sql = "DELETE FROM corso WHERE id = $1";
                         
                         $cancellazione = pg_prepare($db, "cancellazione", $cancellazione_sql);
@@ -105,7 +110,7 @@ print'entrato nello script php----------------------------------<br>';
                         }
                     }else{//ritorno un messaggio di errore
                         $_POST['approved'] = 1;
-                        $_POST['msg'] = "Non esiste un corso con questo id1 ".$_POST['id_corso']."<br>";
+                        $_POST['msg'] = "Non esiste un corso con questo id ".$id."<br>";
                     }
                 break;
 

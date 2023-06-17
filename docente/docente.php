@@ -25,11 +25,8 @@ if (isset($_GET['cancella_esame'])) {
 include_once("../lib/head.php");
 ?>
 
-<body>
-    <?php
-    include_once('../lib/navbar.php');
-    messaggi_errore_post2();
-    ?>
+<body style="background-color: white">
+    <?php include_once('../lib/navbar.php'); ?>
     <div style="margin-top: 3%;margin: 2%;">
         <h3>esami programmati dal docente</h3>
         <div class="table-container">

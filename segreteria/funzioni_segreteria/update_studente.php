@@ -21,19 +21,20 @@ if (isset($_POST))  {
 
     // connessione al database
     $db = pg_connect("host=localhost port=5432 dbname=unimio");
+    //controllo che non ci sia già uno studente con la stessa matricola
+    $check = "SELECT 1
+              FROM studente
+              WHERE matricola = $1";
+
+    $result_check = pg_prepare($db, "check", $check);
+    $result_check = pg_execute($db, "check", array($matricola));
+    $result_check = pg_fetch_row($result_check);
 
     if ($db) {
         switch($operazione){
             case 'aggiungi':
-                //controllo che non ci sia già uno studente con la stessa matricola
-                $check = "SELECT 1
-                    FROM studente
-                    WHERE matricola = $1 OR email = $2";
-
-                $result_check = pg_prepare($db, "check", $sql);
-                $result_check = pg_execute($db, "check", array($matricola,$email));
-
-            if(empty($result_check)){// se il risultato è vuoto allora significa che non esiste nessuno studente già registrato con queste credenziali
+                
+            if($result_check && !$result_check[0] == 1){// se il risultato è vuoto allora significa che non esiste nessuno studente già registrato con queste credenziali
                 
                     $sql = "INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato) 
                             VALUES ($1, $2, $3, $4, $5, $6)";
@@ -44,7 +45,7 @@ if (isset($_POST))  {
 
                         if ($inserito) { //segnalazione con un messaggio di successo
                             $_POST['approved'] = 0;
-                            $_POST['msg'] = "lo studente è stato inserito";
+                            $_POST['msg'] = "lo studente ".$matricola." è stato inserito";
                         } else {     //segnalazione con un messaggio di fallito inserimento
                             $_POST['approved'] = 1;
                             $_POST['msg'] = pg_last_error();
@@ -61,15 +62,7 @@ if (isset($_POST))  {
 
             case 'modifica':
 
-                //query per verificare la presenza del suddetto studente
-                $check = "  SELECT 1
-                            FROM studente
-                            WHERE matricola = $1 AND email = $2";
-
-                $result_check = pg_prepare($db, "check", $check);
-                $result_check = pg_execute($db, "check", array($matricola,$email));
-
-                if($result_check = 1){ //se il numero di righe è 1 allora lo studente risulta presente
+                if($result_check && $result_check[0] == 1){ //se il numero di righe è 1 allora lo studente risulta presente
                     //compongo la query in base ai campi che sono settati per essere modificati
                     $contaparametri = 2;
                     $sql = "UPDATE studente 
@@ -110,7 +103,7 @@ if (isset($_POST))  {
                     
                     if ($esito_modifica) {//ritorno al sito con un messaggio di successo
                         $_POST['approved'] = 0;
-                        $_POST['msg'] = "lo studente è stato modificato";
+                        $_POST['msg'] = "lo studente ".$matricola." è stato modificato";
                     } else {
                         $_POST['approved'] = 1;
                         $_POST['msg'] = pg_last_error();
@@ -123,14 +116,8 @@ if (isset($_POST))  {
 
 
             case 'cancella':
-                $check = "  SELECT 1
-                            FROM studente
-                            WHERE matricola = $1 AND email = $2";
 
-                $result_check = pg_prepare($db, "check", $check);
-                $result_check = pg_execute($db, "check", array($matricola,$email));
-
-                if($result_check = 1){
+                if($result_check && $result_check[0] == 1){
 
                     $sql = "DELETE FROM studente WHERE matricola = $1";
                     $result = pg_prepare($db, "op_studente", $sql);
@@ -140,7 +127,7 @@ if (isset($_POST))  {
 
                         if ($cancellato) {//ritorno un messaggio di successo per la cancellazione
                             $_POST['approved'] = 0;
-                            $_POST['msg'] = "lo studente è stato cancellato con successo";
+                            $_POST['msg'] = "lo studente ".$matricola." è stato cancellato con successo";
                         } else {
                             $_POST['approved'] = 1;
                             $_POST['msg'] = pg_last_error();

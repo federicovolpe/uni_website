@@ -30,8 +30,9 @@
                             <p class="navbar-text">Id: ' . $_SESSION['id'] . '</p>');
                     }
                     echo( '<p class="navbar-text">'.$_SESSION['nome'] . ' ' . $_SESSION['cognome'] . '</p></div>');   
+                    echo('<button type="button" onclick="window.location.href=\'../login.php\'" class="btn btn-outline-primary">logout</button>');
                 }
-                echo('<button type="button" onclick="window.location.href=\'../login.php\'" class="btn btn-outline-primary">logout</button>');
+                
             ?>
     </div>
 </nav>    

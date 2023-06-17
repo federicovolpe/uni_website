@@ -51,7 +51,7 @@
 
 </head>
 
-<body>
+<body style="background-color:white">
     <?php
         include_once('../lib/navbar.php');
     ?>

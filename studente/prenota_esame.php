@@ -65,13 +65,11 @@
     </script>
 </head>
 
-<body>
-    <?php include_once('../lib/navbar.php'); 
-            messaggi_errore_post2();
-    ?>
+<body style="background-color: white;">
+    <?php include_once('../lib/navbar.php'); ?>
     
-        <?php  print("<h2>esami a cui ti puoi prenotare</h2>");?>
-    <div>
+    <div style="margin-top: 3%;margin: 5%;">
+    <h2>esami a cui ti puoi prenotare</h2>
         <div class= "table-container">
         <table class="table table-striped">
         <caption><?php print("corso: ". $_SESSION['corso_frequentato'] . " utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>

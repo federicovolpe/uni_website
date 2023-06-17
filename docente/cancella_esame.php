@@ -1,7 +1,6 @@
 <?php
 //obiettivo: cancellare l'esame specificato in $esame
     $esame_id = $_GET['cancella_esame']; 
-    print("esame : ". $esame_id."</br>");
     
     $db = pg_connect("dbname=unimio host=localhost port=5432");
     if($db){
@@ -9,13 +8,12 @@
                 WHERE id = $1";
         $preparazione = pg_prepare($db , "cancellazione", $sql);
         if($preparazione){
-            print'query preparata con successo';
             $eseguito = pg_execute($db, "cancellazione", array($esame_id));
         
             if($eseguito){
                 
                 //ritorno un messaggio di successo
-                $_POST['msg'] = "esame". $esame_id ." cancellato con successo";
+                $_POST['msg'] = "esame: ". $esame_id ." cancellato con successo";
                 $_POST['approved'] = 0;
             }
         }else{//ritorno un messaggio di errore

@@ -7,6 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="login.php">login.php</a><br>
+    direzionamento alla pagina login.php
+    <?php //redirezionamento alla pagina logni.php
+        header("Location: login.php");    
+    ?>
 </body>
 </html>
