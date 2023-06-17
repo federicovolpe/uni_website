@@ -7,7 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    link per il login docente <br>
-    <a href="login.php">link</a><br>
+    <a href="login.php">login.php</a><br>
 </body>
 </html>

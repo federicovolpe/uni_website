@@ -37,4 +37,15 @@
             ?>
     </div>
 </nav>    
+    <?php messaggi_errore_post2()?>
+    
+    <?php //mostra il messaggio di benvenuto solo se ci si trova nelle pagine home utente
+        $currentPage = basename($_SERVER['PHP_SELF']); //recupero del nome finale della pagina
+
+        if($currentPage == 'studente.php' || $currentPage == 'docente.php' || $currentPage == 'segreteria.php'){  
+            print("<div style= \"text-align: center; margin: 10px\">
+                        <h1>Benvenuto ".  $_SESSION['nome']." ". $_SESSION['cognome'] ."</h1>
+                    </div>");
+        }
+    ?>    
 </body>

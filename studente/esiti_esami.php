@@ -22,11 +22,20 @@
             messaggi_errore_post2();
     ?>
     
+        
+    <div class="row" style="margin-top: 3%;margin: 5%;">
         <h2>tutti gli esiti degli esami sostenuti</h2>
-    <div>
-        <div class= "table-container">
+        <div class= "table-container" >
+        
         <table class="table table-striped">
-        <caption><?php print("corso: ". $_SESSION['corso_frequentato'] . " utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
+        <?php // recupero del nome del corso
+            $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+            $sql = "SELECT nome_corso FROM corso WHERE id = $1";
+            $nome_corso = pg_query_params($db, $sql, array($_SESSION['corso_frequentato']));
+            $array = pg_fetch_assoc($nome_corso);
+            $nome_corso = $array['nome_corso'];
+        ?>    
+        <caption><?php print("corso: ". $nome_corso . "     utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
             <thead>
                 <tr>
                     <th scope="col"> Materia </th>

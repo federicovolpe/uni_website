@@ -33,7 +33,7 @@
             messaggi_errore_post2();
         ?>
     <div class="login-form">
-        <div style="display: flex; flex-direction: column; justify-content: center;align-items: center;">
+        <div style="display: flex; flex-direction: column; justify-content: center;width: 85%;align-items: center;">
             <h1 class="text-center" style="color: blue">Benvenuto nella pagina di login</h1>
 
             <!--form che reindirizza a questa stessa pagina ma con la variabile di log( settata a 1 se si è tentato un login )
