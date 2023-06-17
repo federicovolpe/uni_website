@@ -40,21 +40,21 @@ if (isset($_GET['update_corso'])) {
     <nav class="navbar bg-body-tertiary">
         <?php include_once('../lib/navbar.php') ?>
     </nav>
-    <?php //stampa di eventuali messaggi di errore
-    messaggi_errore_post2();
-    //stampa degli eventuali messaggi in $_SESSION
-    if (isset($_SESSION['approved']) && $_SESSION['approved'] == 0 && isset($_SESSION['msg'])) {
-        echo '<div class="alert alert-success" role="alert">
-            ' . $_SESSION['msg'] . '</div>';
+    <?php 
+        //stampa degli eventuali messaggi in $_SESSION
+        if (isset($_SESSION['approved']) && $_SESSION['approved'] == 0 && isset($_SESSION['msg'])) {
+            echo '<div class="alert alert-success" role="alert">
+                ' . $_SESSION['msg'] . '</div>';
 
-        //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
-    } else if (isset($_SESSION['approved']) && $_SESSION['approved'] == 1 && isset($_SESSION['msg'])) {
-        echo '<div class="alert alert-danger" role="alert">
-            ' . $_SESSION['msg'] . '</div>';
-    }
-    unset($_SESSION['msg']);
-    unset($_SESSION['approved']);
+            //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
+        } else if (isset($_SESSION['approved']) && $_SESSION['approved'] == 1 && isset($_SESSION['msg'])) {
+            echo '<div class="alert alert-danger" role="alert">
+                ' . $_SESSION['msg'] . '</div>';
+        }
+        unset($_SESSION['msg']);
+        unset($_SESSION['approved']);
     ?>
+    
     <div class="forms" style="align-items: center; margin:5%">
         <div class="row">
             <div class="col-sm-6">

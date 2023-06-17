@@ -2,8 +2,7 @@
 //i messaggi di errore sono tutti salvati nelle variabili di session poicè si verrà redirezionati alla pagina segreteria.php
 session_start();
     //salvataggio delle variabili salvate in post per il la query successiva se è la prima volta che viene aperta la pagina
-    if(isset($_POST['id_insegnamento'])){
-        print'salvo le variabili in sessione';
+    if($_POST['operazione'] == 'aggiungi'){ 
         $_SESSION['id_insegnamento'] = $_POST['id_insegnamento'];
         $_SESSION['nome_insegnamento'] = $_POST['nome'];
         $_SESSION['cfu'] = $_POST['cfu'];
@@ -13,8 +12,6 @@ session_start();
         $_SESSION['descrizione'] = $_POST['descrizione'];
         $_SESSION['docente_responsabile'] = $_POST['docente_responsabile'];
     }
-    include_once "../../lib/variabili_sessione.php";
-    print'variabile id insegnamento: '.$_SESSION['id_insegnamento'];
 
     $db = pg_connect("host = localhost port = 5432 dbname = unimio");
 
@@ -183,37 +180,40 @@ session_start();
 <head>
 <?php
     include_once("../../lib/head.php"); 
-    include_once("../../lib/variabili_sessione.php");
-    include_once('../../lib/navbar.php');
-
+    include_once("../../lib/functions.php")
 ?>
 </head>
 
 <body>
-<?php 
-    if(isset($_SESSION['approved']) && $_SESSION['approved'] == 0 && isset($_SESSION['msg'])){
-            echo '<div class="alert alert-success" role="alert">
+<?php include_once('../../lib/navbar.php');
+
+        if(isset($_SESSION['approved']) && $_SESSION['approved'] == 0 && isset($_SESSION['msg'])){
+                echo '<div class="alert alert-success" role="alert">
+                ' . $_SESSION['msg'] . '</div>';
+                
+            //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
+        }else if(isset($_SESSION['approved']) && $_SESSION['approved'] == 1 && isset($_SESSION['msg'])){
+            echo '<div class="alert alert-danger" role="alert">
             ' . $_SESSION['msg'] . '</div>';
-            
-        //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
-    }else if(isset($_SESSION['approved']) && $_SESSION['approved'] == 1 && isset($_SESSION['msg'])){
-        echo '<div class="alert alert-danger" role="alert">
-        ' . $_SESSION['msg'] . '</div>';
-    } 
+        } 
 ?>
-<p>seleziona i corsi che saranno propedeutici per l'insegnamento<br></p>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci" method="POST">
+
+
+<form class="login-form" style="align-items: center; justify-content: center" action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci" method="POST">
+<h3>seleziona i corsi che saranno propedeutici per l'insegnamento: <?php $_SESSION['id_insegnamento'];?><br></h3>
     <?php
         $db = pg_connect("host=localhost port=5432 dbname=unimio ");
-        $sql = "SELECT nome, id FROM insegnamento WHERE corso = $1";
+        $sql = "SELECT nome, id as id_insegnamento FROM insegnamento WHERE corso = $1";
         $result = pg_query_params($db, $sql, array($_POST['corso']));
         while ($row = pg_fetch_assoc($result)) {
-            echo "<label>
-                    <input type=\"checkbox\" name=ins".$row['nome']." value='" . $row['id_insegnamento'] . "'>" . $row['nome'] .
-                "</label><br>";
+            echo'<div class="form-check">
+                        <input class="form-check-input" name="' . $row['id_insegnamento'] . '" type="checkbox" value="' . $row['id_insegnamento'] . '" id="flexCheckDefault">
+                        <label class="form-check-label" for="' . $row['id_insegnamento'] . '">' . $row['nome'] . '</label>
+                    </div>';
+
         }
     ?>
-    <input type="submit" value="invia">
+    <button type="submit" style="padding:2%; margin-top: 10px" class="btn btn-primary">Conferma</button>
 </form>
 
 </body>

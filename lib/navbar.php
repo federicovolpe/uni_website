@@ -1,7 +1,5 @@
-
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-    
         <a class="navbar-brand" href="#">
             <img src="/uni_website/media/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> 
             Università degli Studi di Milano
@@ -31,14 +29,13 @@
                         echo('
                             <p class="navbar-text">Id: ' . $_SESSION['id'] . '</p>');
                     }
-                    echo( '<p class="navbar-text">'.$_SESSION['nome'] . ' ' . $_SESSION['cognome'] . '</p></div>');
-                    echo('<button type="button" onclick="window.location.href=\'../login.php\'" class="btn btn-outline-primary">logout</button>');
+                    echo( '<p class="navbar-text">'.$_SESSION['nome'] . ' ' . $_SESSION['cognome'] . '</p></div>');   
                 }
+                echo('<button type="button" onclick="window.location.href=\'../login.php\'" class="btn btn-outline-primary">logout</button>');
             ?>
     </div>
 </nav>    
     <?php messaggi_errore_post2()?>
-    
     <?php //mostra il messaggio di benvenuto solo se ci si trova nelle pagine home utente
         $currentPage = basename($_SERVER['PHP_SELF']); //recupero del nome finale della pagina
 
@@ -48,4 +45,3 @@
                     </div>");
         }
     ?>    
-</body>
