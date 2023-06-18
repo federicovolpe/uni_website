@@ -1,5 +1,6 @@
+<!--  script php che ha lo scopo di cancellare l'esame selezionato dai parametri noti  -->
+
 <?php
-//obiettivo: cancellare l'esame specificato in $esame
     $esame_id = $_GET['cancella_esame']; 
     
     $db = pg_connect("dbname=unimio host=localhost port=5432");

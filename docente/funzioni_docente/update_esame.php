@@ -1,10 +1,13 @@
+<!--  script che consente la modifica dei parametri dell'esame. attualmente solo la data è un parametro ragionevole 
+        da modificare id e nome non avrebbe senso, si fa prima a cancellare  -->
+
 <?php
     //include delle funzioni
     session_start();
     include("../../lib/functions.php");
 
     $_SESSION['esame_id']  = $_GET['esame'];
-    print'esame id: '.$_SESSION['esame_id'];
+
     //se è stato premuto il tasto submit allora la variabile chaange è settata a 1
     if($_GET['change'] == 1){
         //obiettivo: modificare la data dell'esame
@@ -14,13 +17,14 @@
         
         $db = pg_connect("dbname=unimio host=localhost port=5432");
         if($db){
+            // semplice query di update
             $sql = "UPDATE esami SET data = $1 WHERE id = $2";
             $preparazione = pg_prepare($db , "update", $sql);
 
-            if($preparazione){
+            if($preparazione){  
                 $result = pg_execute($db, "update", array($newDate, $esame_id));
 
-                if($result){//setto le variabili di riuscta
+                if($result){// L'esecuzione della modifica è andata a buon fine
                     $_POST['msg'] = "la modifica dell'esame: ".$esame_id." è andata a buon fine, nuova data = " . $newDate ;
                     $_POST['approved'] = 0;
 
@@ -32,6 +36,9 @@
                 $_POST['msg'] = "la preparazione della query NON è andata a buon fine";
                 $_POST['approved'] = 1;
             }
+        }else{// connessione al database fallita
+            $_POST['msg'] = "connessione al database fallita";
+            $_POST['approved'] = 1;
         }
     }
 ?>
@@ -51,7 +58,8 @@
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2%">
         <form class="form-segreteria" style="align-items: center; text-align: center; width: 90%" method="POST" action="update_esame.php?change=1">
             esame da modificare: 
-            <?php 
+
+            <?php //recupero e display delle informazioni riguardanti l'esame
                 echo $_GET['esame']; 
                 $db = pg_connect("dbname=unimio host=localhost port=5432");
                 $info_esame_sql = "SELECT E.id, I.nome AS i_nome, D.nome AS d_nome, E.data
@@ -68,12 +76,12 @@
                     <br>id esame: " . $row['id'];
             ?>
 
-        <!-- form per la raccolta di info per la modifica dell'esame -->
+            <!--   raccolta dell'informazione per la nuova data    -->
             <div>
                 <label for="new_date">nuova data:</label>
                 <input type="date" id="new_date" name="new_date" required>
             </div>
-                <!--passaggio dell'id esame tramite post-->
+                <!--  passaggio nascosto dell'id esame tramite post  -->
             <input type="hidden" name="esame" value="<?php echo $_SESSION['esame_id']; ?>">
             
             <div style="padding: 2%;">

@@ -17,21 +17,25 @@ session_start();
 
     //control
     if($db){
+        //verifica che non esistano già insegnamenti con lo stesso id
+            $check_sql = "SELECT 1
+                FROM insegnamento
+                WHERE id = $1";
+            $result = pg_prepare($db, "check", $check_sql);
+            $result = pg_execute($db, "check", array($_POST['id_insegnamento']));
+            $result_check = pg_fetch_row($result);
+
         //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
         switch ($_SESSION['operazione']){
             case 'aggiungi':
                 if(isset($_GET['inserisci'])){ //se è stato inviato il comando di inserimento allora avvio la query
-                    //verifica che non esistano già insegnamenti con lo stesso id
-                    $check_sql = "SELECT 1
-                        FROM insegnamento
-                        WHERE id = $1";
-                    $result = pg_prepare($db, "check", $check_sql);
-                    $result = pg_execute($db, "check", array($_POST['id_insegnamento']));
-                    if($result == 1){//ritorno un messaggio di errore
+                    
+                    if($result_check[0] == 1){//ritorno un messaggio di errore perchè esiste gia un insegnamento con questo id
                         $_SESSION['approved'] = 1;
                         $_SESSION['msg'] = "Esiste già un insegnamento con questo id";
                         //redirezione alla pagina segreteria.php
                         header("Location: ../segreteria.php");
+
                     }else{
                         $insertion_sql = "INSERT INTO insegnamento (id, nome, descrizione, anno, corso, cfu) 
                                             VALUES ($1, $2, $3, $4, $5, $6)";
@@ -46,15 +50,20 @@ session_start();
                             pg_query_params($db, $docente_sql, array($_SESSION['docente_responsabile'], $_SESSION['id_insegnamento']));
 
                             if($inserito){//inserimento degli insegnamenti propedeutici
-                                
+                                $_SESSION['msg'] = "L'insegnamento ".$_SESSION['id_insegnamento']." è stato inserito con successo<br>propedeuticità:<br>";
                                 foreach ($_POST as $key => $value) {
                                     print'inserimento di key: '.$key.' e value: '.$value;
-                                    $propedeutico_sql = "INSERT INTO propedeuticità (id_insegnamento, id_insegnamento_propedeutico) 
+                                    $propedeutico_sql = "INSERT INTO propedeuticità (insegnamento, propedeutico) 
                                                             VALUES ($1, $2)";
                                     $result = pg_query_params($db, $propedeutico_sql, array($_SESSION['id_insegnamento'], $value));
+                                    if($result != false){
+                                        $_SESSION['msg'] = $_SESSION['msg'] . 'inserita propedeuticità: '.$_SESSION['id_insegnamento'].' -> '.$value.'<br>';
+                                    }else{
+                                        $_SESSION['msg'] = $_SESSION['msg'] . 'non successo: '.$_SESSION['id_insegnamento'].' -> '.$value.'<br>';
+                                    }
                                 }
                                 $_SESSION['approved'] = 0;
-                                $_SESSION['msg'] = "L'insegnamento è stato inserito con successo";
+                                
                                 //redirezione alla pagina segreteria.php
                                 header("Location: ../segreteria.php");
                             }else{
@@ -69,15 +78,8 @@ session_start();
                 }
                 break;
             case 'modifica':
-                //verifica che non esistano già insegnamenti con lo stesso idg
                 
-                $check_sql = "SELECT 1
-                FROM insegnamento
-                WHERE id = $1";
-                $result = pg_prepare($db, "check", $check_sql);
-                $result = pg_execute($db, "check", array($_POST['id_insegnamento']));
-                
-                if($result = 1){
+                if($result_check[0] == 1){//     se esiste un corso con questo id allora procedo
                     //composizione della query in base ai parametri inseriti
                     $contaparametri = 2;
                     $modifica_sql = "UPDATE insegnamento 
@@ -123,7 +125,7 @@ session_start();
                         //redirezione alla pagina segreteria.php
                         header("Location: ../segreteria.php");
                     }
-                }else{//ritorno un messaggio di errore
+                }else{//             nel caso non esistesse un corso con questo id
                     $_SESSION['approved'] = 1;
                     $_SESSION['msg'] = "Non esiste un insegnamento con questo id";
                     //redirezione alla pagina segreteria.php
@@ -132,12 +134,7 @@ session_start();
                 break;
 
             case 'cancella': //cancellazione dell'insegnamento con l'id inserito
-                $check_sql = "SELECT 1
-                        FROM insegnamento
-                        WHERE id = $1";
-                    $result = pg_prepare($db, "check", $check_sql);
-                    $result = pg_execute($db, "check", array($_POST['id_insegnamento']));
-                    if($result == 1){
+                    if($result_check[0] == 1){ //        esiste un segnamento con questo id, posso procedere
                         $cancellazione_sql = "DELETE FROM insegnamento WHERE id = $1";
                         
                         $cancellazione = pg_prepare($db, "cancellazione", $cancellazione_sql);

@@ -30,7 +30,6 @@
         <?php
             //include del file navbar.php
             include_once("lib/navbar.php");
-            messaggi_errore_post2();
         ?>
     <div class="login-form">
         <div style="display: flex; flex-direction: column; justify-content: center;width: 85%;align-items: center;">

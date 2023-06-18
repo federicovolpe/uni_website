@@ -1,3 +1,5 @@
+<!-- form per la raccolta dei dati per l'inserimento di un esame nuovo da parte del docente -->
+
 <form style="border: 1px solid blue;
     padding: 4%;
     width: 90%;
@@ -6,22 +8,25 @@
     flex-direction: column;
     align-items: center;
     margin: 0 auto;"
+
     action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci_esame" method="POST">
     <h3 style="text-align: center;">programma un nuovo esame:</h3>
+
     <div class="form-row" style="text-align: center;">
         <div class="form-group">
             <div class="row">
+
                 <div class="col">
                     <select class="form-select" name="insegnamento" id="insegnamento" aria-label="Default select example">
                         <!--opzioni fra gli insegnamenti del professore specificato-->
                         <?php
                             $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
-                            if($conn){
-                                $sql = "SELECT R.docente, I.nome AS nome_insegnamento
-                                        FROM responsabile_insegnamento AS R
-                                        JOIN insegnamento AS I ON I.id = R.insegnamento
-                                        WHERE docente = $1";
-                                print("query settata</br>");
+                            if($conn){ 
+                                //query che per il docente selezionato raccoglie tutti gli insegnamenti di cui è responsabile
+                                $sql = "SELECT I.nome AS nome_insegnamento
+                                        FROM insegnamento as I 
+                                        WHERE responsabile = $1;";
+                                        
                                 $result = pg_prepare($conn, "insegnamenti_responsabile", $sql);
                                 $insegnamenti = pg_execute($conn, "insegnamenti_responsabile", array($_SESSION['id']));
                                 print("query eseguita</br>");
@@ -47,6 +52,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <button type="submit" style="padding:3px;" class="btn btn-primary">Inserisci</button>
