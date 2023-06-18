@@ -1,3 +1,5 @@
+<!--  script utile per il debugging per la stampa di tutte le variabili di sessione e di post -->
+
 <div style="color: grey;">
     <h5>tutte le variabili di sessione<br></h5>
     <?php

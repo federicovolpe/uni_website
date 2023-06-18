@@ -5,6 +5,11 @@
     include("../lib/functions.php");
     session_start();
 
+    //se si è tentato di eseguire un cambio password
+    if(isset($_GET['change_password'])){
+        include_once('../lib/change_password.php');
+    }
+
     //se il professore ha tentato di inserire un esame allora richiamo lo script
     if (isset($_GET['inserisci_esame'])) {
         //codice sql per inserire un esame

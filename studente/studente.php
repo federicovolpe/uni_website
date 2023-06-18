@@ -4,10 +4,9 @@
     include_once("../lib/functions.php");
     unset($_SESSION['id']);
 
-    //se la pagina è stata con una operazione di cambio password
+    //se si è tentato di eseguire un cambio password
     if(isset($_GET['change_password'])){
-        //utilizzo la funzione change password
-        include_once('../change_password.php');
+        include_once('../lib/change_password.php');
     }
 
     //se lo studente intende fare la rinuncia agli studi

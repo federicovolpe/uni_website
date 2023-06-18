@@ -1,21 +1,28 @@
 <?php
-//include delle funzioni
-include("../lib/functions.php");
-session_start();
+    //include delle funzioni
+    include("../lib/functions.php");
+    session_start();
 
-//se il parametro in get update_docente sono settati
-if (isset($_GET['update_docente'])) {
-    //chiamo la funzione update_docente
-    include_once('funzioni_segreteria/update_docente.php');
-}
-if (isset($_GET['update_studente'])) {
-    //chiamo la funzione update_studente
-    include_once('funzioni_segreteria/update_studente.php');
-}
-if (isset($_GET['update_corso'])) {
-    //chiamo la funzione update_corso
-    include_once('funzioni_segreteria/update_corso.php');
-} // non c'è bisogno di fare anche per update_insegnamento perchè è già stato fatto un redirect nel form
+    //se si è tentato di eseguire un cambio password
+    if(isset($_GET['change_password'])){
+        include_once('../lib/change_password.php');
+    }
+
+    //se il parametro in get update_docente sono settati
+    if (isset($_GET['update_docente'])) {
+        //chiamo la funzione update_docente
+        include_once('funzioni_segreteria/update_docente.php');
+    }
+
+    if (isset($_GET['update_studente'])) {
+        //chiamo la funzione update_studente
+        include_once('funzioni_segreteria/update_studente.php');
+    }
+    
+    if (isset($_GET['update_corso'])) {
+        //chiamo la funzione update_corso
+        include_once('funzioni_segreteria/update_corso.php');
+    } // non c'è bisogno di fare anche per update_insegnamento perchè è già stato fatto un redirect nel form
 
 ?>
 <!DOCTYPE html>

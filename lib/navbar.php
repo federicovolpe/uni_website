@@ -1,10 +1,12 @@
+<!--  script per la generazione di una navbar personalizzata per ogni utente  -->
+
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
             <img src="/uni_website/media/logo_unimi.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top"> 
             Università degli Studi di Milano
         </a>
-            <?php
+            <?php //creazione del riquadro contenente le informazioni dell'utente
             echo('<div class="nome-cognome">
                 <style>
                     .nome-cognome {
@@ -36,7 +38,9 @@
             ?>
     </div>
 </nav>    
+
     <?php messaggi_errore_post2()?>
+    
     <?php //mostra il messaggio di benvenuto solo se ci si trova nelle pagine home utente
         $currentPage = basename($_SERVER['PHP_SELF']); //recupero del nome finale della pagina
 

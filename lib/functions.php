@@ -4,7 +4,7 @@
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         
         if($db){
-            //tabella dove ci sono tutti gli esiti degli esami dello studente
+            //tabella dove ci sono tutti gli esiti degli esami dello studente indicato
             $esiti_sql = "SELECT I.nome, ES.data, E.esito
                             FROM esiti AS E
                             INNER JOIN esami AS ES ON E.esame = ES.id
@@ -16,7 +16,8 @@
 
             if($preparato1){
                 $esiti = pg_execute($db, "esiti", array($matricola));
-                if(pg_num_rows($esiti) > 0){
+
+                if(pg_num_rows($esiti) > 0){ //creazione delle righe della tabella
                     while($row = pg_fetch_assoc($esiti)){
                         echo '<tr>
                                 <td>'. $row['nome'] .'</td>
@@ -27,7 +28,8 @@
                             echo '<td style="color: green;">'. $row['esito'] .'</td>';
                         }
                     }
-                }else{                  
+
+                }else{ //nel caso non ci fossero esiti da mostrare           
                     $_POST['msg'] = 'non ci sono esiti registrati per lo studente '.$matricola;
                     $_POST['approved'] = 1;
                 }
@@ -46,7 +48,8 @@
         //connessione al database
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
-            //tabella dove ci sono gli insegnamenti dello studente con un esame programmato
+
+            //tabella dove ci sono gli insegnamenti dello studente corrispondenti ad un esame a cui ci si può iscrivere o cancellare iscrizione
             $esami_sql = "SELECT ES.esame_id, ES.nome, ES.data
                     FROM studente AS S
                     JOIN
@@ -60,15 +63,20 @@
             if($preparato1){
                 $esami = pg_execute($db, "esami_iscrivibili", array($matricola));
                 if($esami){
+
                     while($row = pg_fetch_assoc($esami)){
-                        //l'ultima colonna metterà in post l'id dell'esame a cui ci si vuole prenotare
+                        
+                        //stampa delle prime due colonne contenenti il nome e la data dell'esame
                         echo '<tr>
                                 <td>'. $row['nome'] .'</td>
                                 <td>'. $row['data'] .'</td>
                                 <td>';
 
                         //query per vedere se ci si è già iscritti a quell'esame
-                        $iscrizioni_sql = "SELECT * FROM iscrizioni WHERE esame = $1 AND studente = $2";
+                        $iscrizioni_sql = "SELECT * 
+                                            FROM iscrizioni 
+                                            WHERE esame = $1 AND studente = $2";
+
                         $preparato2 = pg_prepare($db, "iscrizioni", $iscrizioni_sql);
                         $iscritto = pg_execute($db, "iscrizioni", array($row['esame_id'],$matricola));
 
@@ -101,15 +109,14 @@
     }
 
     function messaggi_errore_post2(){
+
         //se la variabile approved è settata a 0, e c'è un messaggio da mostrare
         if(isset($_POST['approved']) && $_POST['approved'] == 0 && isset($_POST['msg'])){
-            echo '<div class="alert alert-success" role="alert">
-            ' . $_POST['msg'] . '</div>';
+            echo '<div class="alert alert-success" role="alert">' . $_POST['msg'] . '</div>';
 
         //altrimenti se la variabile approved è settata a 1, e c'è un messaggio di errore da mostrare
         }else if(isset($_POST['approved']) && $_POST['approved'] == 1 && isset($_POST['msg'])){
-            echo '<div class="alert alert-danger" role="alert">
-            ' . $_POST['msg'] . '</div>';
+            echo '<div class="alert alert-danger" role="alert">' . $_POST['msg'] . '</div>';
         }
     }
 
@@ -123,32 +130,32 @@
     function verifica_recupera_info(){
         $email = $_SESSION['email'];
         $password = $_SESSION['password'];
-        print('verifica email = '.$email.'<br>');
-         print('verifica password = '.$password.'<br>');
+
         //se le variabili non sono vuote
         if(!empty($email) && !empty($password)){
+
             $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
             if($conn){
                 
+                //caso della verifica di un utente di tipo studente
                 if(substr($email, -17) === 'studenti.unimi.it'){
-                    print("query per i studenti<br>");
                     $query = "SELECT 1
-                        FROM studente
-                        WHERE email = $1 AND passwrd = $2 ;";
+                                FROM studente
+                                WHERE email = $1 AND passwrd = $2 ;";
+
                     $prepara = pg_prepare($conn, "query_di_verifica", $query);
                     $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
-                    print('query di verifica : SELECT 1
-                    FROM studente
-                    WHERE email = '.$email.' AND passwrd = '. $password .' ;');
+
                     if(pg_num_rows($esito_verifica) >= 1){
-                        print('VERIFICA RIUSCITA<br>');
+                        //query per il recupero delle infromazioni riguardanti lo studente indicato
                         $query2 = " SELECT *
-                            FROM studente
-                            WHERE email = $1 AND passwrd = $2 ;";
+                                    FROM studente
+                                    WHERE email = $1 AND passwrd = $2 ;";
+
                         $prepara = pg_prepare($conn, "fetch_info", $query2);
                         $result = pg_execute($conn, "fetch_info", array($email, $password));
 
-                        if($result){  
+                        if($result){  //settaggio delle informazioni ricavate in variabili di sessione 
                             $row = pg_fetch_assoc($result);
                             $_SESSION['nome'] = $row['nome'];
                             $_SESSION['cognome'] = $row['cognome'];    
@@ -163,19 +170,21 @@
                         $_POST['approved'] = 1;
                     }
                 }
+
+                //caso della verifica di un utente di tipo docente
                 if(substr($email, -16) === 'docenti.unimi.it'){
-                    print("query per i docenti<br>");
                     //query ad hoc per i docenti
                     $query = "SELECT 1
-                        FROM docente
-                        WHERE email = $1 AND passwrd = $2 ;";
+                                FROM docente
+                                WHERE email = $1 AND passwrd = $2 ;";
+
                     $prepara = pg_prepare($conn, "query_di_verifica", $query);
                     $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
 
                     if(pg_num_rows($esito_verifica) >= 1){
                         $query2 = " SELECT *
-                            FROM docente
-                            WHERE email = $1 AND passwrd = $2 ;";
+                                    FROM docente
+                                    WHERE email = $1 AND passwrd = $2 ;";
                         $prepara = pg_prepare($conn, "fetch_info", $query2);
                         $result = pg_execute($conn, "fetch_info", array($email, $password));
 
@@ -193,12 +202,14 @@
                         $_POST['approved'] = 1;
                     }
                 }
+
+                //caso della verifica di un utente di tipo segreteria
                 if(substr($email, -19) === 'segreteria.unimi.it'){
                     //query ad hoc per gli utenti di segreteria
-                    print("query per la segreteria<br>");
                     $query = "SELECT 1
                         FROM segreteria
                         WHERE email = $1 AND passwrd = $2 ;";
+
                     $prepara = pg_prepare($conn, "query_di_verifica", $query);
                     $esito_verifica = pg_execute($conn, "query_di_verifica", array($email, $password));
 
@@ -218,7 +229,7 @@
                             // segnalare al dispatcher che l'autenticazione ha avuto successo
                             $_POST['approved'] = 0;
                         }
-                    } else {// Accesso non valido, reindirizzamento a pagina di errore                        
+                    } else {// Accesso non valido, reindirizzamento a pagina di errore (le credenziali non sono state trovate nel database)                       
                         $_POST['msg'] = "le credenziali non sono state trovate nel database";
                         $_POST['approved'] = 1;
                     }
