@@ -1,3 +1,5 @@
+<!-- script per la prenotazione di un esame da parte dello studente -->
+
 <?php
     include_once("../lib/functions.php");
     //fetch degli esami disponibili per lo studente corrente
@@ -7,17 +9,21 @@
     //se il parametro get esame è settato allora è stata richiesta una iscrizione al suddetto esame
     if(isset($_GET["esame"])){
         $esame = $_GET["esame"];
+
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
             
             //query per inserire la prenotazione
-            $sql = "INSERT INTO iscrizioni (studente, esame) VALUES ($1, $2)";
+            $sql = "INSERT INTO iscrizioni (studente, esame) 
+                    VALUES ($1, $2)";
+
             $preparato = pg_prepare($db, "iscrivi", $sql);
             $result = pg_execute($db, "iscrivi", array($matricola, $esame));
 
             if($result){ //se la query di inserimento va a buon fine
                 $_POST['msg'] = "l'iscrizione è andata a buon fine";
                 $_POST['approved'] = 0;
+
             }else{
                 $_POST['msg'] = pg_last_error();
                 $_POST['approved'] = 1;
@@ -28,20 +34,24 @@
         }
     }
 
-    // se invece è stata inpostata la cancellazione dell'iscrizione all'esame allora la cancello
+    // se invece è stata impostata la cancellazione dell'iscrizione all'esame allora la cancello
     if(isset($_GET["c_esame"])){
         $esame = $_GET["c_esame"];
+
         $db = pg_connect("host = localhost port = 5432 dbname = unimio");
         if($db){
             
             //query per inserire la prenotazione
-            $sql = "DELETE FROM iscrizioni WHERE studente = $1 AND esame = $2";
+            $sql = "DELETE FROM iscrizioni 
+                    WHERE studente = $1 AND esame = $2";
+
             $preparato = pg_prepare($db, "cancella", $sql);
             $result = pg_execute($db, "cancella", array($matricola, $esame));
 
             if($result){ //se la query di inserimento va a buon fine
                 $_POST['msg'] = "la cancellazione dell'iscrizione è andata a buon fine";
                 $_POST['approved'] = 0;
+
             }else{
                 $_POST['msg'] = pg_last_error();
                 $_POST['approved'] = 1;
@@ -57,12 +67,6 @@
 <html lang="en">
 <head>
     <?php include_once("../lib/head.php"); ?>
-    <script>
-        // script che fa in modo che quando si clicca il pulsante indietro si venga riportati a studente.php
-        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-            window.location.href = 'studente.php';
-        }
-    </script>
 </head>
 
 <body style="background-color: white;">
@@ -84,6 +88,7 @@
                 if(!empty($matricola)){
                     //query per ottenere tutti gli esami a cui lo studente si può iscrivere
                     display_esami_prenotabili($matricola);
+                    
                 }else{
                     print("matricola non pervenuta");
                 }

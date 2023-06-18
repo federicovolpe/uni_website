@@ -1,8 +1,9 @@
+<!-- script per la modifica cancellazione o inserimento di un corso universitario -->
+
 <?php
     $db = pg_connect("host = localhost port = 5432 dbname = unimio");
-    //control
     if($db){
-        //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
+        
         //verifica che non esistano già corsi con lo stesso id
         $check_sql = "SELECT 1
             FROM corso
@@ -11,28 +12,26 @@
         $result = pg_execute($db, "check", array($_POST['id_corso']));
         $result_check = pg_fetch_row($result);
         
+        //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
         switch ($_POST['operazione']){
             case 'aggiungi':
 
                 if($result_check[0] == 1){//ritorno un messaggio di errore
                     $_POST['approved'] = 1;
-                    $_POST['msg'] = "Esiste già un insegnamento con questo id";
+                    $_POST['msg'] = "Esiste già un corso con questo id";
                 }else{
-                    $insertion_sql = "INSERT INTO corso (id, nome_corso, laurea, descrizione) 
-                                        VALUES ($1, $2, $3, $4)";
+
+                    //query di inserzione del corso
+                    $insertion_sql = "INSERT INTO corso (id, nome_corso, laurea, descrizione, responsabile) 
+                                        VALUES ($1, $2, $3, $4, $5)";
                     $preparato = pg_prepare($db, "inserzione", $insertion_sql);
 
                     if($preparato){
-                        $inserito = pg_execute($db, "inserzione", array($_POST['id_corso'], $_POST['nome_corso'],$_POST['laurea'], $_POST['descrizione_corso']));
-                        
-                        //inserzione del docente responsabile
-                        $docente_sql = "INSERT INTO responsabile_corso (docente, corso) 
-                                        VALUES ($1, $2)";
-                        pg_query_params($db, $docente_sql, array($_POST['docente_responsabile'], $_POST['id_corso']));
+                        $inserito = pg_execute($db, "inserzione", array($_POST['id_corso'], $_POST['nome_corso'],$_POST['laurea'], $_POST['descrizione_corso'], $_POST['docente_responsabile']));
 
                         if($inserito){
                             $_POST['approved'] = 0;
-                            $_POST['msg'] = "L'insegnamento ".$id." è stato inserito con successo";
+                            $_POST['msg'] = "il corso ".$id." è stato inserito con successo";
                         }else{
                             $_POST['approved'] = 1;
                             $_POST['msg'] = pg_last_error();
@@ -47,13 +46,15 @@
             case 'modifica':
                 
                 if($result_check && $result_check[0] == 1){
+
                     //composizione della query in base ai parametri inseriti
                     $contaparametri = 2;
                     $modifica_sql = "UPDATE corso 
                                     SET ";
                     $array = [];
                     $array[] = $_POST['id_corso'];
-                                        //------------  inizio della composizione  --------
+
+                        //------------  inizio della composizione  --------
                     if(isset($_POST['nome_corso']) && !empty($_POST['nome_corso'])){
                         $modifica_sql .= "nome_corso = $$contaparametri,";
                         $contaparametri++;
@@ -95,7 +96,7 @@
                 }
                 break;
 
-            case 'cancella': //cancellazione dell'insegnamento con l'id inserito
+            case 'cancella': //cancellazione del corso con l'id inserito
                     if($result_check && $result_check[0] == 1){
                         $cancellazione_sql = "DELETE FROM corso WHERE id = $1";
                         

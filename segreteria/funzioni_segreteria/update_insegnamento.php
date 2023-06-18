@@ -28,6 +28,7 @@ session_start();
         //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
         switch ($_SESSION['operazione']){
             case 'aggiungi':
+                print'docente responsabile : '.$_SESSION['docente_responsabile'];
                 if(isset($_GET['inserisci'])){ //se è stato inviato il comando di inserimento allora avvio la query
                     
                     if($result_check[0] == 1){//ritorno un messaggio di errore perchè esiste gia un insegnamento con questo id
@@ -37,20 +38,20 @@ session_start();
                         header("Location: ../segreteria.php");
 
                     }else{
-                        $insertion_sql = "INSERT INTO insegnamento (id, nome, descrizione, anno, corso, cfu) 
-                                            VALUES ($1, $2, $3, $4, $5, $6)";
+                        $insertion_sql = "INSERT INTO insegnamento (id, nome, descrizione, anno, corso, cfu, responsabile) 
+                                            VALUES ($1, $2, $3, $4, $5, $6, $7)";
                         $preparato = pg_prepare($db, "inserzione", $insertion_sql);
 
                         if($preparato){
-                            $inserito = pg_execute($db, "inserzione", array($_SESSION['id_insegnamento'], $_SESSION['nome_insegnamento'], $_SESSION['descrizione'], $_SESSION['anno'], $_SESSION['corso'], $_SESSION['cfu']));
+                            $inserito = pg_execute($db, "inserzione", array($_SESSION['id_insegnamento'], $_SESSION['nome_insegnamento'], $_SESSION['descrizione'], $_SESSION['anno'], $_SESSION['corso'], $_SESSION['cfu'], $_SESSION['docente_responsabile']));
                             
-                            //inserzione del docente responsabile
+                            /*inserzione del docente responsabile
                             $docente_sql = "INSERT INTO responsabile_insegnamento (docente, insegnamento) 
                                             VALUES ($1, $2)";
                             pg_query_params($db, $docente_sql, array($_SESSION['docente_responsabile'], $_SESSION['id_insegnamento']));
-
+*/
                             if($inserito){//inserimento degli insegnamenti propedeutici
-                                $_SESSION['msg'] = "L'insegnamento ".$_SESSION['id_insegnamento']." è stato inserito con successo<br>propedeuticità:<br>";
+                                $_SESSION['msg'] = "L'insegnamento ".$_SESSION['id_insegnamento']." è stato inserito con successo<br>responsabile:".$_SESSION['docente_responsabile']."<br>propedeuticità:<br>";
                                 foreach ($_POST as $key => $value) {
                                     print'inserimento di key: '.$key.' e value: '.$value;
                                     $propedeutico_sql = "INSERT INTO propedeuticità (insegnamento, propedeutico) 
@@ -197,7 +198,7 @@ session_start();
 
 
 <form class="login-form" style="align-items: center; justify-content: center" action="<?php echo $_SERVER['PHP_SELF']; ?>?inserisci" method="POST">
-<h3>seleziona i corsi che saranno propedeutici per l'insegnamento: <?php $_SESSION['id_insegnamento'];?><br></h3>
+<h3>seleziona i corsi che saranno propedeutici per l'insegnament: <?php $_SESSION['id_insegnamento'];?><br></h3>
     <?php
         $db = pg_connect("host=localhost port=5432 dbname=unimio ");
         $sql = "SELECT nome, id as id_insegnamento FROM insegnamento WHERE corso = $1";
