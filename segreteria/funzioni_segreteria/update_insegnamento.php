@@ -4,15 +4,15 @@ session_start();
     //salvataggio delle variabili salvate in post per il la query successiva se è la prima volta che viene aperta la pagina
     if($_POST['operazione'] == 'aggiungi'){ 
         $_SESSION['id_insegnamento'] = $_POST['id_insegnamento'];
-        $_SESSION['nome_insegnamento'] = $_POST['nome'];
+        $_SESSION['nome_insegnamento'] = $_POST['nome_insegnamento'];
         $_SESSION['cfu'] = $_POST['cfu'];
         $_SESSION['anno'] = $_POST['anno'];
-        $_SESSION['corso'] = $_POST['corso'];
-        $_SESSION['operazione'] = $_POST['operazione'];
+        $_SESSION['corso'] = $_POST['corso'];    
         $_SESSION['descrizione'] = $_POST['descrizione'];
         $_SESSION['docente_responsabile'] = $_POST['docente_responsabile'];
     }
 
+    $_SESSION['operazione'] = $_POST['operazione'];
     $db = pg_connect("host = localhost port = 5432 dbname = unimio");
 
     //control
@@ -28,7 +28,6 @@ session_start();
         //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
         switch ($_SESSION['operazione']){
             case 'aggiungi':
-                print'docente responsabile : '.$_SESSION['docente_responsabile'];
                 if(isset($_GET['inserisci'])){ //se è stato inviato il comando di inserimento allora avvio la query
                     
                     if($result_check[0] == 1){//ritorno un messaggio di errore perchè esiste gia un insegnamento con questo id
@@ -83,60 +82,87 @@ session_start();
                 if($result_check[0] == 1){//     se esiste un corso con questo id allora procedo
                     //composizione della query in base ai parametri inseriti
                     $contaparametri = 2;
-                    $modifica_sql = "UPDATE insegnamento 
-                                    SET";
+                    $modifica_sql = "UPDATE insegnamento SET";
                     $array = [];
-                    $array[] = $_SESSION['id_insegnamento'];
-                                        //------------  inizio della composizione  --------
-                    if(isset($_SESSION['nome_insegnamento']) && !empty($_SESSION['nome_insegnamento'])){
-                        $modifica_sql .= "nome = $$contaparametri";
+                    $array[] = $_POST['id_insegnamento'];
+
+                    if (isset($_POST['nome_insegnamento']) && !empty($_POST['nome_insegnamento'])) {
+                        $modifica_sql .= " nome = $".$contaparametri;
                         $contaparametri++;
-                        $array[] = $_SESSION['nome_insegnamento'];
-                    }if(isset($_SESSION['descrizione']) && !empty($_SESSION['descrizione'])){
-                        $modifica_sql .= "descrizione = $$contaparametri";
-                        $contaparametri++;
-                        $array[] = $_SESSION['descrizione'];
-                    }if(isset($_SESSION['corso']) && !empty($_SESSION['corso'])){
-                        $modifica_sql .= "corso = $$contaparametri";
-                        $contaparametri++;
-                        $array[] = $_SESSION['corso'];
-                    }if(isset($_SESSION['cfu']) && !empty($_SESSION['cfu'])){
-                        $modifica_sql .= "cfu = $$contaparametri";
-                        $contaparametri++;
-                        $array[] = $_SESSION['cfu'];
+                        $array[] = $_POST['nome_insegnamento'];
                     }
 
-                    //togliere l'ultima virgola dalla query
-                    if(substr($modifica_sql, -1) === ','){
+                    if (isset($_POST['descrizione']) && $_POST['descrizione'] != '') {
+                        $modifica_sql .= ", descrizione = $".$contaparametri;
+                        $contaparametri++;
+                        $array[] = $_POST['descrizione'];
+                    }
+
+                    if (isset($_POST['corso']) && !empty($_POST['corso'])) {
+                        $modifica_sql .= ", corso = $".$contaparametri;
+                        $contaparametri++;
+                        $array[] = $_POST['corso'];
+                    }
+
+                    if (isset($_POST['cfu']) && !empty($_POST['cfu'])) {
+                        $modifica_sql .= ", cfu = $".$contaparametri;
+                        $contaparametri++;
+                        $array[] = $_POST['cfu'];
+                    }
+
+                    // Remove the last comma from the query
+                    if (substr($modifica_sql, -1) === ',') {
                         $modifica_sql = substr($modifica_sql, 0, -1);
                     }
-                    $modifica_sql = $modifica_sql ." WHERE id = $1";
+
+                    $modifica_sql .= " WHERE id = $1";
                     
                     $preparato = pg_prepare($db, "modifica", $modifica_sql);
-                    $esito_modifica = pg_execute($db, "modifica", $array);
+                    if($preparato){
+                        $esito_modifica = pg_execute($db, "modifica", $array);
 
-                    if($esito_modifica){
-                        $_SESSION['approved'] = 0;
-                        $_SESSION['msg'] = "L'insegnamento è stato modificato con successo";
-                        //redirezione alla pagina segreteria.php
-                        header("Location: ../segreteria.php");
+                        if($esito_modifica){
+                            $_SESSION['approved'] = 0;
+                            $_SESSION['msg'] = "L'insegnamento è stato modificato con successo<br>";
+                            print "L'insegnamento è stato modificato con successo";
+                            //redirezione alla pagina segreteria.php
+                            header("Location: ../segreteria.php");
+                            exit;
+                        }else{
+                            $_SESSION['approved'] = 1;
+                            $_SESSION['msg'] = pg_last_error();
+                            //redirezione alla pagina segreteria.php
+                            header("Location: ../segreteria.php");
+                            exit;
+                        }
                     }else{
                         $_SESSION['approved'] = 1;
-                        $_SESSION['msg'] = pg_last_error();
-                        //redirezione alla pagina segreteria.php
-                        header("Location: ../segreteria.php");
+                            $_SESSION['msg'] = "errore nella preparazione della query: <br>".pg_last_error();
                     }
                 }else{//             nel caso non esistesse un corso con questo id
                     $_SESSION['approved'] = 1;
                     $_SESSION['msg'] = "Non esiste un insegnamento con questo id";
                     //redirezione alla pagina segreteria.php
                     header("Location: ../segreteria.php");
+                    exit;
                 }
+
                 break;
 
             case 'cancella': //cancellazione dell'insegnamento con l'id inserito
                     if($result_check[0] == 1){ //        esiste un segnamento con questo id, posso procedere
-                        $cancellazione_sql = "DELETE FROM insegnamento WHERE id = $1";
+
+                        //cancellazione dell propedeuticità riguardanti l'insegnamento
+                        $cancella_propedeuticità_sql = "DELETE 
+                                                        FROM propedeuticità 
+                                                        WHERE insegnamento = $1";
+                                                        
+                        pg_query_params($db, $cancella_propedeuticità_sql, array($_POST['id_insegnamento']));
+
+                        //cancellazione dell'insegnamento vero e proprio
+                        $cancellazione_sql = "DELETE 
+                                              FROM insegnamento 
+                                              WHERE id = $1";
                         
                         $cancellazione = pg_prepare($db, "cancellazione", $cancellazione_sql);
                         $esito_cancellazione = pg_execute($db, "cancellazione", array($_POST['id_insegnamento']));
@@ -154,6 +180,7 @@ session_start();
                         $_SESSION['msg'] = "Non esiste un insegnamento con questo id";
                         //redirezione alla pagina segreteria.php
                         header("Location: ../segreteria.php");
+                        exit;
                     }
                 break;
             default:
@@ -161,7 +188,7 @@ session_start();
                 $_SESSION['msg'] = "Errore nella scelta dell'operazione";
                 //redirezione alla pagina segreteria.php
                 header("Location: ../segreteria.php");
-
+                exit;
                 break;
         }
     }else{

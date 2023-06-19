@@ -12,14 +12,6 @@ CREATE TABLE segreteria(
     CONSTRAINT email CHECK (email LIKE '%@segreteria.unimi.it')
 );
 
-VALUES
-  ('000001','alice@segreteria.unimi.it', 'password1', 'Alice', 'Smith'),
-  ('000002','bob@segreteria.unimi.it', 'password2', 'Bob', 'Johnson'),
-  ('000003','charlie@segreteria.unimi.it', 'password3', 'Charlie', 'Brown'),
-  ('000004','diana@segreteria.unimi.it', 'password4', 'Diana', 'Wilson'),
-  ('000005','ethan@segreteria.unimi.it', 'password5', 'Ethan', 'Davis');
-  
-
 CREATE TABLE studente(
     matricola CHAR(6) PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
@@ -31,28 +23,6 @@ CREATE TABLE studente(
     CONSTRAINT email CHECK (email LIKE '%@studenti.unimi.it')
 );
 
--- popolazione della tabella studente
-INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato)
-VALUES
-  (986899, 'Ancell',    'Janssens', 'ancell@studenti.unimi.it', 'password1',  9175738010),
-  (103246, 'Clara',     'Poyner', 'clara@studenti.unimi.it', 'password2',     9175738010),
-  (148008, 'Karyn',     'Claybourn', 'karyn@studenti.unimi.it', 'password3',  2124169738),
-  (511415, 'Harmony',   'MacClenan', 'harmony@studenti.unimi.it', 'password4',2124169738),
-  (903187, 'Raine',     'Di Carli', 'raine@studenti.unimi.it', 'password5',   2124169738),
-  (722630, 'Anissa',    'Guitel', 'anissa@studenti.unimi.it', 'password6',    3759187480),
-  (358096, 'Vernen',    'Moss', 'vernen@studenti.unimi.it', 'password7',      3759187480),
-  (208078, 'Annabal',   'Pamment', 'annabal@studenti.unimi.it', 'password8',  3759187480),
-  (147692, 'Brigit',    'Jain', 'brigit@studenti.unimi.it', 'password9',      7028895757),
-  (905716, 'Dena',      'Barringer', 'dena@studenti.unimi.it', 'password10',  7028895757),
-  (657874, 'Willetta',  'Abrahami', 'willetta@studenti.unimi.it', 'password11',7028895757),
-  (571848, 'Gardner',   'Strand', 'gardner@studenti.unimi.it', 'password12',  7028895757),
-  (645198, 'Worden',    'Gilhouley', 'worden@studenti.unimi.it', 'password13',9202226989),
-  (342631, 'Bibi',      'Huskinson', 'bibi@studenti.unimi.it', 'password14',  9202226989),
-  (596144, 'Madlin',    'Findley', 'madlin@studenti.unimi.it', 'password15',  9202226989),
-  (966031, 'Federico',  'Volpe', 'federico.volpe@studenti.unimi.it','abc',    7028895757),
-  (986892  , 'prova',  'prova', 'prova@studenti.unimi.it'  ,'password1' ,  9175738010  );
-
-
 CREATE TABLE docente(
     id CHAR(6) PRIMARY KEY,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -63,21 +33,6 @@ CREATE TABLE docente(
     CONSTRAINT email CHECK (email LIKE '%@docenti.unimi.it')
 );
 
---popolazione della tabella docente
-INSERT INTO docente (id, nome, cognome, email, passwrd)
-VALUES
-  (314434, 'Bernardine', 'Harniman',    'bernardine@docenti.unimi.it', 'password1'),
-  (619231, 'Husein',     'Dugue',       'husein@docenti.unimi.it',     'password2'),
-  (945514, 'Leigh',      'Bakster',     'leigh@docenti.unimi.it',      'password3'),
-  (719958, 'Shaughn',    'Fouracres',   'shaughn@docenti.unimi.it',    'password4'),
-  (407789, 'Lina',       'Somerlie',    'lina@docenti.unimi.it',       'password5'),
-  (991385, 'Guthrie',    'Rove',        'guthrie@docenti.unimi.it',    'password6'),
-  (151049, 'Galven',     'Scothorne',   'galven@docenti.unimi.it',     'password7'),
-  (833919, 'Dalia',      'Izaac',       'dalia@docenti.unimi.it',      'password8'),
-  (427844, 'Elwyn',      'Renneke',     'elwyn@docenti.unimi.it',      'password9'),
-  (554198, 'Buddie',     'MacCart',     'buddie@docenti.unimi.ithg b', 'password10'); -- responsabile sistemi embedded
-
-
 CREATE TABLE corso(
     id CHAR(10) PRIMARY KEY ON DELETE CASCADE,
     nome_corso VARCHAR(100) NOT NULL UNIQUE,
@@ -85,49 +40,6 @@ CREATE TABLE corso(
     descrizione TEXT,
     CONSTRAINT laurea CHECK (laurea = 'triennale' OR laurea = 'magistrale')
 );
-
-ALTER TABLE corso 
-ADD CONSTRAINT cancella_responsabilità
-FOREIGN KEY (id) 
-REFERENCES responsabile_corso (corso) 
-ON DELETE CASCADE;
-
---popolazione della tabella corso
-INSERT INTO corso (id, nome_corso, descrizione, laurea) 
-    VALUES 
-    (9175738010, 'Sicurezza Informatica', 'Il corso di Sicurezza Informatica è un programma formativo progettato per fornire agli studenti una solida comprensione dei concetti e delle metodologie necessarie per proteggere i sistemi informatici e i dati sensibili da minacce e attacchi cibernetici. Il corso si concentra sull analisi delle vulnerabilità dei sistemi informatici, sull identificazione delle potenziali minacce e sulle strategie di protezione.
-Durante il corso, gli studenti acquisiranno conoscenze pratiche su come proteggere reti, computer e applicazioni dalle intrusioni esterne, oltre a imparare a rilevare e rispondere agli incidenti di sicurezza informatica. Saranno introdotti a concetti fondamentali come crittografia, autenticazione, gestione delle identità, firewall, sistemi di rilevamento delle intrusioni e tecnologie di sicurezza dei dati.
-Attraverso una combinazione di lezioni teoriche, laboratori pratici e studi di casi reali, gli studenti saranno in grado di sviluppare competenze per valutare i rischi, implementare misure di sicurezza adeguate e creare politiche di sicurezza informatica efficaci. Verranno esaminati anche gli aspetti etici e legali della sicurezza informatica, nonché le sfide emergenti nel campo della sicurezza informatica, come l intelligenza artificiale e l Internet of Things.
-Al termine del corso, gli studenti avranno una solida base di conoscenze e competenze pratiche per lavorare come professionisti della sicurezza informatica in diverse organizzazioni, sia nel settore pubblico che privato. Saranno in grado di identificare e mitigare le minacce informatiche, proteggendo così le risorse digitali e contribuendo a preservare la privacy e la sicurezza delle informazioni sensibili.' , 'magistrale'),
-    
-    (2124169738, 'Chimica',        ,'Il corso di Chimica è un programma di studio che si focalizza sullo studio delle proprietà, della composizione e delle trasformazioni della materia. Durante il corso, gli studenti imparano i fondamenti teorici e pratici della chimica, acquisendo conoscenze sui diversi elementi, composti e reazioni chimiche.
-Le lezioni iniziano con l introduzione ai principi di base della chimica, compresi atomi, molecole, legami chimici e struttura della materia. Gli studenti impareranno a utilizzare il tavolo periodico degli elementi per comprendere le proprietà e le caratteristiche dei diversi elementi chimici.
-Successivamente, il corso si estende alla chimica organica, concentrandosi sullo studio delle molecole che contengono carbonio. Gli studenti esploreranno i diversi gruppi funzionali, le reazioni di sintesi e degradazione, nonché le applicazioni pratiche della chimica organica nel mondo reale, come nella produzione di farmaci e materiali.
-Durante il corso, verranno forniti approfondimenti sulla chimica inorganica, lo studio dei composti che non contengono carbonio, e sulla chimica fisica, che si occupa delle proprietà fisiche e dei processi chimici utilizzando principi matematici e fisici.
-Le lezioni teoriche saranno integrate con esperimenti di laboratorio, dove gli studenti avranno l opportunità di applicare le conoscenze acquisite, manipolare sostanze chimiche in sicurezza e osservare le reazioni chimiche in azione.
-Il corso di Chimica è essenziale per comprendere il funzionamento del mondo naturale e ha numerose applicazioni pratiche in settori come la farmaceutica, l industria chimica, l energia e l ambiente. Fornisce una solida base di conoscenze per gli studenti interessati a perseguire una carriera nelle scienze, nella medicina, nell ingegneria chimica e in molti altri campi correlati.
-Si precisa che la descrizione sopra è puramente ipotetica e i contenuti effettivi di un corso di Chimica possono variare in base all istituzione e al livello di istruzione.',         'triennale' ),
-
-    (3759187480, 'Fisica',      'Il corso di Fisica è un opportunità per gli studenti di esplorare le leggi fondamentali che governano il funzionamento dell universo. Durante il corso, gli studenti avranno l opportunità di studiare e comprendere i principi che governano il movimento, le forze, l energia, la termodinamica, l elettricità, il magnetismo e molto altro ancora.
-Attraverso lezioni teoriche, esperimenti pratici e problemi di risoluzione, gli studenti svilupperanno una solida comprensione delle leggi fisiche e delle loro applicazioni nel mondo reale. Saranno introdotti a concetti matematici come l algebra, la geometria e il calcolo, che saranno utilizzati per formulare e risolvere equazioni che descrivono fenomeni fisici.
-Il corso di Fisica promuove una mentalità critica e analitica, incoraggiando gli studenti a porre domande, a sperimentare e a cercare spiegazioni razionali per i fenomeni osservati. Verranno forniti strumenti concettuali e teorici per comprendere il funzionamento del mondo naturale, sia a livello macroscopico che microscopico.
-L obiettivo del corso è quello di fornire agli studenti una base solida di conoscenze fisiche e di abilità di problem solving, che potranno poi applicare in discipline scientifiche, ingegneristiche o anche in ambito quotidiano. Inoltre, il corso incoraggia la curiosità scientifica e l apprezzamento per la bellezza e la complessità della natura.
-I prerequisiti per il corso di Fisica possono includere una conoscenza di base della matematica, come l algebra e la geometria, ma non è richiesta una conoscenza precedente della fisica. Gli studenti che si impegnano nel corso avranno l opportunità di sviluppare una solida base di conoscenze scientifiche e di acquisire competenze che potranno essere utili in una vasta gamma di ambiti accademici e professionali'.           'triennale' ),
-    
-    (7028895757, 'Informatica',   'Il corso di Informatica è un percorso di studio che si focalizza sullo studio dei fondamenti e delle applicazioni delle tecnologie dell informazione e della comunicazione. Durante il corso, gli studenti acquisiranno conoscenze teoriche e competenze pratiche relative all elaborazione e alla gestione dell informazione attraverso l uso dei computer.
-Il corso inizia con una panoramica introduttiva sull evoluzione dell informatica, compresi i concetti fondamentali come l architettura dei computer, i linguaggi di programmazione e i principi dell organizzazione dei dati. Gli studenti impareranno i concetti di base della programmazione, sviluppando competenze nella scrittura di algoritmi e nel codice di programmazione.
-Successivamente, il corso si concentra su aree specifiche dell informatica, come le reti di computer, i sistemi operativi, la sicurezza informatica, la progettazione e lo sviluppo di software, la gestione dei database e l intelligenza artificiale. Gli studenti avranno l opportunità di applicare le loro conoscenze attraverso progetti pratici, laboratori e esercitazioni.
-Durante il corso, verranno anche affrontate tematiche etiche e legali legate all informatica, inclusi i diritti di proprietà intellettuale, la privacy e la sicurezza dei dati. Gli studenti saranno incoraggiati a sviluppare una mentalità critica e responsabile riguardo all uso delle tecnologie dell informazione.
-Alla fine del corso, gli studenti saranno in grado di comprendere i principi fondamentali dell informatica, utilizzare strumenti software e risolvere problemi mediante l applicazione di concetti informatici. Avranno acquisito una solida base di conoscenze che potranno essere applicate in diversi settori, tra cui lo sviluppo software, la gestione dei sistemi informatici, la consulenza informatica e la ricerca nell ambito dell informatica.'          'triennale' ),
-    (9202226989, 'Informatica Musicale',    'triennale' );
-
-
---update corso set descrizione =  'Il corso di Informatica è un percorso di studio che si focalizza sullo studio dei fondamenti e delle applicazioni delle tecnologie dell informazione e della comunicazione. Durante il corso, gli studenti acquisiranno conoscenze teoriche e competenze pratiche relative all elaborazione e alla gestione dell informazione attraverso l uso dei computer.
---Il corso inizia con una panoramica introduttiva sull evoluzione dell informatica, compresi i concetti fondamentali come l architettura dei computer, i linguaggi di programmazione e i principi dell organizzazione dei dati. Gli studenti impareranno i concetti di base della programmazione, sviluppando competenze nella scrittura di algoritmi e nel codice di programmazione.
---Successivamente, il corso si concentra su aree specifiche dell informatica, come le reti di computer, i sistemi operativi, la sicurezza informatica, la progettazione e lo sviluppo di software, la gestione dei database e l intelligenza artificiale. Gli studenti avranno l opportunità di applicare le loro conoscenze attraverso progetti pratici, laboratori e esercitazioni.
---Durante il corso, verranno anche affrontate tematiche etiche e legali legate all informatica, inclusi i diritti di proprietà intellettuale, la privacy e la sicurezza dei dati. Gli studenti saranno incoraggiati a sviluppare una mentalità critica e responsabile riguardo all uso delle tecnologie dell informazione.
---Alla fine del corso, gli studenti saranno in grado di comprendere i principi fondamentali dell informatica, utilizzare strumenti software e risolvere problemi mediante l applicazione di concetti informatici. Avranno acquisito una solida base di conoscenze che potranno essere applicate in diversi settori, tra cui lo sviluppo software, la gestione dei sistemi informatici, la consulenza informatica e la ricerca nell ambito dell informatica.' where id = '7028895757';
-
 
 
 CREATE TABLE insegnamento(
@@ -137,67 +49,12 @@ CREATE TABLE insegnamento(
     anno CHAR(4) NOT NULL,
     corso CHAR(10) REFERENCES corso(id) NOT NULL
 );
-
---popolazione tabella insegnamento 25 insegnamenti
-insert into insegnamento (id, nome, descrizione, anno, corso) 
-VALUES 
-    (9914411111, 'Affidabilità dei sistemi', null, 2,   9175738010),
-    (1973869985, 'Artificial intelligence', null, 1,    9175738010),
-    (5210097035, 'Componenti di biometria', null, 2,    9175738010),
-    (3204759382, 'Crittografia', null, 1,               9175738010),
-    (2995667581, 'Information management', null, 2,     9175738010),
-    (3526956576, 'Fisica generale', null, 2,            2124169738),
-    (5837527637, 'Chimica generale', null, 2,           2124169738),
-    (1193746368, 'Istituzioni di matematica', null, 1,  2124169738),
-    (7393377009, 'Chimica analitica', null, 2,          2124169738),
-    (2852290568, 'Chimica organica', null, 1,           2124169738),
-    (6967310076, 'Chimica 1', null, 2,                  3759187480),
-    (8650908123, 'Elettronica 1', null, 1,              3759187480),
-    (4864051855, 'Fisica quantistica', null, 3,         3759187480),
-    (4789640943, 'Geometria', null, 1,                  3759187480),
-    (1402416704, 'Astrofisica', null, 2,                3759187480),
-    (5193752943, 'Logica', null, 3,                     7028895757),
-    (7477422085, 'Sistemi embedded', null, 3,           7028895757),
-    (2485318062, 'Basi di dati', null, 3,               7028895757),
-    (6405967915, 'Programmazione 1', null, 1,           7028895757),
-    (9428798504, 'Programmazione 2', null, 2,           7028895757),
-    (7037905580, 'Editoria digitale', null, 2,          9202226989),
-    (6684943179, 'Crittografia sonora', null, 3,        9202226989),
-    (1655851251, 'Acustica', null, 2,                   9202226989),
-    (1647855372, 'Algoritmi e strutture dati', null, 2, 9202226989),
-    (8610762518, 'Informazione multimediale', null, 1,  9202226989),
-    (4104514266, 'Informatica del suono', null, 3,      9202226989);
-
 CREATE TABLE esami(
     id CHAR(6) PRIMARY KEY,
     insegnamento CHAR(10) REFERENCES insegnamento(id),
     docente CHAR(6) REFERENCES docente(id),
     data DATE
 );
-
---riempimento tabella esami
-INSERT INTO esami (id, insegnamento, docente, data)
-VALUES
-  ('100001', '9914411111', '314434', '010623'), 
-  ('100002', '1973869985', '619231', '030623'), 
-  ('100003', '5210097035', '945514', '050623'), 
-  ('100004', '3204759382', '719958', '070623'), 
-  ('100005', '2995667581', '407789', '090623'), 
-  ('100006', '3526956576', '833919', '110623'), 
-  ('100007', '5837527637', '427844', '130623'), 
-  ('100008', '1647855372', '833919', '150623'), 
-  ('100009', '8610762518', '427844', '170623'), 
-  ('100010', '7477422085', '554198', '190623'), 
-  ('100011', '3526956576', '833919', '210623'), 
-  ('100012', '5837527637', '427844', '230623'),
-  ('100013', '6967310076', '554198', '230522'),
-  ('100014', '6967310076', '554198', '220522'),
-  ('100015', '1193746368', '554198', '231222'),
-  ('000001', '7477422085', '554198', '160623'), --esame di sistemi embedded
-  ('000002', '6405967915', '427844', '150623'),  --esame di programmazione1
-  ('000003', '9428798504', '554198', '150623'), --esame di programmazione2
-  ('000004', '5193752943', '427844', '049722'); --esame di logica
-
 
 
 CREATE TABLE propedeuticità(
@@ -208,67 +65,11 @@ insert into propedeuticità (insegnamento, propedeutico)
 values('9428798504','6405967915'); 
 
 
---tabella che assegna ad ogni insegnamento un docente responsabile
---  possono esserci anche più responsabili per ogni corso
-CREATE TABLE responsabile_insegnamento(
-    docente CHAR(6) REFERENCES docente(id),
-    insegnamento CHAR(10) REFERENCES insegnamento(id)
-);
-
---popolazione tabella responsabile_insegnamento
-INSERT INTO responsabile_insegnamento (docente, insegnamento)
-    VALUES
-    ('314434', '9914411111'),
-    ('619231', '1973869985'),
-    ('945514', '5210097035'),
-    ('719958', '3204759382'),
-    ('407789', '2995667581'),
-    ('833919', '3526956576'),  
-    ('427844', '5837527637'),  
-    ('554198', '1193746368'),  
-    ('833919', '7393377009'),  
-    ('427844', '2852290568'),  
-    ('554198', '6967310076'),  
-    ('833919', '8650908123'),  
-    ('427844', '4864051855'),  
-    ('554198', '4789640943'),  
-    ('833919', '1402416704'),  
-    ('427844', '5193752943'),  
-    ('554198', '7477422085'),  
-    ('833919', '2485318062'),  
-    ('427844', '6405967915'),  
-    ('554198', '9428798504'),  
-    ('833919', '7037905580'),  
-    ('427844', '6684943179'),  
-    ('554198', '1655851251'),  
-    ('833919', '1647855372'),  
-    ('427844', '8610762518'),  
-    ('554198', '4104514266');
 
 CREATE TABLE responsabile_corso(
     docente CHAR(6) REFERENCES docente(id) ON DELETE CASCADE,
     corso CHAR(10) REFERENCES corso(id) ON DELETE CASCADE
 );
-
---popolazione della tabella responsabile_corso
-INSERT INTO responsabile_corso (docente, corso)
-VALUES
-  ('314434', '9175738010'),
-  ('619231', '2124169738'),
-  ('945514', '3759187480'),
-  ('719958', '7028895757'), 
-  ('407789', '9202226989');
-
-
-UPDATE corso
-SET responsabile = CASE
-    WHEN id = '3759187480'THEN'314434'
-    WHEN id = '7028895757'THEN'619231'
-    WHEN id = '9202226989'THEN'945514'
-    WHEN id = '9175738010'THEN'719958'
-    WHEN id = '2124169738'THEN'407789'
-    ELSE responsabile
-    END;
 
 
 CREATE TABLE esiti(
@@ -278,13 +79,6 @@ CREATE TABLE esiti(
     PRIMARY KEY (studente, esame),
     CHECK (esito >= 0 AND esito <= 30)
 );
---popolazione della tabella
-
-INSERT INTO esiti (studente, esame, esito)
-    VALUES
-    ('966031', '000004', 18), --esame di logica di federico
-    ('966031', '000003', 27), --esame di programmazione2 di federico
-    ('966031', '000002', 24); --esame di programmazione1 di federico
 
 --tabella che per ogni studente contiene gli esami che lui ha prenotato
 
@@ -293,18 +87,6 @@ CREATE TABLE iscrizioni(
     esame CHAR(6) REFERENCES esami(id) ON DELETE SET NULL,
     PRIMARY KEY (studente, esame)
 );
-
-INSERT INTO iscrizioni(studente, esame)
-    VALUES
-        ('986899' ,   '100001'),
-        ('986899'  ,  '100004'),
-        ('966031'   , '100010'),
-        ('966031'   , '000001'),
-        ('966031'   , '000002'),
-        ('966031'   , '000003'),
-        ('966031'   , '000004'),
-        ('986892'   , '000002');
-
 
 --tabella che contiene lo storico dei dati degli studenti che sono stati cancellati
 CREATE TABLE storico_studente(
@@ -327,23 +109,6 @@ CREATE TABLE storico_carriera(
     CHECK (esito >= 0 AND esito <= 30)
 );
 
-INSERT INTO storico_carriera(studente, esame, esito)    
-    VALUES(
-        '986892','000003','25'
-    );
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -352,11 +117,6 @@ INSERT INTO storico_carriera(studente, esame, esito)
 
 
 --              FUNZIONI
-
-
-
-
-
 
 
 

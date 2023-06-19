@@ -314,7 +314,7 @@
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">Nome:</span>
-                                        <input type="text" class="form-control" name="nome" id="nome">
+                                        <input type="text" class="form-control" name="nome_insegnamento" id="nome_insegnamento">
                                     </div>
                                 </div>
                             </div>
