@@ -61,7 +61,7 @@ le pagine di ogni tipologia di utente avranno alcuni aspetti comuni:
 
 <div style="display: flex; align-items: flex-start;">
     <div style="flex-grow: 1;">
-        <h3>Vi è la possibilità inoltre di potersi iscrivere ad un esame nuovo tramite un link "prenota un esame" che porta alla pagina</h3>
+        <p>Vi è la possibilità inoltre di potersi iscrivere ad un esame nuovo tramite un link "prenota un esame" che porta alla pagina</p>
         <p><a href="prenota_esame.php">prenota_esame.php</a>: 
         questa pagina mostra allo studente una tabella con tutti gli esami che sono stati programmati dai professori del rispettivo corso a cui si è iscritti con qualche informazione aggiuntiva (come data o professore responsabile). I pulsanti per la iscrizione prenderanno una forma differente se lo studente risulta già iscritto all'esame o meno, tramite gli stessi sarà anche possibile annullare l'iscrizione ad un esame. La pagina è provvista di messaggi di errore qual'ora si verifichi un problema durante l'iscrizione o di qualsiasi altro genere
     </div>
@@ -70,63 +70,103 @@ le pagine di ogni tipologia di utente avranno alcuni aspetti comuni:
 
 infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia agli studi, quando questo verrà premuto lo studente corrente verrà cancellato dalla tabella degli studenti e spostato nella tabella storico_studente
 
+<hr></hr>
+
 <div style="display: flex; align-items: flex-start;">
-    <div style="flex-grow: 1;">
+    <div style="flex-g0pppppp'xzvrow: 1;">
         <h3>pagina docente:</h3>
         <p>La pagina docente mostra come prima cosa la tabella che rappresenterà il calendario degli esami del professore.
         Questa mostrerà l'insegnamento, la data, due pulsanti per la modifica (connesso allo script <a href="update_esame.php">update_esame.php</a>) o la cancellazione del suddetto esame (connesso allo script <a href="cancella_esame.php">cancella_esame.php</a>).</p>
         <p>Successivamente verrà mostrato un form generato dalla pagina:</p>
         <ul>
             <li><a href="form_inserisci_esame.php">form_inserisci_esame.php</a>: Ha il compito di raccogliere le informazioni per un nuovo esame, quali: insegnamento, data dell'esame.
-            Il compito dell'inserimento nel database viene poi delegato al file <a href="inserzione_esame.php">inserzione_esame.php</a> che si occuperà fra l'altro di riportare eventuali messaggi di errore o di successo legati all'esecuzione della query alla pagina precedente (ad esempio la presenza di un esame con lo stesso id già inserito nel database).</li>
+            Il compito dell'inserimento nel database viene poi delegato al file <a href="inserzione_esame.php">inserzione_esame.php</a> che si occuperà fra l'altro di riportare eventuali messaggi di errore o di successo legati all'esecuzione della query alla pagina precedente (ad esempio la presenza di un esame con lo stesso id già inserito nel database).
+            </li>
+            <li>
+                 <img src="../media/inserzione_esame.gif" alt="GIF" style="margin-left: 10px; width: 50%">
+            </li>
         </ul>
         <p>Successivamente verrà mostrato un form per l'inserzione degli esiti, anche questo ha la sua pagina dedicata:</p>
         <ul>
             <li><a href="form_inserzione_esiti.php">form_inserzione_esiti.php</a>: Questo si occupa della raccolta di dati quali: la matricola dello studente interessato, l'esame, l'esito da assegnare.
             L'esecuzione dell'operazione di inserimento, come nel caso precedente, viene delegata alla pagina <a href="sql_inserzione_esiti.php">sql_inserzione_esiti.php</a>.
             Quest'ultimo si occuperà di effettuare tutte le verifiche necessarie per l'inserzione (come la verifica dell'iscrizione dello studente a quell'esame o la correttezza dell'id studente).</li>
+            <div>
+                <video src="../media/inserimento-voto.mov" controls></video>
+            </div>
         </ul>
     </div>
     <img src="../media/docente_homepage.png" style="margin-left: 10px; width: 50%; border: 2px solid blue">
 </div>
 
-**pagina docente:**
-la pagina docente mostra come prima cosa la tabella che rappresenterà il calendario degli esami del professore.
-questa mostrerà l'insegnamento, la data, due pulsanti per la modifica (connesso allo script *([update_esame.php](update_esame.php))*) o la cancellazione del suddetto esame (connesso allo script *([cancella_esame.php](cancella_esame.php))*).
-successivamente verrà mostrato un form generato dalla pagina:
-- *([form_inserisci_esame.php](form_inserisci_esame.php))*
-    ha il compito di raccogliere le informazioni per un nuovo esame, quali: insegnamento, data dell'esame
-    il compito dell'inserimento nel database viene poi delegato al file *([inserzione_esame.php](inserzione_esame.php))* che si occuperà fra l'altro di riportare eventuale messaggi di errore o di successo legati all'esecuzione della query alla pagina precedente (ad esempio la presenza di un esame con lo stesso id già inserito nel database).
+<hr></hr>
 
-successivamente verrà mostrato un form per l'inserzione degli esiti, anche questo ha la sua pagina dedicata:
-- *([form_inserzione_esiti.php](form_inserzione_esiti.php))*
-    questo si occupa della raccolta di dati quali: la matricola dello studente interessato; l'esame; l'esito da assegnare. l'esecuzione della operazione di inserimento come nel caso precedente viene delegata alla pagina *([sql_inserzione_esiti.php](sql_inserzione_esiti.php))* quest'ultimo si occupera di effettuare tutte le verifiche necessarie per l'inserzione (come la verifica dell'iscrizione dello studente a quell'esame, o la correttezza dell'id stuente).
+<h2>pagina segreteria</h2>
+<p>La pagina segreteria.php conterrà diversi form per l'apportazione di modifiche sul database, in particolare saranno presenti 5 form:</p>
 
+<h4>----form per la gestione dei docenti----</h4>
+<p>Per la modifica/inserimento/cancellazione di un utente @docenti.unimi.it</p>
+<p>Raccoglie le informazioni: id, email, nome, cognome, password, operazione. In particolare, il parametro "operazione" può assumere 3 diversi valori (inserisci, modifica, cancella) e servirà per differenziare il comportamento del file:</p>
+<ul>
+    <li>
+        <strong>update_docente.php:</strong> Come prima cosa viene eseguita una query che stabilisce l'esistenza o meno di uno studente con l'id interessato:
+        <ul>
+            <li>Con il parametro "inserisci" verranno richiesti tutti i parametri essenziali per l'esecuzione di una query di inserimento nella tabella docente.</li>
+            <li>Con il parametro "modifica" verrà prima composta una query con dei check sulle variabili che possono interessare una modifica prima di essere eseguita.</li>
+            <li>Con il parametro "cancella" viene eseguita una semplice query di delete sul database.</li>
+        </ul>
+        Alla fine di ogni operazione vengono comunque generati messaggi che indicano l'esito dell'esecuzione delle operazioni. Questi messaggi verranno mostrati nella pagina segreteria.php.
+        <div>
+                <video src="../media/update_docente.mov" controls></video>
+        </div>
+    </li>
+</ul>
 
-**pagina segreteria**
-la pagina segreteria.php conterrà diversi form per l'apportazione di modifiche sul database, in particolare saranno presenti 5 form 
-- **form per la gestione dei docenti**
-    per la modifica/inserimento/cancellazione di un utente @docenti.unimi.it
-    raccoglie le informazioni: id, email, nome, cognome, password, operazione
-    in particolare il parametro "operazione" può assumere 3 diversi valori (inserisci, modifica, cancella) e servirà per differenziare il comportamento del file:
-    - *([update_docente.php](update_docente.php))*
-    come prima cosa viene eseguita una query che stabilisce l'esistenza o meno di uno studente con l'id interessato
-        - con il parametro "inserisci" verranno richiesti tutti i parametri essenziali per l'esecuzione di una query di inserimento nella tabella docente
-        - con il parametro "modifica" verrà prima composta una query con dei check sulle variabili che possono interessare una modifica prima di essere eseguita
-        - con il parametro "cancella" viene eseguita una semplice query di delete sul database
-        
-    Alla fine di ogni operazione vengono comunque generati messaggi che indicano l'esito dell'esecuzione delle operazioni
-    questi messaggi verranno mostrati nella pagina segreteria.php
+<h4>----form per la gestione degli studenti----</h4>
+<p>Per la modifica/inserimento/cancellazione di un utente @studenti.unimi.it</p>
+<p>Raccoglie le informazioni: matricola, email, nome, cognome, password, operazione.</p>
+<ul>
+    <li>
+        <strong>update_studente.php:</strong> Come prima cosa viene eseguita una query che stabilisce l'esistenza o meno di uno studente con l'id interessato:
+        <ul>
+            <li>Con il parametro "inserisci" verranno richiesti tutti i parametri essenziali per l'esecuzione di una query di inserimento nella tabella studente.</li>
+            <li>Con il parametro "modifica" verrà prima composta una query con dei check sulle variabili che possono interessare una modifica prima di essere eseguita.</li>
+            <li>Con il parametro "cancella" viene eseguita una semplice query di delete sul database.</li>
+        </ul>
+        Alla fine di ogni operazione vengono comunque generati messaggi che indicano l'esito dell'esecuzione delle operazioni. Questi messaggi verranno mostrati nella pagina segreteria.php.
+        <div>
+                <video src="../media/update_studente.mov" controls></video>
+        </div>
+    </li>
+</ul>
 
+<h4>----form per la gestione dei corsi----</h4>
+<p>Per la modifica/inserimento/cancellazione di un corso</p>
+<ul>
+    <li>
+        <strong>update_insegnamento.php:</strong> Il funzionamento è analogo ai form precedenti
+        <div>
+                <video src="../media/update_corso.mov" controls></video>
+        </div>
+    </li>
+</ul>
 
-- *([update_studente.php](update_studente.php))* 
-    per la modifica/inserimento/cancellazione di un utente @studenti.unimi.it
+<h4>----form per la gestione degli insegnamenti----</h4>
+<p>Per la modifica/inserimento/cancellazione di un insegnamento</p>
+<ul>
+    <li>
+        <strong>update_insegnamento.php:</strong> Come prima cosa viene eseguita una query che stabilisce <div>
+                <video src="../media/update_insegnamento.mov" controls></video>
+        </div>
+    </li>
+</ul>
 
-- *([update_corso.php](update_corso.php))* 
-    per la modifica/inserimento/cancellazione di un corso universitario
-
-- *([update_insegnamento.php](update_insegnametno.php))* 
-    per la modifica/inserimento/cancellazione di un insegnamento
-
-- *([carriera_studente.php](carriera_studente.php))* 
-    per la stampa della carriera completa o effettiva di uno studente
+<h4>----form per il controllo di una carriera di uno studente----</h4>
+<p>il form raccoglie le informazioni riguardanti lo studente per poi richiamare il file:</p>
+<ul>
+    <li>
+        <strong>update_insegnamento.php:</strong> Come prima cosa viene eseguita una query che stabilisce <div>
+                <video src="../media/inserimento-voto.mov" controls></video>
+        </div>
+    </li>
+</ul>
