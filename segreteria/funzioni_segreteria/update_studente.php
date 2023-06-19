@@ -28,7 +28,6 @@ if (isset($_POST))  {
 
     $result_check = pg_prepare($db, "check", $check);
     $result_check_rows = pg_execute($db, "check", array($matricola));
-    $result_check = pg_fetch_row($result_check_rows);
     $rows = pg_num_rows($result_check_rows);
 
     if ($db) {

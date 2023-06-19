@@ -13,28 +13,40 @@ Successivamente alla creazione dello schema ER, ho apportato alcune migliorie al
 L'entità "segreteria", anche se non ha relazioni con le altre entità, ha la possibilità di definire nuovi utenti e nuovi corsi. Questa funzionalità è stata implementata utilizzando le frecce nello schema.
 
 ## Schema Logico
-
-
-Il database è stato popolato con dati realistici al fine di consentire l'esplorazione delle varie funzionalità dell'applicazione web.
-
+<div style="display: flex; justify-content: center;">
+    <img src="../media/diagramma.png" alt="Image" style="width: 90%;border: 2px solid blue;">
+</div>
+<br>
+Il database è stato popolato con dati realistici al fine di consentire l'esplorazione delle varie funzionalità dell'applicazione web. ovvero:<br>
+- 16 studenti iscritti a tutti i differenti corsi
+<br>- 10 docenti di cui responsabili di corsi e di insegnamenti(massimo 3)
+<br>- 5 utenti di segreteria
+<br>- 5 corsi differenti, ciascuno composto da una media di 5 insegnamenti
+<br>- tabella iscrizioni con 7 iscrizioni per le prove
+<br>- 1 propedeuticità per il corso programmazione2
+<br>- 1 studente con 1 voto nella sezione storico studente e storico_carriera derivante dalla prova
+<br>
+<br><hr></hr>
 Di seguito vengono elencati i trigger che sono stati implementati:
 
-- `responsabile_insegnamento_trigger`: Prima di inserire un esame, viene effettuato un controllo per verificare che l'insegnante specificato sia responsabile di quell'insegnamento.
 
-- `insegnamenti_responsabile_trigger`: Questo trigger impedisce a un professore di diventare responsabile di più di tre insegnamenti.
 
-- `update_esame_trigger`: Trigger che impedisce la modifica/eliminazione di un esame se il professore non è responsabile.
+- `insegnamenti_responsabile_trigger`: impedisce a un professore di diventare responsabile di più di tre insegnamenti.
+<img src="../media/dimostrazione_trigger/n_insegnamenti_responsabile.gif" alt="GIF" style="margin-right: 10px; width: 50%">
 
 - `verifica_iscrizione_trigger`: Prima di inserire un esito per un esame, viene verificato che lo studente sia effettivamente iscritto a quell'esame.
+<img src="../media/dimostrazione_trigger/verifica_iscrizione.gif" alt="GIF" style="margin-right: 10px; width: 50%">
 
 - `cancellazione_studente_trigger`: Prima di cancellare uno studente, i suoi dati vengono spostati nel database.
+<img src="../media/dimostrazione_trigger/cancellazione_studente.gif" alt="GIF" style="margin-right: 10px; width: 50%">
 
-- `salvataggio_esiti_trigger`: Trigger per il salvataggio dei dati riguardanti un esito cancellato (dovuto alla cancellazione di uno studente).
+- `salvataggio_esiti_trigger`: per il salvataggio dei dati riguardanti un esito cancellato (dovuto alla cancellazione di uno studente). dimostrazione nel trigger precedente
 
-- `before_insert_esami`: Trigger per la creazione di un codice ID unico prima dell'inserimento di un nuovo esame da parte di un professore.
+- `before_insert_esami`: per la creazione di un codice ID unico prima dell'inserimento di un nuovo esame da parte di un professore.
+<img src="../media/dimostrazione_trigger/generate_esami_id.gif" alt="GIF" style="margin-right: 10px; width: 50%">
 
 - `controllo_propedeutici_trigger`: Prima dell'iscrizione di uno studente a un esame, viene controllato che siano stati superati tutti gli esami propedeutici.
+<img src="../media/dimostrazione_trigger/controllo_propedeutici.gif" alt="GIF" style="margin-right: 10px; width: 50%">
 
-- `elimina_responsabilità_corso_trigger`: Trigger per la cancellazione di un corso. Quando un corso viene cancellato, vengono rimosse tutte le referenze nella tabella "responsabile_corso".
-
-- `elimina_responsabilità_docente_trigger`: Trigger simmetrico al precedente, attivato quando viene cancellato un docente.
+- `esami_giornalieri`: prima dell'inserzione di un nuovo esame viene controllato che la data di questo non sia uguale a quella di un altro esame dello stesso corso
+<img src="../media/dimostrazione_trigger/esami_giornalieri.gif" alt="GIF" style="margin-right: 10px; width: 50%">

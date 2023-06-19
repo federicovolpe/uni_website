@@ -17,16 +17,16 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: unimi_it; Type: SCHEMA; Schema: -; 
+-- Name: unimi_it; Type: SCHEMA; Schema: -; Owner: luigivolpe
 --
 
 CREATE SCHEMA unimi_it;
 
 
-ALTER SCHEMA unimi_it ;
+ALTER SCHEMA unimi_it OWNER TO luigivolpe;
 
 --
--- Name: verifica(text, text, text); Type: FUNCTION; Schema: public; 
+-- Name: verifica(text, text, text); Type: FUNCTION; Schema: public; Owner: luigivolpe
 --
 
 CREATE FUNCTION public.verifica(email text, passwrd text, tipologia text) RETURNS integer
@@ -43,10 +43,10 @@ CREATE FUNCTION public.verifica(email text, passwrd text, tipologia text) RETURN
 $$;
 
 
-ALTER FUNCTION public.verifica(email text, passwrd text, tipologia text) ;
+ALTER FUNCTION public.verifica(email text, passwrd text, tipologia text) OWNER TO luigivolpe;
 
 --
--- Name: cancellazione_studente(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: cancellazione_studente(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.cancellazione_studente() RETURNS trigger
@@ -62,34 +62,10 @@ CREATE FUNCTION unimi_it.cancellazione_studente() RETURNS trigger
     $$;
 
 
-ALTER FUNCTION unimi_it.cancellazione_studente() ;
+ALTER FUNCTION unimi_it.cancellazione_studente() OWNER TO luigivolpe;
 
 --
--- Name: check_responsabile_insegnamento(); Type: FUNCTION; Schema: unimi_it; 
---
-
-CREATE FUNCTION unimi_it.check_responsabile_insegnamento() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  -- Check if the docente and insegnamento exist in the responsabile_insegnamento table
-  IF NOT EXISTS (
-    SELECT 1
-    FROM responsabile_insegnamento
-    WHERE docente = NEW.docente AND insegnamento = NEW.insegnamento
-  ) THEN
-    RAISE EXCEPTION 'Il docente specificato non risulta responsabile dell insegnamento.';
-  END IF;
-  
-  RETURN NEW;
-END;
-$$;
-
-
-ALTER FUNCTION unimi_it.check_responsabile_insegnamento() ;
-
---
--- Name: controllo_propedeutici(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: controllo_propedeutici(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.controllo_propedeutici() RETURNS trigger
@@ -134,44 +110,45 @@ CREATE FUNCTION unimi_it.controllo_propedeutici() RETURNS trigger
     $$;
 
 
-ALTER FUNCTION unimi_it.controllo_propedeutici() ;
+ALTER FUNCTION unimi_it.controllo_propedeutici() OWNER TO luigivolpe;
 
 --
--- Name: elimina_responsabilità_corso(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: esami_giornalieri(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
-CREATE FUNCTION unimi_it."elimina_responsabilità_corso"() RETURNS trigger
+CREATE FUNCTION unimi_it.esami_giornalieri() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-        BEGIN
-            DELETE FROM responsabile_corso
-            WHERE corso = OLD.id;
-            RETURN OLD;
-        END;
+    DECLARE
+        exam_count INTEGER; -- variabile per la conta 
+        corso_id CHAR(10); -- per segnarmi l'id del corso di new
+    BEGIN
+        -- Fetch the corso ID associated with the insegnamento of the new exam
+        SELECT I.corso
+        INTO corso_id
+        FROM insegnamento AS I
+        WHERE I.id = NEW.insegnamento;
+
+        SELECT COUNT(*)
+        INTO exam_count
+        FROM esami AS E
+        JOIN insegnamento AS I ON I.id = E.insegnamento
+        WHERE I.corso = corso_id AND E.data = NEW.data;
+
+        -- se risulta già un esame in questa data
+        IF exam_count >= 1 THEN
+            RAISE EXCEPTION 'Ci sono già esami di questo corso programmati in questa data.';
+        END IF;
+
+        RETURN NEW;
+    END;
     $$;
 
 
-ALTER FUNCTION unimi_it."elimina_responsabilità_corso"() ;
+ALTER FUNCTION unimi_it.esami_giornalieri() OWNER TO luigivolpe;
 
 --
--- Name: elimina_responsabilità_docente(); Type: FUNCTION; Schema: unimi_it; 
---
-
-CREATE FUNCTION unimi_it."elimina_responsabilità_docente"() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-        BEGIN
-            DELETE FROM responsabile_corso
-            WHERE docente = OLD.id;
-            RETURN OLD;
-        END;
-    $$;
-
-
-ALTER FUNCTION unimi_it."elimina_responsabilità_docente"() ;
-
---
--- Name: generate_esami_id(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: generate_esami_id(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.generate_esami_id() RETURNS trigger
@@ -195,10 +172,10 @@ END;
 $$;
 
 
-ALTER FUNCTION unimi_it.generate_esami_id() ;
+ALTER FUNCTION unimi_it.generate_esami_id() OWNER TO luigivolpe;
 
 --
--- Name: n_insegnamenti_responsabile(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: n_insegnamenti_responsabile(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.n_insegnamenti_responsabile() RETURNS trigger
@@ -208,10 +185,10 @@ CREATE FUNCTION unimi_it.n_insegnamenti_responsabile() RETURNS trigger
         conta_docente INTEGER;
     BEGIN
         SELECT COUNT(*) INTO conta_docente
-        FROM responsabile_insegnamento
-        WHERE docente = NEW.docente;
+        FROM insegnamento
+        WHERE responsabile = NEW.responsabile;
 
-        IF (conta_docente > 3) THEN 
+        IF (conta_docente >= 3) THEN 
             RAISE EXCEPTION 'Il docente non può essere responsabile di più di 3 insegnamenti';
         END IF;
 
@@ -220,10 +197,10 @@ CREATE FUNCTION unimi_it.n_insegnamenti_responsabile() RETURNS trigger
     $$;
 
 
-ALTER FUNCTION unimi_it.n_insegnamenti_responsabile() ;
+ALTER FUNCTION unimi_it.n_insegnamenti_responsabile() OWNER TO luigivolpe;
 
 --
--- Name: salvataggio_esiti(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: salvataggio_esiti(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.salvataggio_esiti() RETURNS trigger
@@ -237,10 +214,10 @@ CREATE FUNCTION unimi_it.salvataggio_esiti() RETURNS trigger
     $$;
 
 
-ALTER FUNCTION unimi_it.salvataggio_esiti() ;
+ALTER FUNCTION unimi_it.salvataggio_esiti() OWNER TO luigivolpe;
 
 --
--- Name: verifica_iscrizione(); Type: FUNCTION; Schema: unimi_it; 
+-- Name: verifica_iscrizione(); Type: FUNCTION; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE FUNCTION unimi_it.verifica_iscrizione() RETURNS trigger
@@ -260,14 +237,14 @@ CREATE FUNCTION unimi_it.verifica_iscrizione() RETURNS trigger
     $$;
 
 
-ALTER FUNCTION unimi_it.verifica_iscrizione() ;
+ALTER FUNCTION unimi_it.verifica_iscrizione() OWNER TO luigivolpe;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: corso; Type: TABLE; Schema: unimi_it; 
+-- Name: corso; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.corso (
@@ -280,10 +257,10 @@ CREATE TABLE unimi_it.corso (
 );
 
 
-ALTER TABLE unimi_it.corso ;
+ALTER TABLE unimi_it.corso OWNER TO luigivolpe;
 
 --
--- Name: docente; Type: TABLE; Schema: unimi_it; 
+-- Name: docente; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.docente (
@@ -295,10 +272,10 @@ CREATE TABLE unimi_it.docente (
 );
 
 
-ALTER TABLE unimi_it.docente ;
+ALTER TABLE unimi_it.docente OWNER TO luigivolpe;
 
 --
--- Name: esami; Type: TABLE; Schema: unimi_it; 
+-- Name: esami; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.esami (
@@ -309,10 +286,10 @@ CREATE TABLE unimi_it.esami (
 );
 
 
-ALTER TABLE unimi_it.esami ;
+ALTER TABLE unimi_it.esami OWNER TO luigivolpe;
 
 --
--- Name: esiti; Type: TABLE; Schema: unimi_it; 
+-- Name: esiti; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.esiti (
@@ -322,10 +299,10 @@ CREATE TABLE unimi_it.esiti (
 );
 
 
-ALTER TABLE unimi_it.esiti ;
+ALTER TABLE unimi_it.esiti OWNER TO luigivolpe;
 
 --
--- Name: insegnamento; Type: TABLE; Schema: unimi_it; 
+-- Name: insegnamento; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.insegnamento (
@@ -339,10 +316,10 @@ CREATE TABLE unimi_it.insegnamento (
 );
 
 
-ALTER TABLE unimi_it.insegnamento ;
+ALTER TABLE unimi_it.insegnamento OWNER TO luigivolpe;
 
 --
--- Name: iscrizioni; Type: TABLE; Schema: unimi_it; 
+-- Name: iscrizioni; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.iscrizioni (
@@ -351,10 +328,10 @@ CREATE TABLE unimi_it.iscrizioni (
 );
 
 
-ALTER TABLE unimi_it.iscrizioni ;
+ALTER TABLE unimi_it.iscrizioni OWNER TO luigivolpe;
 
 --
--- Name: propedeuticità; Type: TABLE; Schema: unimi_it; 
+-- Name: propedeuticità; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it."propedeuticità" (
@@ -363,10 +340,10 @@ CREATE TABLE unimi_it."propedeuticità" (
 );
 
 
-ALTER TABLE unimi_it."propedeuticità" ;
+ALTER TABLE unimi_it."propedeuticità" OWNER TO luigivolpe;
 
 --
--- Name: segreteria; Type: TABLE; Schema: unimi_it; 
+-- Name: segreteria; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.segreteria (
@@ -378,10 +355,10 @@ CREATE TABLE unimi_it.segreteria (
 );
 
 
-ALTER TABLE unimi_it.segreteria ;
+ALTER TABLE unimi_it.segreteria OWNER TO luigivolpe;
 
 --
--- Name: storico_carriera; Type: TABLE; Schema: unimi_it; 
+-- Name: storico_carriera; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.storico_carriera (
@@ -392,10 +369,10 @@ CREATE TABLE unimi_it.storico_carriera (
 );
 
 
-ALTER TABLE unimi_it.storico_carriera ;
+ALTER TABLE unimi_it.storico_carriera OWNER TO luigivolpe;
 
 --
--- Name: storico_studente; Type: TABLE; Schema: unimi_it; 
+-- Name: storico_studente; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.storico_studente (
@@ -409,10 +386,10 @@ CREATE TABLE unimi_it.storico_studente (
 );
 
 
-ALTER TABLE unimi_it.storico_studente ;
+ALTER TABLE unimi_it.storico_studente OWNER TO luigivolpe;
 
 --
--- Name: studente; Type: TABLE; Schema: unimi_it; 
+-- Name: studente; Type: TABLE; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TABLE unimi_it.studente (
@@ -425,10 +402,10 @@ CREATE TABLE unimi_it.studente (
 );
 
 
-ALTER TABLE unimi_it.studente ;
+ALTER TABLE unimi_it.studente OWNER TO luigivolpe;
 
 --
--- Data for Name: corso; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: corso; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.corso (id, nome_corso, laurea, descrizione, responsabile) FROM stdin;
@@ -441,7 +418,7 @@ COPY unimi_it.corso (id, nome_corso, laurea, descrizione, responsabile) FROM std
 
 
 --
--- Data for Name: docente; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: docente; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.docente (id, email, passwrd, nome, cognome) FROM stdin;
@@ -459,13 +436,14 @@ COPY unimi_it.docente (id, email, passwrd, nome, cognome) FROM stdin;
 
 
 --
--- Data for Name: esami; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: esami; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.esami (id, insegnamento, docente, data) FROM stdin;
 100013	6967310076	554198	2010-10-22
 100018	1193746368	554198	2011-01-10
 100019	7477422085	554198	2023-10-10
+100020	1655851251	554198	0001-01-01
 100001	9914411111	314434	2023-06-01
 100002	1973869985	619231	2023-06-03
 100003	5210097035	945514	2023-06-05
@@ -485,7 +463,7 @@ COPY unimi_it.esami (id, insegnamento, docente, data) FROM stdin;
 
 
 --
--- Data for Name: esiti; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: esiti; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.esiti (studente, esame, esito) FROM stdin;
@@ -502,17 +480,15 @@ COPY unimi_it.esiti (studente, esame, esito) FROM stdin;
 
 
 --
--- Data for Name: insegnamento; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: insegnamento; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.insegnamento (id, nome, descrizione, anno, corso, cfu, responsabile) FROM stdin;
 2995667581	Information management	Descrizione dell insegnamento Information management: Un corso che fornisce...	2   	9175738010	12	407789
-5837527637	Chimica generale	Descrizione dell insegnamento Chimica generale: Questo insegnamento copre...	2   	2124169738	12	427844
-8650908123	Elettronica 1	Descrizione dell insegnamento Elettronica 1: Un corso che introduce...	1   	3759187480	12	833919
-4789640943	Geometria	Descrizione dell insegnamento Geometria: Questo insegnamento offre una...	1   	3759187480	12	554198
-2852290568	Chimica organica	Descrizione dell insegnamento Chimica organica: Un corso che...	1   	2124169738	6	427844
-6967310076	Chimica 1	Descrizione dell insegnamento Chimica 1: Un corso introduttivo sulla...	2   	3759187480	6	554198
-7477422085	Sistemi embedded	Descrizione dell insegnamento Sistemi embedded: Questo insegnamento...	3   	7028895757	6	554198
+9428798504	Programmazione 2	\N	2   	7028895757	9	151049
+2852290568	Chimica organica	Descrizione dell insegnamento Chimica organica: Un corso che...	1   	2124169738	6	407789
+6405967915	Programmazione 1	\N	1   	7028895757	9	407789
+5837527637	Chimica generale	Descrizione dell insegnamento Chimica generale: Questo insegnamento copre...	2   	2124169738	12	619231
 1655851251	Acustica	Descrizione dell insegnamento Acustica: Un corso che esplora...	2   	9202226989	6	554198
 4104514266	Informatica del suono	Descrizione dell insegnamento Informatica del suono: Questo insegnamento...	3   	9202226989	6	554198
 1973869985	Artificial intelligence	Descrizione dell insegnamento Artificial intelligence: Questo corso...	1   	9175738010	3	619231
@@ -521,22 +497,24 @@ COPY unimi_it.insegnamento (id, nome, descrizione, anno, corso, cfu, responsabil
 1193746368	Istituzioni di matematica	Descrizione dell insegnamento Istituzioni di matematica: Un...	1   	2124169738	3	554198
 4864051855	Fisica quantistica	Descrizione dell insegnamento Fisica quantistica: Questo insegnamento...	3   	3759187480	3	427844
 1402416704	Astrofisica	Descrizione dell insegnamento Astrofisica: Un corso avanzato...	2   	3759187480	3	833919
-7037905580	Editoria digitale	Descrizione dell insegnamento Editoria digitale: Questo insegnamento...	2   	9202226989	3	833919
 6684943179	Crittografia sonora	Descrizione dell insegnamento Crittografia sonora: Un corso che...	3   	9202226989	3	427844
-8610762518	Informazione multimediale	Descrizione dell insegnamento Informazione multimediale: Questo insegnamento...	1   	9202226989	3	427844
 9914411111	Affidabilità dei sistemi	Descrizione dell insegnamento Affidabilità dei sistemi: Un corso...	2   	9175738010	9	314434
 3526956576	Fisica generale	Descrizione dell insegnamento Fisica generale: Questo insegnamento...	2   	2124169738	9	833919
-7393377009	Chimica analitica	Descrizione dell insegnamento Chimica analitica	2   	2124169738	9	833919
 5193752943	Logica	\N	3   	7028895757	9	427844
-2485318062	Basi di dati	\N	3   	7028895757	9	833919
-6405967915	Programmazione 1	\N	1   	7028895757	9	427844
-9428798504	Programmazione 2	\N	2   	7028895757	9	554198
 1647855372	Algoritmi e strutture dati	\N	2   	9202226989	9	833919
+8610762518	Informazione multimediale	Descrizione dell insegnamento Informazione multimediale: Questo insegnamento...	1   	9202226989	3	619231
+7037905580	Editoria digitale	Descrizione dell insegnamento Editoria digitale: Questo insegnamento...	2   	9202226989	3	719958
+2485318062	Basi di dati	\N	3   	7028895757	9	719958
+8650908123	Elettronica 1	Descrizione dell insegnamento Elettronica 1: Un corso che introduce...	1   	3759187480	12	151049
+7393377009	Chimica analitica	Descrizione dell insegnamento Chimica analitica	2   	2124169738	9	151049
+4789640943	Geometria	Descrizione dell insegnamento Geometria: Questo insegnamento offre una...	1   	3759187480	12	991385
+6967310076	Chimica 1	Descrizione dell insegnamento Chimica 1: Un corso introduttivo sulla...	2   	3759187480	6	991385
+7477422085	Sistemi embedded	Descrizione dell insegnamento Sistemi embedded: Questo insegnamento...	3   	7028895757	6	991385
 \.
 
 
 --
--- Data for Name: iscrizioni; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: iscrizioni; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.iscrizioni (studente, esame) FROM stdin;
@@ -544,12 +522,14 @@ COPY unimi_it.iscrizioni (studente, esame) FROM stdin;
 986899	100001
 147692	000002
 966031	100019
+905716	100019
+905716	000002
 966031	000002
 \.
 
 
 --
--- Data for Name: propedeuticità; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: propedeuticità; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it."propedeuticità" (insegnamento, propedeutico) FROM stdin;
@@ -558,7 +538,7 @@ COPY unimi_it."propedeuticità" (insegnamento, propedeutico) FROM stdin;
 
 
 --
--- Data for Name: segreteria; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: segreteria; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.segreteria (id, email, passwrd, nome, cognome) FROM stdin;
@@ -571,24 +551,25 @@ COPY unimi_it.segreteria (id, email, passwrd, nome, cognome) FROM stdin;
 
 
 --
--- Data for Name: storico_carriera; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: storico_carriera; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.storico_carriera (studente, esame, esito) FROM stdin;
+000001	100019	5
 \.
 
 
 --
--- Data for Name: storico_studente; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: storico_studente; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.storico_studente (matricola, nome, cognome, email, passwrd, corso_frequentato) FROM stdin;
-000001	modifica	modifica	prova@studenti.unimi.it	slòasdkf	9175738010                                                                                          
+000001	a	a	prova@studenti.unimi.it	a	7028895757                                                                                          
 \.
 
 
 --
--- Data for Name: studente; Type: TABLE DATA; Schema: unimi_it; 
+-- Data for Name: studente; Type: TABLE DATA; Schema: unimi_it; Owner: luigivolpe
 --
 
 COPY unimi_it.studente (matricola, nome, cognome, email, passwrd, corso_frequentato) FROM stdin;
@@ -612,7 +593,7 @@ COPY unimi_it.studente (matricola, nome, cognome, email, passwrd, corso_frequent
 
 
 --
--- Name: corso corso_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: corso corso_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.corso
@@ -620,7 +601,7 @@ ALTER TABLE ONLY unimi_it.corso
 
 
 --
--- Name: docente docente_email_key; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: docente docente_email_key; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.docente
@@ -628,7 +609,7 @@ ALTER TABLE ONLY unimi_it.docente
 
 
 --
--- Name: docente docente_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: docente docente_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.docente
@@ -636,7 +617,7 @@ ALTER TABLE ONLY unimi_it.docente
 
 
 --
--- Name: esami esami_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: esami esami_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.esami
@@ -644,7 +625,7 @@ ALTER TABLE ONLY unimi_it.esami
 
 
 --
--- Name: insegnamento insegnamento_nome_key; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: insegnamento insegnamento_nome_key; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.insegnamento
@@ -652,7 +633,7 @@ ALTER TABLE ONLY unimi_it.insegnamento
 
 
 --
--- Name: insegnamento insegnamento_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: insegnamento insegnamento_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.insegnamento
@@ -660,7 +641,7 @@ ALTER TABLE ONLY unimi_it.insegnamento
 
 
 --
--- Name: iscrizioni iscrizioni_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: iscrizioni iscrizioni_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.iscrizioni
@@ -668,7 +649,7 @@ ALTER TABLE ONLY unimi_it.iscrizioni
 
 
 --
--- Name: corso nome_corso_unico; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: corso nome_corso_unico; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.corso
@@ -676,7 +657,7 @@ ALTER TABLE ONLY unimi_it.corso
 
 
 --
--- Name: segreteria segreteria_email_key; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: segreteria segreteria_email_key; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.segreteria
@@ -684,7 +665,7 @@ ALTER TABLE ONLY unimi_it.segreteria
 
 
 --
--- Name: segreteria segreteria_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: segreteria segreteria_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.segreteria
@@ -692,7 +673,7 @@ ALTER TABLE ONLY unimi_it.segreteria
 
 
 --
--- Name: storico_carriera storico_carriera_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_carriera storico_carriera_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_carriera
@@ -700,7 +681,7 @@ ALTER TABLE ONLY unimi_it.storico_carriera
 
 
 --
--- Name: storico_studente storico_studente_email_key; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_studente storico_studente_email_key; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_studente
@@ -708,7 +689,7 @@ ALTER TABLE ONLY unimi_it.storico_studente
 
 
 --
--- Name: storico_studente storico_studente_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_studente storico_studente_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_studente
@@ -716,7 +697,7 @@ ALTER TABLE ONLY unimi_it.storico_studente
 
 
 --
--- Name: studente studente_email_key; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: studente studente_email_key; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.studente
@@ -724,7 +705,7 @@ ALTER TABLE ONLY unimi_it.studente
 
 
 --
--- Name: studente studente_pkey; Type: CONSTRAINT; Schema: unimi_it; 
+-- Name: studente studente_pkey; Type: CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.studente
@@ -732,63 +713,56 @@ ALTER TABLE ONLY unimi_it.studente
 
 
 --
--- Name: esami before_insert_esami; Type: TRIGGER; Schema: unimi_it; 
+-- Name: esami before_insert_esami; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TRIGGER before_insert_esami BEFORE INSERT ON unimi_it.esami FOR EACH ROW EXECUTE FUNCTION unimi_it.generate_esami_id();
 
 
 --
--- Name: studente cancellazione_studente_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: studente cancellazione_studente_trigger; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TRIGGER cancellazione_studente_trigger BEFORE DELETE ON unimi_it.studente FOR EACH ROW EXECUTE FUNCTION unimi_it.cancellazione_studente();
 
 
 --
--- Name: iscrizioni controllo_propedeutici_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: iscrizioni controllo_propedeutici_trigger; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TRIGGER controllo_propedeutici_trigger BEFORE INSERT ON unimi_it.iscrizioni FOR EACH ROW EXECUTE FUNCTION unimi_it.controllo_propedeutici();
 
 
 --
--- Name: corso elimina_responsabilità_corso_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: esami esami_giornalieri; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
-CREATE TRIGGER "elimina_responsabilità_corso_trigger" BEFORE DELETE ON unimi_it.corso FOR EACH ROW EXECUTE FUNCTION unimi_it."elimina_responsabilità_corso"();
-
-
---
--- Name: docente elimina_responsabilità_docente_trigger; Type: TRIGGER; Schema: unimi_it; 
---
-
-CREATE TRIGGER "elimina_responsabilità_docente_trigger" BEFORE DELETE ON unimi_it.docente FOR EACH ROW EXECUTE FUNCTION unimi_it."elimina_responsabilità_docente"();
+CREATE TRIGGER esami_giornalieri BEFORE INSERT ON unimi_it.esami FOR EACH ROW EXECUTE FUNCTION unimi_it.esami_giornalieri();
 
 
 --
--- Name: esami responsabile_insegnamento_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: insegnamento insegnamenti_responsabile_trigger; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
-CREATE TRIGGER responsabile_insegnamento_trigger BEFORE INSERT ON unimi_it.esami FOR EACH ROW EXECUTE FUNCTION unimi_it.check_responsabile_insegnamento();
+CREATE TRIGGER insegnamenti_responsabile_trigger BEFORE INSERT ON unimi_it.insegnamento FOR EACH ROW EXECUTE FUNCTION unimi_it.n_insegnamenti_responsabile();
 
 
 --
--- Name: esiti salvataggio_esiti_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: esiti salvataggio_esiti_trigger; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TRIGGER salvataggio_esiti_trigger BEFORE DELETE ON unimi_it.esiti FOR EACH ROW EXECUTE FUNCTION unimi_it.salvataggio_esiti();
 
 
 --
--- Name: esiti verifica_iscrizione_trigger; Type: TRIGGER; Schema: unimi_it; 
+-- Name: esiti verifica_iscrizione_trigger; Type: TRIGGER; Schema: unimi_it; Owner: luigivolpe
 --
 
 CREATE TRIGGER verifica_iscrizione_trigger BEFORE INSERT ON unimi_it.esiti FOR EACH ROW EXECUTE FUNCTION unimi_it.verifica_iscrizione();
 
 
 --
--- Name: esiti cascado; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: esiti cascado; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.esiti
@@ -796,7 +770,7 @@ ALTER TABLE ONLY unimi_it.esiti
 
 
 --
--- Name: iscrizioni cascado; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: iscrizioni cascado; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.iscrizioni
@@ -804,7 +778,7 @@ ALTER TABLE ONLY unimi_it.iscrizioni
 
 
 --
--- Name: corso corso_responsabile_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: corso corso_responsabile_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.corso
@@ -812,23 +786,55 @@ ALTER TABLE ONLY unimi_it.corso
 
 
 --
--- Name: esami esami_docente_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: esami esami_docente_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.esami
-    ADD CONSTRAINT esami_docente_fkey FOREIGN KEY (docente) REFERENCES unimi_it.docente(id);
+    ADD CONSTRAINT esami_docente_fkey FOREIGN KEY (docente) REFERENCES unimi_it.docente(id) ON DELETE CASCADE;
 
 
 --
--- Name: insegnamento insegnamento_corso_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: studente fk_corso_frequentato; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
+--
+
+ALTER TABLE ONLY unimi_it.studente
+    ADD CONSTRAINT fk_corso_frequentato FOREIGN KEY (corso_frequentato) REFERENCES unimi_it.corso(id) ON DELETE SET NULL;
+
+
+--
+-- Name: storico_carriera fk_esami; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
+--
+
+ALTER TABLE ONLY unimi_it.storico_carriera
+    ADD CONSTRAINT fk_esami FOREIGN KEY (esame) REFERENCES unimi_it.esami(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: propedeuticità fk_insegnamento_propedeutico; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
+--
+
+ALTER TABLE ONLY unimi_it."propedeuticità"
+    ADD CONSTRAINT fk_insegnamento_propedeutico FOREIGN KEY (insegnamento) REFERENCES unimi_it.insegnamento(id) ON DELETE CASCADE;
+
+
+--
+-- Name: propedeuticità fk_propedeutico_insegnamento; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
+--
+
+ALTER TABLE ONLY unimi_it."propedeuticità"
+    ADD CONSTRAINT fk_propedeutico_insegnamento FOREIGN KEY (propedeutico) REFERENCES unimi_it.insegnamento(id) ON DELETE CASCADE;
+
+
+--
+-- Name: insegnamento insegnamento_corso_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.insegnamento
-    ADD CONSTRAINT insegnamento_corso_fkey FOREIGN KEY (corso) REFERENCES unimi_it.corso(id);
+    ADD CONSTRAINT insegnamento_corso_fkey FOREIGN KEY (corso) REFERENCES unimi_it.corso(id) ON DELETE SET NULL;
 
 
 --
--- Name: insegnamento insegnamento_responsabile_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: insegnamento insegnamento_responsabile_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.insegnamento
@@ -836,7 +842,7 @@ ALTER TABLE ONLY unimi_it.insegnamento
 
 
 --
--- Name: iscrizioni iscrizioni_esame_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: iscrizioni iscrizioni_esame_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.iscrizioni
@@ -844,15 +850,7 @@ ALTER TABLE ONLY unimi_it.iscrizioni
 
 
 --
--- Name: iscrizioni iscrizioni_studente_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
---
-
-ALTER TABLE ONLY unimi_it.iscrizioni
-    ADD CONSTRAINT iscrizioni_studente_fkey FOREIGN KEY (studente) REFERENCES unimi_it.studente(matricola) ON DELETE CASCADE;
-
-
---
--- Name: propedeuticità propedeuticità_insegnamento_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: propedeuticità propedeuticità_insegnamento_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it."propedeuticità"
@@ -860,7 +858,7 @@ ALTER TABLE ONLY unimi_it."propedeuticità"
 
 
 --
--- Name: propedeuticità propedeuticità_propedeutico_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: propedeuticità propedeuticità_propedeutico_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it."propedeuticità"
@@ -868,7 +866,7 @@ ALTER TABLE ONLY unimi_it."propedeuticità"
 
 
 --
--- Name: storico_carriera storico_carriera_esame_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_carriera storico_carriera_esame_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_carriera
@@ -876,7 +874,7 @@ ALTER TABLE ONLY unimi_it.storico_carriera
 
 
 --
--- Name: storico_carriera storico_carriera_studente_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_carriera storico_carriera_studente_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_carriera
@@ -884,7 +882,7 @@ ALTER TABLE ONLY unimi_it.storico_carriera
 
 
 --
--- Name: storico_studente storico_studente_corso_frequentato_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
+-- Name: storico_studente storico_studente_corso_frequentato_fkey; Type: FK CONSTRAINT; Schema: unimi_it; Owner: luigivolpe
 --
 
 ALTER TABLE ONLY unimi_it.storico_studente
@@ -892,14 +890,5 @@ ALTER TABLE ONLY unimi_it.storico_studente
 
 
 --
--- Name: studente studente_corso_frequentato_fkey; Type: FK CONSTRAINT; Schema: unimi_it; 
---
-
-ALTER TABLE ONLY unimi_it.studente
-    ADD CONSTRAINT studente_corso_frequentato_fkey FOREIGN KEY (corso_frequentato) REFERENCES unimi_it.corso(id);
-
-
---
 -- PostgreSQL database dump complete
 --
-

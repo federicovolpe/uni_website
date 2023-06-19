@@ -26,12 +26,12 @@ if (isset($_POST))  {
 
         $result_check = pg_prepare($db, "check", $check);
         $result_check = pg_execute($db, "check", array($id));
-        $result_check = pg_fetch_row($result_check);
+        $rows = pg_num_rows($result_check_rows);
 
         switch($operazione){
             case 'aggiungi':
 
-                if(empty($result_check && !$result_check[0] == 1)){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
+                if($rows === 0){// se il risultato è vuoto allora significa che non esiste nessuno docente già registrato con queste credenziali
                         $inserzione_sql = "INSERT INTO docente (id, nome, cognome, email, passwrd) 
                                 VALUES ($1, $2, $3, $4, $5)";
                         $preparato = pg_prepare($db, "inserzione", $inserzione_sql);
@@ -58,7 +58,7 @@ if (isset($_POST))  {
 
             case 'modifica':
 
-                if($result_check && $result_check[0] == 1){ //se il numero di righe è 1 allora lo docente risulta presente
+                if($rows === 1){ //se il numero di righe è 1 allora lo docente risulta presente
 
                     $contaparametri = 2;
                     $sql = "UPDATE docente
@@ -117,7 +117,7 @@ if (isset($_POST))  {
 
             case 'cancella':
 
-                if($result_check && $result_check[0] == 1){
+                if($rows === 1){
 
                     $cancella_sql = "DELETE FROM docente WHERE id = $1";
                     $result = pg_prepare($db, "op_docente", $cancella_sql);

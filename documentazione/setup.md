@@ -7,11 +7,9 @@ Per lo svolgimento dell'esame sono stati utilizzati i seguenti software:
 -  Postgres: per la gestione del database
 -  Google Crome: come browser
 
-prima dell'esecuzione è necessario spostare l'intera cartella nella directory htdocs della applicazione MAMP poichè quella è la predefinita dall'applicazione
+prima dell'esecuzione è necessario spostare l'intera cartella nella directory htdocs della applicazione MAMP poichè quella è la predefinita dall'applicazione, successivamente (siccome le tabelle sono state implementate all'interno di uno schema unimi_it) è necessario modificare il search path con il comando a terminale: SET SEARCH_PATH unimi_it
 
-una volta eseguito il setup il sito è raggiungibile all'indirizzo standard fornito da MAMP: localhost:8888/uni_website/login.php
-
-Come pagina di partenza è stata scelta quella per il login ma è comunque presente una pagina index.php che elenca tutte le pagine presenti, tuttavia molte di queste non saranno funzionanti poichè necessiteranno delle variabili di sessione date da login.php o da altre pagine.
+una volta eseguito il setup il sito è raggiungibile all'indirizzo standard fornito da MAMP: localhost:8888/uni_website/login.php(lo stesso index.php reindirizzerà a questa pagina).
 
 Nel database le tabelle sono già state riempite con una quantità minima di dati da poter verificarne le varie funzionalità
 
@@ -31,7 +29,7 @@ gardner@studenti.unimi.it   password12
 worden@studenti.unimi.it    password13
 bibi@studenti.unimi.it      password14
 madlin@studenti.unimi.it    password15
-federico.volpe@studenti.unimi.it abc
+federico.volpe@studenti.unimi.it a
 
 accessi possibili con un profilo docente:
 bernardine@docenti.unimi.it     password1

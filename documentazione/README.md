@@ -93,6 +93,7 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
             Quest'ultimo si occuperà di effettuare tutte le verifiche necessarie per l'inserzione (come la verifica dell'iscrizione dello studente a quell'esame o la correttezza dell'id studente).</li>
             <div>
                 <video src="../media/inserimento-voto.mov" controls></video>
+                <a href="../media/inserimento-voto.mov">inserimento-voto</a>
             </div>
         </ul>
     </div>
@@ -118,6 +119,7 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
         Alla fine di ogni operazione vengono comunque generati messaggi che indicano l'esito dell'esecuzione delle operazioni. Questi messaggi verranno mostrati nella pagina segreteria.php.
         <div>
                 <video src="../media/update_docente.mov" controls></video>
+                <a href="../media/update_docente.mov">update_docente</a>
         </div>
     </li>
 </ul>
@@ -136,6 +138,7 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
         Alla fine di ogni operazione vengono comunque generati messaggi che indicano l'esito dell'esecuzione delle operazioni. Questi messaggi verranno mostrati nella pagina segreteria.php.
         <div>
                 <video src="../media/update_studente.mov" controls></video>
+                <a href="../media/update_studente.mov">update_studente</a>
         </div>
     </li>
 </ul>
@@ -147,6 +150,7 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
         <strong>update_insegnamento.php:</strong> Il funzionamento è analogo ai form precedenti
         <div>
                 <video src="../media/update_corso.mov" controls></video>
+                <a href="../media/update_corso.mov">update_corso</a>
         </div>
     </li>
 </ul>
@@ -157,6 +161,7 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
     <li>
         <strong>update_insegnamento.php:</strong> Come prima cosa viene eseguita una query che stabilisce <div>
                 <video src="../media/update_insegnamento.mov" controls></video>
+                <a href="../media/update_insegnamento.mov">update_insegnamento</a>
         </div>
     </li>
 </ul>
@@ -166,7 +171,8 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
 <ul>
     <li>
         <strong>update_insegnamento.php:</strong> Come prima cosa viene eseguita una query che stabilisce <div>
-                <video src="../media/inserimento-voto.mov" controls></video>
+                <video src="../media/update_insegnamento.mov" controls></video>
+                <a href="../media/update_insegnamento.mov">update_insegnamento</a>
         </div>
     </li>
 </ul>

@@ -10,13 +10,13 @@
             WHERE id = $1";
         $result = pg_prepare($db, "check", $check_sql);
         $result = pg_execute($db, "check", array($_POST['id_corso']));
-        $result_check = pg_fetch_row($result);
+        $rows = pg_num_rows($result_check_rows);
         
         //swithc eseguito sul parametro in sessione perchè quello in post con l'operazione di modifica si cancellerebbe
         switch ($_POST['operazione']){
             case 'aggiungi':
 
-                if($result_check[0] == 1){//ritorno un messaggio di errore
+                if($rows === 1){//ritorno un messaggio di errore
                     $_POST['approved'] = 1;
                     $_POST['msg'] = "Esiste già un corso con questo id";
                 }else{
@@ -45,7 +45,7 @@
 
             case 'modifica':
                 
-                if($result_check && $result_check[0] == 1){
+                if($rows === 1){
 
                     //composizione della query in base ai parametri inseriti
                     $contaparametri = 2;
@@ -97,7 +97,7 @@
                 break;
 
             case 'cancella': //cancellazione del corso con l'id inserito
-                    if($result_check && $result_check[0] == 1){
+                    if($rows === 1){
                         $cancellazione_sql = "DELETE FROM corso WHERE id = $1";
                         
                         $cancellazione = pg_prepare($db, "cancellazione", $cancellazione_sql);
