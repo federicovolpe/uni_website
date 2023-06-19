@@ -27,15 +27,16 @@ if (isset($_POST))  {
               WHERE matricola = $1";
 
     $result_check = pg_prepare($db, "check", $check);
-    $result_check = pg_execute($db, "check", array($matricola));
-    $result_check = pg_fetch_row($result_check);
+    $result_check_rows = pg_execute($db, "check", array($matricola));
+    $result_check = pg_fetch_row($result_check_rows);
+    $rows = pg_num_rows($result_check_rows);
 
     if ($db) {
         switch($operazione){
             case 'aggiungi':
                 
-            if($result_check && !$result_check[0] == 1){// se il risultato è vuoto allora significa che non esiste nessuno studente già registrato con queste credenziali
-                
+                if ($rows === 0){// se il risultato è vuoto allora significa che non esiste nessuno studente già registrato con queste credenziali
+                print' preparo';
                     $sql = "INSERT INTO studente (matricola, nome, cognome, email, passwrd, corso_frequentato) 
                             VALUES ($1, $2, $3, $4, $5, $6)";
                     $result = pg_prepare($db, "op_studente", $sql);
@@ -56,13 +57,13 @@ if (isset($_POST))  {
                     }
             }else{ //esiste già quelcuno con queste credenziali
                 $_POST['approved'] = 1;
-                $_POST['msg'] = pg_last_error();
+                $_POST['msg'] = 'risulta già uno studente con questa matricola';
             }
             break;
 
             case 'modifica':
 
-                if($result_check && $result_check[0] == 1){ //se il numero di righe è 1 allora lo studente risulta presente
+                if ($rows === 1){ //se il numero di righe è 1 allora lo studente risulta presente
                     //compongo la query in base ai campi che sono settati per essere modificati
                     $contaparametri = 2;
                     $sql = "UPDATE studente 
@@ -117,8 +118,7 @@ if (isset($_POST))  {
 
             case 'cancella':
 
-                if($result_check && $result_check[0] == 1){
-
+                if ($rows === 1){
                     $sql = "DELETE FROM studente WHERE matricola = $1";
                     $result = pg_prepare($db, "op_studente", $sql);
                 

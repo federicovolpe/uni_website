@@ -4,7 +4,7 @@
     //include delle funzioni
     include("../lib/functions.php");
     session_start();
-
+ 
     //se si è tentato di eseguire un cambio password
     if(isset($_GET['change_password'])){
         include_once('../lib/change_password.php');

@@ -10,9 +10,10 @@ session_start();
         $_SESSION['corso'] = $_POST['corso'];    
         $_SESSION['descrizione'] = $_POST['descrizione'];
         $_SESSION['docente_responsabile'] = $_POST['docente_responsabile'];
+        $_SESSION['operazione'] = $_POST['operazione'];
     }
 
-    $_SESSION['operazione'] = $_POST['operazione'];
+    
     $db = pg_connect("host = localhost port = 5432 dbname = unimio");
 
     //control
@@ -185,7 +186,7 @@ session_start();
                 break;
             default:
                 $_SESSION['approved'] = 1;
-                $_SESSION['msg'] = "Errore nella scelta dell'operazione";
+                $_SESSION['msg'] = "Errore nella scelta dell'operazione: ".$_SESSION['operazione'];
                 //redirezione alla pagina segreteria.php
                 header("Location: ../segreteria.php");
                 exit;

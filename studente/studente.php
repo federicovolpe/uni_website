@@ -20,14 +20,19 @@
                             WHERE matricola = $1";
 
             $preparato = pg_prepare($db, 'rinuncia', $rinuncia_sql);
-            $result = pg_execute($db, 'rinuncia', array($_SESSION['matricola']));
+            if($preparato){
+                $result = pg_execute($db, 'rinuncia', array($_SESSION['matricola']));
 
-            if($result){
-                $_POST['msg'] = "Rinuncia avvenuta con successo";
-                $_POST['approved'] = 0;
+                if($result){
+                    $_POST['msg'] = "Rinuncia avvenuta con successo";
+                    $_POST['approved'] = 0;
+                }else{
+                    $_POST['msg'] = pg_last_error();
+                    $_POST['approved'] = 1;
+                }
             }else{
-                $_POST['msg'] = "Rinuncia fallita";
-                $_POST['approved'] = 1;
+                $_POST['msg'] = "errore nella preparazione della query: matricola: ".$_SESSION['matricola'];
+                $_POST['approved'] = 1; 
             }
         }else{
             $_POST['msg'] = "connessione al database fallita";

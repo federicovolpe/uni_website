@@ -132,30 +132,6 @@ CREATE TABLE storico_carriera(
 
 
 
--- prima di inserire un esame devo controllare che l'insegnante specificato risulti responsabile di quell'insegnamento
-
-CREATE OR REPLACE FUNCTION check_responsabile_insegnamento()
-  RETURNS TRIGGER AS $$
-    BEGIN
-    -- Check if the docente and insegnamento exist in the responsabile_insegnamento table
-        IF NOT EXISTS (
-            SELECT 1
-            FROM responsabile_insegnamento
-            WHERE docente = NEW.docente AND insegnamento = NEW.insegnamento
-        ) THEN
-            RAISE EXCEPTION 'Il docente specificato non risulta responsabile dell insegnamento.';
-        END IF;
-    
-    RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-
--- Create the trigger
-CREATE TRIGGER responsabile_insegnamento_trigger
-BEFORE INSERT ON esami
-FOR EACH ROW
-EXECUTE FUNCTION check_responsabile_insegnamento();
-
 -- trigger che evita che un professore diventi responsabile di piu di 3 insegnamenti
 
 CREATE OR REPLACE FUNCTION n_insegnamenti_responsabile()
@@ -164,10 +140,10 @@ CREATE OR REPLACE FUNCTION n_insegnamenti_responsabile()
         conta_docente INTEGER;
     BEGIN
         SELECT COUNT(*) INTO conta_docente
-        FROM responsabile_insegnamento
-        WHERE docente = NEW.docente;
+        FROM insegnamento
+        WHERE responsabile = NEW.responsabile;
 
-        IF (conta_docente > 3) THEN 
+        IF (conta_docente >= 3) THEN 
             RAISE EXCEPTION 'Il docente non può essere responsabile di più di 3 insegnamenti';
         END IF;
 
@@ -176,23 +152,9 @@ CREATE OR REPLACE FUNCTION n_insegnamenti_responsabile()
     $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER insegnamenti_responsabile_trigger
-    BEFORE INSERT ON responsabile_insegnamento
+    BEFORE INSERT ON insegnamento
     FOR EACH ROW
     EXECUTE FUNCTION n_insegnamenti_responsabile();
-
---    - [ ] Trigger che vieta la modifica/eliminazione di un esame se il professore non è responsabile
-CREATE OR REPLACE FUNCTION update_esame(professore)
-    RETURNS TRIGGER 
-    AS $$
-        BEGIN
-        END;
-    $$ LANGUAGE plpgsql
-
-
-CREATE OR REPLACE TRIGGER update_esame_trigger
-    BEFORE UPDATE OR DELETE ON esame
-    FOR EACH ROW
-    EXECUTE FUNCTION update_esame(professore);
 
 -- trigger che prima dell'inserzione di un esito per un  esame controlli
 --  che lo studente risulti effettivamente iscritto per quell'esame

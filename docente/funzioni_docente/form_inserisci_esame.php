@@ -17,13 +17,13 @@
             <div class="row">
 
                 <div class="col">
-                    <select class="form-select" name="insegnamento" id="insegnamento" aria-label="Default select example">
+                    <select class="form-select" name="id_insegnamento" id="id_insegnamento" aria-label="Default select example">
                         <!--opzioni fra gli insegnamenti del professore specificato-->
                         <?php
                             $conn = pg_connect("host = localhost port = 5432 dbname = unimio");
                             if($conn){ 
                                 //query che per il docente selezionato raccoglie tutti gli insegnamenti di cui è responsabile
-                                $sql = "SELECT I.nome AS nome_insegnamento
+                                $sql = "SELECT I.nome AS nome_insegnamento, id as id_insegnamento
                                         FROM insegnamento as I 
                                         WHERE responsabile = $1;";
                                         
@@ -34,7 +34,7 @@
                                     print("insegnamenti trovati!");
                                     
                                     while($row = pg_fetch_assoc($insegnamenti)){
-                                        echo("<option value='" . $row['nome_insegnamento'] . "'>".$row['nome_insegnamento']."</option>");
+                                        echo("<option value='" . $row['id_insegnamento'] . "'>".$row['nome_insegnamento']." / ".$row['id_insegnamento'] ."</option>");
                                     }
                                 }else{
                                     echo("insegnamenti non trovati");
