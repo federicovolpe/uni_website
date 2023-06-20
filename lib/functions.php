@@ -50,12 +50,13 @@
         if($db){
 
             //tabella dove ci sono gli insegnamenti dello studente corrispondenti ad un esame a cui ci si può iscrivere o cancellare iscrizione
-            $esami_sql = "SELECT ES.esame_id, ES.nome, ES.data
+            $esami_sql = "SELECT ES.esame_id, ES.nome, ES.data, D.nome AS d_nome, D.cognome AS d_cognome
                     FROM studente AS S
                     JOIN
-                        (SELECT I.corso AS corso, E.id AS esame_id, I.nome, E.data
+                        (SELECT I.corso AS corso, E.id AS esame_id, I.nome, E.data, I.responsabile
                         FROM esami AS E
                         INNER JOIN insegnamento AS I ON I.id = E.insegnamento) AS ES ON ES.corso = S.corso_frequentato
+                    JOIN docente AS D ON D.id = ES.responsabile
                         WHERE S.matricola = $1";
            
             $preparato1 = pg_prepare($db, "esami_iscrivibili", $esami_sql);
@@ -66,10 +67,11 @@
 
                     while($row = pg_fetch_assoc($esami)){
                         
-                        //stampa delle prime due colonne contenenti il nome e la data dell'esame
+                        //stampa delle prime due colonne contenenti il nome e la data dell'esame e il docente
                         echo '<tr>
                                 <td>'. $row['nome'] .'</td>
                                 <td>'. $row['data'] .'</td>
+                                <td>'. $row['d_nome'].' '. $row['d_cognome'] .'</td>
                                 <td>';
 
                         //query per vedere se ci si è già iscritti a quell'esame
@@ -101,7 +103,7 @@
                     print("l'esecuzione della query non è andata a buon fine</br>");
                 }
             }else{
-                print("la preparazione della query non è andata a buon fine</br>");
+                print("la preparazione della query non è andata a buon fine</br>". pg_last_error());
             }
         } else{
             print("connessione con il database fallita");

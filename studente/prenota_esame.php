@@ -81,6 +81,7 @@
                 <tr>
                     <th scope="col"> Materia </th>
                     <th scope="col"> Data </th>
+                    <th scope="col"> Docente </th>
                     <th scope="col"> Iscrizione </th>
                 </tr>
             </thead>

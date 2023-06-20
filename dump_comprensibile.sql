@@ -278,7 +278,8 @@ EXECUTE FUNCTION generate_esami_id();
     FOR EACH ROW
     EXECUTE FUNCTION controllo_propedeutici();
 
-
+-- trigger che vieta l'inserzione di più di un esame per giorno se l'insegnamento relativo all'esame 
+-- coincide con l'esame di un insegnamento dello stesso corso del primo
 
 CREATE OR REPLACE FUNCTION esami_giornalieri()
     RETURNS TRIGGER
