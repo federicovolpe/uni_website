@@ -167,7 +167,9 @@ infine in fondo alla pagina verrà sempre mostrato un pulsatne per la rinuncia a
 </ul>
 
 <h4>----form per il controllo di una carriera di uno studente----</h4>
-<p>il form raccoglie le informazioni riguardanti lo studente per poi richiamare il file:</p>
+<p>il form raccoglie le informazioni riguardanti lo studente per poi richiamare il file:
+bisognerà selezionare se si desidera visualizzare la carriera completa o la carriera valida 
+inoltre selezionare se si tratta di uno studente attualmente presente o meno per direzionare la query di ricerca nella giusta tabella</p>
 <ul>
     <li>
         <strong>update_insegnamento.php:</strong> Come prima cosa viene eseguita una query che stabilisce <div>
