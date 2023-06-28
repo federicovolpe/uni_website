@@ -97,7 +97,12 @@
                 if($db){
 
                     $info_corsi_sql = "SELECT * FROM corso";
+                    $insegnamenti_corso = "SELECT * 
+                                            FROM insegnamento
+                                            WHERE corso = $1";
+
                     //opto per una pg_query poichè la query non è parametrica
+                    
                     $result = pg_query($db, $info_corsi_sql);
                     if($result){
                         $generatore = 0;
@@ -114,6 +119,13 @@
                                     <div id="'.$generatore_id.'" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
                                             <strong>corso: '.$row['nome_corso'].'.</strong><br><p>'.$row['descrizione'].'</p>
+                                            <ul>';
+                            
+                            $insegnamenti = pg_query_params($db, $insegnamenti_corso, array($row['id']));
+                            while($insegnamento = pg_fetch_assoc($insegnamenti)){
+                                print'<li>' . $insegnamento['nome'].'</li>';
+                            }
+                            print'           </ul>
                                         </div>
                                     </div>
                                 </div>';
@@ -143,12 +155,11 @@
 </div>
 
 <!--------------------------------        form per la rinuncia agli studi volutamente sempre visibile  --------------------------->
-    <div class="rinuncia_studi" style="position: fixed; bottom: 10px; right: 10px; backguround: solid blue;">
+        
+        <form class="c-password" style="position: fixed; bottom: 10px; right: 10px; width:20%" action="<?php echo $_SERVER['PHP_SELF']; ?>?rinuncia_agli_studi" method="POST">
         <h4>Vuoi Rinunciare agli studi?</h4>
-        <form class="c-password" action="<?php echo $_SERVER['PHP_SELF']; ?>?rinuncia_agli_studi" method="POST">
             <button type="submit" class="btn btn-primary">Rinuncia</button>
         </form>
-    </div>
 
     <!-----------------              form di cambio password           ------------------->
         <?php include_once('../lib/cambio_password.php')?>

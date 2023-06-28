@@ -22,6 +22,7 @@
                 <tr>
                     <th scope="col"> Materia </th>
                     <th scope="col"> Data </th>
+                    <th scope="col"> Docente </th>
                     <th scope="col"> Voto </th>
                 </tr>
             </thead>
@@ -29,10 +30,11 @@
                     $matricola = $_SESSION['matricola'];  //recupero della matricola per la query
                     if ($db) {
                         //tabella dove ci sono tutti gli esiti degli esami dello studente
-                        $esiti_sql = "SELECT I.nome AS insegnamento, esiti.esito, E.data                             
+                        $esiti_sql = "SELECT I.nome AS insegnamento, esiti.esito, E.data, D.nome AS docente_nome, D.cognome                         
                                         FROM esiti                                                                      
                                         JOIN esami AS E ON E.id = esiti.esame 
-                                        JOIN insegnamento AS I on I.id = E.insegnamento                                         
+                                        JOIN insegnamento AS I on I.id = E.insegnamento  
+                                        JOIN docente as D ON I.responsabile = D.id                                       
                                         WHERE studente = $1 AND esiti.esito >= 18                                 
                                                 AND E.data = (SELECT MAX(data)                                                                
                                                                 FROM esami                                                                      
@@ -46,7 +48,8 @@
                                 while ($row = pg_fetch_assoc($esiti)) {
                                     echo '<tr>
                                                 <td>' . $row['insegnamento'] . '</td>
-                                                <td>' . $row['data'] . '</td>';
+                                                <td>' . $row['data'] . '</td>
+                                                <td>' . $row['docente_nome'].' '. $row['cognome'] . '</td>';
                                     if ($row['esito'] < 18) {
                                         echo '<td style="color: red;">' . $row['esito'] . '</td>';
                                     } else {

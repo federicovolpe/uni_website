@@ -1,4 +1,5 @@
 <!--  script php che si occupa dell'inserimento di un esame nel database e del controllo delle variabili  -->
+
 <?php
     //recupero delle variabili settate in post e in sessione
         $id_docente = $_SESSION['id'];
@@ -9,6 +10,7 @@
         $db = pg_connect("dbname=unimio host=localhost port=5432");
         if($db){
             
+            //controllo in parte inutile perchè il professore ha le scelte limitate
             if($id_insegnamento == ''){ // se l'insegnamento non è stato trovato allora mando un messaggio di errore
                 $_POST['msg'] = "insegnamento non trovato query: SELECT id FROM insegnamento WHERE nome = ".$insegnamento;
                 $_POST['approved'] = 1;

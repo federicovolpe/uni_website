@@ -76,7 +76,16 @@
     <h2>esami a cui ti puoi prenotare</h2>
         <div class= "table-container">
         <table class="table table-striped">
-        <caption><?php print("corso: ". $_SESSION['corso_frequentato'] . " utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
+            <?php
+                //query per il recupero del nome del corso
+                $db = pg_connect("host = localhost port = 5432 dbname = unimio");
+                $nome_corso_sql = "SELECT nome_corso 
+                                    FROM corso
+                                    WHERE id = $1";
+                $nome_corso = pg_fetch_assoc(pg_query_params($db, $nome_corso_sql, array($_SESSION['corso_frequentato'])));
+                $nome_c = $nome_corso['nome_corso']
+            ?>
+        <caption><?php print("corso: ". $nome_c . ",  -------  utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
             <thead>
                 <tr>
                     <th scope="col"> Materia </th>

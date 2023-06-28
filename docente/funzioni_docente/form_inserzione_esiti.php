@@ -42,7 +42,8 @@
 
                 </select>
             </div>
-
+                
+            <!-- esito dell'esame compreso fra 0-30 -->
             <div style="padding: 2%;display: flex; align-items: center;">
                 <span class="input-group-text" id="esame">Esito:</span>
                 <input type="number" name="esito" id="esito" min="0" max="30">

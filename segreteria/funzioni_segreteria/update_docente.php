@@ -15,6 +15,7 @@ if (isset($_POST))  {
         $cognome = $_POST['cognome'];
     }
     $operazione = $_POST['operazione'];
+    
     // connessione al database
     $db = pg_connect("host=localhost port=5432 dbname=unimio");
 

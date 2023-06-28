@@ -38,7 +38,7 @@
                 $array = pg_fetch_assoc($nome_corso);
                 $nome_corso = $array['nome_corso'];
             ?>    
-        <caption><?php print("corso: ". $nome_corso . "     utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
+        <caption><?php print("corso: ". $nome_corso . ",  -------  utente: " . $_SESSION['nome'] . " " . $_SESSION['cognome']) ?></caption>
             <thead>
                 <tr>
                     <th scope="col"> Materia </th>
