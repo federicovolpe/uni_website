@@ -22,7 +22,7 @@
                         $sql = "SELECT insegnamento.nome as insegnamento_n, data, esami.id as esami_id
                                         FROM esami 
                                         JOIN insegnamento ON insegnamento.id = esami.insegnamento
-                                        WHERE docente = $1";
+                                        WHERE esami.docente = $1";
 
                         $result = pg_prepare($db, "esami_in_programma", $sql);
                         $insegnamenti = pg_execute($db, "esami_in_programma", array($_SESSION['id']));
